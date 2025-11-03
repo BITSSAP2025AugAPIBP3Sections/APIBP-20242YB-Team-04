@@ -1,0 +1,354 @@
+openapi: 3.0.3
+info:
+  title: EventIX Search Service API
+  version: 1.0.0
+  description: >
+    Handles event discovery, filtering, and recommendations.
+    Collaborates with Event, Booking, and User services for complete results.
+
+servers:
+  - url: http://localhost:8080
+
+tags:
+  - name: Search
+    description: General search and filtering operations
+  - name: Discovery
+    description: Trending, nearby, and personalized event recommendations
+  - name: Organizer
+    description: Organizer-specific event listings
+  - name: Utilities
+    description: Filters, suggestions, and analytics
+
+paths:
+  /search:
+    get:
+      tags: [Search]
+      summary: General event search with filters (list view)
+      parameters:
+        - name: q
+          in: query
+          schema: { type: string }
+          description: Keyword search
+        - name: city
+          in: query
+          schema: { type: string }
+        - name: category
+          in: query
+          schema: { type: string }
+        - name: startDate
+          in: query
+          schema: { type: string, format: date }
+        - name: endDate
+          in: query
+          schema: { type: string, format: date }
+        - name: sortBy
+          in: query
+          schema: { type: string, enum: [popularity, date] }
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 10 }
+      responses:
+        '200':
+          description: Paginated list of matching events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventList'
+
+  /search/trending:
+    get:
+      tags: [Discovery]
+      summary: Get top trending events (popularity, bookings)
+      parameters:
+        - name: city
+          in: query
+          schema: { type: string }
+        - name: category
+          in: query
+          schema: { type: string }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 10 }
+      responses:
+        '200':
+          description: List of trending events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventList'
+
+  /search/nearby:
+    get:
+      tags: [Discovery]
+      summary: Find events near user’s current location
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          schema: { type: number }
+        - name: lon
+          in: query
+          required: true
+          schema: { type: number }
+        - name: radius
+          in: query
+          schema: { type: number, default: 5 }
+        - name: category
+          in: query
+          schema: { type: string }
+        - name: date
+          in: query
+          schema: { type: string, format: date }
+      responses:
+        '200':
+          description: Nearby events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventList'
+
+  /search/personalized:
+    get:
+      tags: [Discovery]
+      summary: Personalized recommendations for logged-in user
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema: { type: string }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 10 }
+        - name: basedOn
+          in: query
+          schema: { type: string, enum: [history, interests] }
+      responses:
+        '200':
+          description: Personalized events list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventList'
+
+  /search/map:
+    get:
+      tags: [Discovery]
+      summary: Geo-based search for rendering events on map
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          schema: { type: number }
+        - name: lon
+          in: query
+          required: true
+          schema: { type: number }
+        - name: radius
+          in: query
+          schema: { type: number, default: 10 }
+        - name: category
+          in: query
+          schema: { type: string }
+        - name: date
+          in: query
+          schema: { type: string, format: date }
+      responses:
+        '200':
+          description: Events to render on map
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventList'
+
+  /search/calendar:
+    get:
+      tags: [Discovery]
+      summary: Returns events grouped by date (month/week view)
+      parameters:
+        - name: city
+          in: query
+          schema: { type: string }
+        - name: month
+          in: query
+          schema: { type: string, example: "2025-11" }
+        - name: category
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: Events grouped by date
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarView'
+
+  /search/suggest:
+    get:
+      tags: [Utilities]
+      summary: Autocomplete suggestions for event/city/organizer
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema: { type: string }
+        - name: type
+          in: query
+          schema: { type: string, enum: [event, organizer, city] }
+      responses:
+        '200':
+          description: Suggestions list
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { type: string }
+
+  /search/filters:
+    get:
+      tags: [Utilities]
+      summary: Returns available filters (categories, tags, cities)
+      responses:
+        '200':
+          description: List of filters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Filters'
+
+  /search/organizer/{organizerId}:
+    get:
+      tags: [Organizer]
+      summary: Lists all events created by specific organizer
+      parameters:
+        - name: organizerId
+          in: path
+          required: true
+          schema: { type: string }
+        - name: status
+          in: query
+          schema: { type: string, enum: [active, past] }
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+      responses:
+        '200':
+          description: Organizer’s event list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventList'
+
+  /search/category/{category}:
+    get:
+      tags: [Search]
+      summary: Fetch events under a specific category
+      parameters:
+        - name: category
+          in: path
+          required: true
+          schema: { type: string }
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20 }
+      responses:
+        '200':
+          description: Events by category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventList'
+
+  /search/city/{city}:
+    get:
+      tags: [Search]
+      summary: List all events in a specific city
+      parameters:
+        - name: city
+          in: path
+          required: true
+          schema: { type: string }
+        - name: date
+          in: query
+          schema: { type: string, format: date }
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+      responses:
+        '200':
+          description: Events by city
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventList'
+
+  /search/recent:
+    get:
+      tags: [Discovery]
+      summary: Recently added or upcoming events
+      parameters:
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20 }
+        - name: city
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: Recent events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventList'
+
+components:
+  schemas:
+    Event:
+      type: object
+      properties:
+        eventId: { type: string }
+        title: { type: string }
+        category: { type: string }
+        city: { type: string }
+        venue: { type: string }
+        startDate: { type: string, format: date-time }
+        endDate: { type: string, format: date-time }
+        organizerId: { type: string }
+        popularityScore: { type: number }
+    EventList:
+      type: object
+      properties:
+        page: { type: integer }
+        limit: { type: integer }
+        total: { type: integer }
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+    CalendarView:
+      type: object
+      properties:
+        month: { type: string }
+        eventsByDate:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/Event'
+    Filters:
+      type: object
+      properties:
+        categories:
+          type: array
+          items: { type: string }
+        tags:
+          type: array
+          items: { type: string }
+        cities:
+          type: array
+          items: { type: string }
