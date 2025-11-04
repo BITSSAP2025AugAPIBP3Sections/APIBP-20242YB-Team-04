@@ -10,4 +10,7 @@ public class SearchResponseDTO {
     private int limit;
     private long totalResults;
     
+    public SearchResponseDTO(List<EventDTO> events) {
+        this.events = events;
+    }
 }
