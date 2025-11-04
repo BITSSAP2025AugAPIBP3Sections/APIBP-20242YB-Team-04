@@ -1,0 +1,110 @@
+openapi: 3.0.3
+info:
+  title: notification and Organizer Utility Service API
+  description: |
+    Microservice providing dashboard statistics by aggregating data from booking-service and event-service.
+    Also consumes RabbitMQ messages for sending email notifications
+  version: 1.0.0
+  contact:
+    name: Eventix
+
+servers:
+  - url: http://localhost:8082
+    description: current Local development server
+
+tags:
+  - name: Dashboard
+    description: Organizer dashboard statistics endpoints
+
+paths:
+  /api/dashboard/organizer/{organizerId}/stats:
+    get:
+      tags:
+        - Dashboard
+      summary: Get organizer dashboard statistics
+      description: Aggregates statistics from booking-service and event-service
+      operationId: getDashboardStats
+      parameters:
+        - name: organizerId
+          in: path
+          required: true
+          description: Unique identifier of the event organizer
+          schema:
+            type: string
+          example: org-123
+      responses:
+        '200':
+          description: Successfully retrieved dashboard statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardStatsDTO'
+        '503':
+          description: Service Unavailable - Dependent services are down
+          content:
+            application/json:
+              schema:
+                type: object
+                nullable: true
+components:
+  schemas:
+    DashboardStatsDTO:
+      type: object
+      required:
+        - totalEvents
+        - publishedEvents
+        - totalBookings
+        - confirmedAttendees
+        - totalRevenue
+      properties:
+        totalEvents:
+          type: integer
+          format: int64
+          description: Total number of events created
+          example: 8
+        publishedEvents:
+          type: integer
+          format: int64
+          description: Number of published events
+          example: 6
+        totalBookings:
+          type: integer
+          format: int64
+          description: Total number of bookings
+          example: 150
+        confirmedAttendees:
+          type: integer
+          format: int64
+          description: Number of confirmed attendees
+          example: 135
+        totalRevenue:
+          type: number
+          format: decimal
+          description: Total revenue from bookings
+          example: 45000.00
+
+    NotificationMessage:
+      type: object
+      required:
+        - userEmail
+        - userName
+        - eventName
+        - bookingId
+      properties:
+        userEmail:
+          type: string
+          format: email
+          description: Recipient email address
+          example: john.doe@example.com
+        userName:
+          type: string
+          description: User's full name
+          example: John Doe
+        eventName:
+          type: string
+          description: Event name
+          example: Spring Boot Workshop
+        bookingId:
+          type: string
+          description: Unique booking identifier
+          example: booking-abc-123
