@@ -4,10 +4,11 @@ import com.eventix.eventservice.model.EventStatus;
 import lombok.Data;
 
 import java.time.ZonedDateTime;
+import java.util.UUID;
 
 @Data
 public class EventResponse {
-    private String id;
+    private UUID id;
     private String title;
     private String description;
     private String organizerId;
