@@ -17,7 +17,7 @@ import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/events")
+@RequestMapping("/api/v1/events")
 @Tag(name = "Event Management", description = "Manage and search events in the Eventix platform")
 public class EventController {
 
