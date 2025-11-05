@@ -5,8 +5,12 @@ import com.eventix.eventservice.model.EventStatus;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class EventSpecification {
+
+    private EventSpecification() {}
 
     public static Specification<Event> hasCity(String city) {
         return (root, query, cb) -> city == null ? null : cb.equal(cb.lower(root.get("city")), city.toLowerCase());
@@ -30,5 +34,14 @@ public final class EventSpecification {
 
     public static Specification<Event> hasOrganizer(String organizerId) {
         return (root, query, cb) -> organizerId == null ? null : cb.equal(root.get("organizerId"), organizerId);
+    }
+
+    /** New helper — safe builder for 3.5+ **/
+    public static Specification<Event> combine(Specification<Event>... specs) {
+        List<Specification<Event>> list = new ArrayList<>();
+        for (Specification<Event> s : specs) {
+            if (s != null) list.add(s);
+        }
+        return list.stream().reduce(Specification::and).orElse(null);
     }
 }
