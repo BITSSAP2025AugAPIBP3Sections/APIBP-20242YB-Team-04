@@ -13,7 +13,7 @@ public class Event {
 
     @Id
     @Column(updatable = false, nullable = false)
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private UUID id;
 
     @Column(nullable = false)
