@@ -32,6 +32,14 @@ Spring Boot microservice for managing event bookings and providing analytics via
 - Swagger / OpenAPI documentation via Springdoc
 - H2 in-memory DB for quick testing (swap to PostgreSQL/MySQL in production)
 
+## Folder Structure
+```
+booking-service/
+├── src/main/java
+├── src/main/resources
+└── Dockerfile
+```
+
 ## Build & Run
 
 ### Build
@@ -39,5 +47,7 @@ Spring Boot microservice for managing event bookings and providing analytics via
 mvn -U -DskipTests package
 java -jar target/booking-service-1.0.0.jar
 
-## Service will be available at:
-http://localhost:8082
+## Swagger API Documentation
+Access the Swagger UI here:  
+🔗 **http://localhost:8082/swagger-ui/index.html#/**
+
