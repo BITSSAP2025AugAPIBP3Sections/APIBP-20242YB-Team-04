@@ -1,0 +1,31 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:h2:file:./data/bookingdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  graphql:
+    path: /graphql
+    schema:
+      locations: classpath:graphql/  # Folder for .graphqls schema files
+    graphiql:
+      enabled: true                 # Enables built-in GraphiQL UI
+      endpoint:
+        graphql: /graphql           # Path GraphiQL should use to query
+      mapping: /graphiql            # Web UI path
+
+# Optional async executor config
+app:
+  async:
+    core-pool-size: 5
+    max-pool-size: 20
+    queue-capacity: 100
