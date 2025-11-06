@@ -71,14 +71,6 @@ public class SearchController {
         return searchService.getMapEvents(lat, lon, radius, category, date);
     }
 
-    @GetMapping("/personalized")
-    public List<EventDTO> getPersonalizedEvents(
-            @RequestParam String userId,
-            @RequestParam(defaultValue = "10") int limit,
-            @RequestParam(defaultValue = "history") String basedOn) {
-        return searchService.getPersonalizedEvents(userId, limit, basedOn);
-    }
-
     @GetMapping("/recent")
     public List<EventDTO> getRecentEvents(
             @RequestParam(defaultValue = "20") int limit,
