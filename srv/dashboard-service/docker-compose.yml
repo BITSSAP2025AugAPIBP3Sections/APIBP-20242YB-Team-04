@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: eventix-rabbitmq
+    ports:
+      - "5672:5672"    # AMQP port for message queue
+      - "15672:15672"  # Management UI port
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - eventix-network
+
+volumes:
+  rabbitmq_data:
+
+networks:
+  eventix-network:
+    driver: bridge
+
