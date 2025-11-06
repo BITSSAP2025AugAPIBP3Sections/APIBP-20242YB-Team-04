@@ -1,0 +1,30 @@
+type Query {
+  searchEvents(
+    q: String,
+    city: String,
+    category: String,
+    startDate: String,
+    endDate: String,
+    sortBy: String,
+    page: Int,
+    limit: Int
+  ): [Event]
+
+  personalizedEvents(
+    userId: String!,
+    limit: Int,
+    basedOn: String
+  ): [Event]
+}
+
+type Event {
+  eventId: String
+  title: String
+  category: String
+  city: String
+  venue: String
+  startDate: String
+  endDate: String
+  organizerId: String
+  popularityScore: Float
+}
