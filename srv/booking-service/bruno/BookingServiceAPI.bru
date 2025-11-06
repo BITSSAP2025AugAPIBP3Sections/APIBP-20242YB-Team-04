@@ -1,0 +1,52 @@
+meta {
+  name: "Booking Service API"
+  type: "collection"
+  version: "1.0.0"
+}
+
+environment "booking" {
+  base_url: http://localhost:8080
+}
+
+request "Create Booking" {
+  method: POST
+  url: {{base_url}}/bookings
+  headers {
+    Content-Type: application/json
+  }
+  body: raw
+  content: application/json
+  data: """
+  {
+    "userId": "U001",
+    "eventId": "EVT100",
+    "city": "Berlin",
+    "totalBookings": 3,
+    "wishlistCount": 2,
+    "avgRating": 4.5,
+    "category": "Music"
+  }
+  """
+}
+
+request "List All Bookings" {
+  method: GET
+  url: {{base_url}}/bookings
+}
+
+request "Get Booking by ID" {
+  method: GET
+  url: {{base_url}}/bookings/{{bookingId}}
+  vars {
+    bookingId: "1"
+  }
+}
+
+request "Delete Booking" {
+  method: DELETE
+  url: {{base_url}}/bookings/{{bookingId}}
+  vars {
+    bookingId: "1"
+  }
+}
+

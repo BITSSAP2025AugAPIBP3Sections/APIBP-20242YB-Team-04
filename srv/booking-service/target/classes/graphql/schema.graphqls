@@ -1,0 +1,44 @@
+type Booking {
+  id: ID!
+  eventId: String!
+  userId: String!
+  totalBookings: Int
+  recentBookings: Int
+  wishlistCount: Int
+  avgRating: Float
+  timestamp: String
+  city: String
+  category: String
+  status: String
+}
+
+type CityCount {
+  city: String
+  count: Int
+}
+
+type StatsResponse {
+  totalRecords: Int
+  confirmed: Int
+  avgRating: Float
+  byCity: [CityCount]
+}
+
+type Query {
+  allBookings: [Booking]
+  trending(limit: Int): [Booking]
+  personalized(userId: String, limit: Int): [Booking]
+  stats: StatsResponse
+}
+
+type Mutation {
+  createBooking(
+    eventId: String!,
+    userId: String!,
+    city: String,
+    category: String,
+    avgRating: Float,
+    wishlistCount: Int
+  ): Booking
+}
+
