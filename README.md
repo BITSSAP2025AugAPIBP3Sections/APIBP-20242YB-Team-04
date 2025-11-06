@@ -1,103 +1,138 @@
 # 🎟️ Eventix – Event Ticketing & Volunteering Platform (Microservices-Based)
 
-## 🧩 Overview
-**Eventix** is a scalable, microservices-based event ticketing and management system designed to simplify how organizers create and manage events, and how users discover and participate in volunteering opportunities, donation drives, and city-wide events.
+## Overview
 
-The system provides secure authentication, event creation, ticket booking, and real-time communication between services — built to demonstrate scalability, modularity, and reliability in distributed systems.
-
----
-
-## 🚀 Objectives
-- **Primary Goal:** Design and deploy a microservices-based, scalable application demonstrating modern API and cloud-native practices.
-- **Use Case:** Volunteering & donation event discovery and participation.
-- **Focus Areas:**
-  - RESTful and gRPC-based service communication
-  - Scalable microservice decomposition
-  - Dockerized and orchestrated deployment (Docker Compose / Kubernetes)
-  - Message-driven communication using a broker (RabbitMQ)
+**Eventix** is a distributed, microservices-based event management and ticketing platform designed for community-driven volunteering and donation events.  
+It enables organizers, attendees, and administrators to efficiently create, discover, manage, and participate in local events, ensuring scalability, modularity, and fault isolation.
 
 ---
 
-## 🏗️ System Scope
-Eventix supports multiple user roles — **Organizer, Attendee, and Admin** — enabling:
-- Organizers to create, update, and manage events.
-- Users to search, book, and participate in volunteering events.
-- System to handle waitlists, notifications, and promotions at scale.
+## Problem Statement
 
-The project is deployed locally using **Docker Compose** (and optionally **Minikube**) for scalability testing and load simulation.
+Modern community initiatives — such as donation drives and volunteering events — often operate on fragmented or manual systems, making event discovery, registration, and coordination inefficient.  
+Traditional monolithic systems struggle with scalability and performance under concurrent usage.
 
----
-
-## 🧠 Problem Statement
-As the number of volunteering and community events grows, organizers face challenges in managing participants, ticketing, and communication efficiently. Traditional monolithic systems struggle to scale dynamically under varying loads.
-
-**Eventix addresses this by providing a microservices-based architecture** that scales individual components independently, ensuring reliability and performance under high demand.
+**Objective:**  
+To design and implement a **scalable microservices-based system** that supports large-scale event discovery, user participation, and real-time updates with high reliability and performance.
 
 ---
 
-## 💡 Proposed Solution
-Eventix is developed as a **set of independent microservices**, each responsible for a specific business domain such as user management, event creation, booking, or notifications.  
-Communication is implemented using:
-- **REST APIs** for user-facing services
-- **gRPC** for internal service-to-service calls
-- **RabbitMQ** for asynchronous event updates (e.g., booking → notification)
-- **API Gateway** for unified routing and authentication
+## Key Actors
 
-Deployment uses **Docker Compose** for local scaling and **Kubernetes (Minikube)** for orchestration.
+| Actor        | Description                                                                 |
+|---------------|------------------------------------------------------------------------------|
+| **Organizer** | Creates and manages events, schedules, and campaigns.                        |
+| **Attendee**  | Searches, registers, and participates in community or donation events.       |
+| **Administrator** | Oversees platform operations, manages user roles, and monitors system health. |
 
 ---
 
-## 🧩 Microservices Architecture
+## System Scope
 
-| **Service Name** | **Responsibilities** | **Communication Type** |
-|------------------|---------------------|-------------------------|
-| **Auth & User Service** | User registration, authentication, JWT generation, role management | REST |
-| **Event Management Service** | CRUD for events, venues, and schedules | REST |
-| **Search & Discovery Service** | Event discovery by location, category, and date | REST / gRPC |
-| **Booking & Order Service** | Ticket booking, order tracking, seat management | gRPC / Message Broker |
-| **Promo & Loyalty Service** | Manage discounts and loyalty campaigns | REST |
-| **Notification Service** | Sends emails, SMS, and in-app notifications | Message Broker (RabbitMQ) |
-| **API Gateway** | Routes external requests to microservices securely | REST |
+The system supports three primary user roles — **Organizer**, **Attendee**, and **Admin** — with the following key functionalities:
 
-> Decomposition Choice: **By Business Domain** (Each service aligns with a core business capability — e.g., user, event, booking, notification).
+- User registration, authentication, and role-based access control (RBAC)
+- Event creation, update, and management
+- Event search and discovery by city, date, and category
+- Ticket booking and order tracking
+- Waitlist management for full events
+- Notifications for bookings, cancellations, and updates
+- Organizer dashboard for analytics and insights
 
 ---
 
-## ⚙️ Tech Stack
+## System Architecture
 
-### **Backend**
-- **Spring Boot (Java)** – REST & gRPC service development  
-- **Spring Data JPA / Hibernate** – Database persistence  
-- **Spring Security (JWT)** – Authentication & role-based access  
-- **RabbitMQ** – Message-based communication  
-- **PostgreSQL / MySQL** – Relational database  
-- **Docker & Docker Compose** – Containerization & local scaling  
-- **Kubernetes (Minikube)** – Optional orchestration environment  
+Eventix adopts a **business-capability-based microservice decomposition**, where each service handles a specific domain responsibility.  
+All services are **containerized** using Docker and communicate via **REST/gRPC** and **asynchronous messaging** through a message broker.
 
-### **Frontend**
-- **React** – Web UI for event creation and discovery  
-- **Axios / Fetch** – API consumption  
-- **Recharts** – Data visualization (optional for dashboard)  
+### Core Microservices
+
+| Service Name              | Primary Responsibilities                                    | Key Features |
+|----------------------------|-------------------------------------------------------------|--------------|
+| **Auth & User Service**    | Manages authentication (JWT), user registration, RBAC.      | User & Role Management |
+| **Event Management Service** | Allows event creation, updates, and metadata management. | Event Creation & Management |
+| **Search & Discovery Service** | Enables users to search events by filters and location. | Event Search & Discovery |
+| **Booking & Registration Service** | Handles bookings, attendee registration, and waitlists. | Booking & Orders |
+| **Promo & Loyalty Service** | Manages promo codes, discounts, and loyalty programs. | Promotions & Rewards |
+| **Notification Service** | Dispatches real-time notifications and alerts. | Email/SMS/Event Notifications |
+| **Organizer Dashboard Service** | Provides analytics and insights for organizers. | Event Statistics & Reports |
 
 ---
 
-## 🔗 Example API Endpoints
+## Technology Stack
 
-### Auth & User Service
-POST /api/v1/auth/register
-POST /api/v1/auth/login
-GET /api/v1/users/{id}
+| Component | Technology |
+|------------|-------------|
+| **API Protocols** | REST, GraphQL |
+| **Containerization** | Docker, Docker Compose |
+| **Service Communication** | Message Broker (e.g., RabbitMQ / Kafka) |
+| **Gateway / Load Balancer** | NGINX |
+| **Databases** | Independent per service (e.g., PostgreSQL, MongoDB) |
+| **Authentication** | JWT Tokens |
 
-### Event Service
-POST /api/v1/events
-GET /api/v1/events/{id}
-GET /api/v1/events?location=Delhi&date=2025-11-05
+---
 
-### Booking Service
-POST /api/v1/bookings
-GET /api/v1/bookings/{bookingId}
-DELETE /api/v1/bookings/{bookingId}/cancel
+## Deployment and Scalability
 
-### Notification Service
-POST /api/v1/notify/email
-POST /api/v1/notify/inapp
+- Each service is containerized and deployed using **Docker Compose**.
+- **NGINX Reverse Proxy** distributes traffic and enables load balancing.
+- Horizontal scaling can be demonstrated by running multiple replicas per service.
+- The system is designed for future migration to **Kubernetes** or **cloud-native deployment**.
+
+---
+
+## API Overview
+
+Each microservice exposes its own set of REST or graphQL endpoints. Below is example of key operations and navigation to 
+:
+
+### 1. Auth & User Service
+| Endpoint | Method | Description |
+|-----------|---------|-------------|
+| `/users/register` | POST | Registers a new user (organizer or attendee) |
+| `/users/login` | POST | Authenticates a user and issues a JWT token |
+| `/auth/validateToken` | GET | Validates authentication token for other services |
+
+### 2. Event Management Service
+| Endpoint | Method | Description |
+|-----------|---------|-------------|
+| `/events` | POST | Creates a new event (organizer-only) |
+| `/events/{id}` | PUT | Updates event details |
+| `/events/{id}` | DELETE | Deletes or deactivates an event |
+| `/events/{id}` | GET | Retrieves event details |
+
+### 3. Search & Discovery Service
+| Endpoint | Method | Description |
+|-----------|---------|-------------|
+| `/search` | GET | Searches events by city, date, or category |
+| `/search/nearby` | GET | Finds events near specified coordinates |
+| `/search/map` | GET | Finds events according to specified coordinates |
+
+### 4. Booking & Registration Service
+| Endpoint | Method | Description |
+|-----------|---------|-------------|
+| `/booking` | POST | Books an event ticket or registers a participant |
+| `/booking/{id}` | GET | Retrieves booking details |
+| `/booking/{id}` | DELETE | Cancels a booking and triggers notifications |
+
+### 5. Promo & Loyalty Service
+| Endpoint | Method | Description |
+|-----------|---------|-------------|
+| `/promo/create` | POST | Creates a new promo code |
+| `/promo/validate` | POST | Validates a promo code for discounts |
+| `/promo/active` | GET | Lists all active promotions |
+
+### 6. Notification Service
+Triggered by events from other services (via message broker):
+- `sendBookingConfirmation`
+- `sendEventUpdate`
+- `sendWaitlistNotification`
+
+### 7. Organizer Dashboard Service
+| Endpoint | Method | Description |
+|-----------|---------|-------------|
+| `/dashboard/overview` | GET | Aggregates booking and event statistics |
+| `/dashboard/attendees/{eventId}` | GET | Lists all attendees for a specific event |
+
+---
