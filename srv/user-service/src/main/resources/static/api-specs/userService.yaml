@@ -1,0 +1,959 @@
+openapi: 3.0.1
+info:
+  title: Eventrix Auth User Service API
+  description: Authentication and User Management Service for Eventrix Platform
+  termsOfService: https://eventrix.com/terms
+  contact:
+    name: Eventrix Development Team
+    url: https://eventrix.com
+    email: dev@eventrix.com
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+  version: 1.0.0
+servers:
+  - url: http://localhost:8081
+    description: Development Server
+  - url: https://api.eventrix.com
+    description: Production Server
+security:
+  - bearerAuth: []
+tags:
+  - name: Role Management
+    description: Role and permission management operations
+  - name: User Management
+    description: User registration and profile management operations
+  - name: Organizer Management
+    description: Organizer profile and event management operations
+  - name: Utility
+    description: Service health check and utility operations
+  - name: Authentication
+    description: Authentication and authorization operations
+paths:
+  /users/{id}:
+    get:
+      tags:
+        - User Management
+      summary: Get user by ID
+      description: Retrieve user information by user ID
+      operationId: getUserById
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '403':
+          description: Access forbidden
+        '404':
+          description: User not found
+      security:
+        - bearerAuth: []
+    put:
+      tags:
+        - User Management
+      summary: Update user
+      description: Update user information by user ID
+      operationId: updateUser
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+        required: true
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid request data
+        '403':
+          description: Access forbidden
+        '404':
+          description: User not found
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - User Management
+      summary: Delete user
+      description: Delete user by user ID
+      operationId: deleteUser
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: User deleted successfully
+          content:
+            application/json: {}
+        '403':
+          description: Access forbidden
+        '404':
+          description: User not found
+      security:
+        - bearerAuth: []
+  /roles/{id}:
+    get:
+      tags:
+        - Role Management
+      summary: Get role by ID
+      description: Retrieve role information by role ID
+      operationId: getRoleById
+      parameters:
+        - name: id
+          in: path
+          description: Role ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Role found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '404':
+          description: Role not found
+      security:
+        - bearerAuth: []
+    put:
+      tags:
+        - Role Management
+      summary: Update role
+      description: Update role information by role ID
+      operationId: updateRole
+      parameters:
+        - name: id
+          in: path
+          description: Role ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleUpdateRequest'
+        required: true
+      responses:
+        '200':
+          description: Role updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '400':
+          description: Invalid request data
+        '404':
+          description: Role not found
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - Role Management
+      summary: Delete role
+      description: Delete role by role ID
+      operationId: deleteRole
+      parameters:
+        - name: id
+          in: path
+          description: Role ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Role deleted successfully
+          content:
+            application/json: {}
+        '403':
+          description: Access forbidden
+        '404':
+          description: Role not found
+      security:
+        - bearerAuth: []
+  /organizer/{id}/events/{eventId}:
+    put:
+      tags:
+        - Organizer Management
+      summary: Update event
+      description: Update an existing event
+      operationId: updateEvent
+      parameters:
+        - name: id
+          in: path
+          description: Organizer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: eventId
+          in: path
+          description: Event ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventUpdateRequest'
+        required: true
+      responses:
+        '200':
+          description: Event updated successfully
+          content:
+            application/json: {}
+        '400':
+          description: Invalid request data
+        '403':
+          description: Access forbidden
+        '404':
+          description: Organizer or event not found
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - Organizer Management
+      summary: Delete event
+      description: Delete an existing event
+      operationId: deleteEvent
+      parameters:
+        - name: id
+          in: path
+          description: Organizer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: eventId
+          in: path
+          description: Event ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Event deleted successfully
+          content:
+            application/json: {}
+        '403':
+          description: Access forbidden
+        '404':
+          description: Organizer or event not found
+      security:
+        - bearerAuth: []
+  /users/register:
+    post:
+      tags:
+        - User Management
+      summary: Register new user
+      description: Create a new user account
+      operationId: registerUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistrationRequest'
+        required: true
+      responses:
+        '200':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid request data
+        '409':
+          description: User already exists
+  /roles:
+    get:
+      tags:
+        - Role Management
+      summary: Get all roles
+      description: Retrieve list of all roles
+      operationId: getAllRoles
+      responses:
+        '200':
+          description: Roles retrieved successfully
+          content:
+            application/json: {}
+      security:
+        - bearerAuth: []
+    post:
+      tags:
+        - Role Management
+      summary: Create new role
+      description: Create a new role with name and description
+      operationId: createRole
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleCreateRequest'
+        required: true
+      responses:
+        '200':
+          description: Role created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '400':
+          description: Invalid request data
+        '409':
+          description: Role already exists
+      security:
+        - bearerAuth: []
+  /roles/assign:
+    post:
+      tags:
+        - Role Management
+      summary: Assign role to user
+      description: Assign a role to a user
+      operationId: assignRoleToUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleAssignmentRequest'
+        required: true
+      responses:
+        '200':
+          description: Role assigned successfully
+          content:
+            application/json: {}
+        '400':
+          description: Invalid request data
+        '404':
+          description: User or role not found
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - Role Management
+      summary: Remove role from user
+      description: Remove a role assignment from a user
+      operationId: removeRoleFromUser
+      parameters:
+        - name: arg0
+          in: query
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: arg1
+          in: query
+          description: Role ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Role removed successfully
+          content:
+            application/json: {}
+        '404':
+          description: User or role not found
+      security:
+        - bearerAuth: []
+  /organizer/{id}/events:
+    get:
+      tags:
+        - Organizer Management
+      summary: Get organizer events
+      description: Get paginated list of events for an organizer
+      operationId: getOrganizerEvents
+      parameters:
+        - name: id
+          in: path
+          description: Organizer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: arg1
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: arg2
+          in: query
+          description: Page size
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 10
+      responses:
+        '200':
+          description: Events retrieved successfully
+          content:
+            application/json: {}
+        '403':
+          description: Access forbidden
+        '404':
+          description: Organizer not found
+      security:
+        - bearerAuth: []
+    post:
+      tags:
+        - Organizer Management
+      summary: Create new event
+      description: Create a new event for the organizer
+      operationId: createEvent
+      parameters:
+        - name: id
+          in: path
+          description: Organizer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventCreateRequest'
+        required: true
+      responses:
+        '200':
+          description: Event created successfully
+          content:
+            application/json: {}
+        '400':
+          description: Invalid request data
+        '403':
+          description: Access forbidden
+        '404':
+          description: Organizer not found
+      security:
+        - bearerAuth: []
+  /auth/verify-email:
+    post:
+      tags:
+        - Authentication
+      summary: Verify email address
+      description: Verify user email using verification token
+      operationId: verifyEmail
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailVerificationRequest'
+        required: true
+      responses:
+        '200':
+          description: Email verified successfully
+          content:
+            application/json: {}
+        '400':
+          description: Invalid or expired verification token
+  /auth/refresh:
+    post:
+      tags:
+        - Authentication
+      summary: Refresh JWT token
+      description: Generate new access token using refresh token
+      operationId: refreshToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+        required: true
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtToken'
+        '400':
+          description: Invalid request format
+        '401':
+          description: Invalid refresh token
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: User logout
+      description: Logout user and invalidate JWT token
+      operationId: logout
+      parameters:
+        - name: Authorization
+          in: header
+          description: JWT Bearer token
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json: {}
+        '401':
+          description: Invalid or missing token
+      security:
+        - bearerAuth: []
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticate user and return JWT token
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtToken'
+        '400':
+          description: Invalid request format
+        '401':
+          description: Invalid credentials
+  /version:
+    get:
+      tags:
+        - Utility
+      summary: Get version
+      description: Get service version information
+      operationId: getVersion
+      responses:
+        '200':
+          description: Version information retrieved
+          content:
+            application/json: {}
+  /users:
+    get:
+      tags:
+        - User Management
+      summary: Get all users
+      description: Retrieve paginated list of all users
+      operationId: getAllUsers
+      parameters:
+        - name: arg0
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: arg1
+          in: query
+          description: Page size
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 10
+      responses:
+        '200':
+          description: Users retrieved successfully
+          content:
+            application/json: {}
+        '403':
+          description: Access forbidden
+      security:
+        - bearerAuth: []
+  /users/me:
+    get:
+      tags:
+        - User Management
+      summary: Get current user
+      description: Retrieve current authenticated user information
+      operationId: getCurrentUser
+      parameters:
+        - name: Authorization
+          in: header
+          description: JWT Bearer token
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Current user retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+      security:
+        - bearerAuth: []
+  /status:
+    get:
+      tags:
+        - Utility
+      operationId: getServiceStatus
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+  /organizer/{id}:
+    get:
+      tags:
+        - Organizer Management
+      summary: Get organizer profile
+      description: Get organizer profile information
+      operationId: getOrganizerProfile
+      parameters:
+        - name: id
+          in: path
+          description: Organizer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Organizer profile retrieved successfully
+          content:
+            application/json: {}
+        '403':
+          description: Access forbidden
+        '404':
+          description: Organizer not found
+      security:
+        - bearerAuth: []
+  /organizer/{id}/events/{eventId}/attendees:
+    get:
+      tags:
+        - Organizer Management
+      summary: Get event attendees
+      description: Get list of attendees for a specific event
+      operationId: getEventAttendees
+      parameters:
+        - name: id
+          in: path
+          description: Organizer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: eventId
+          in: path
+          description: Event ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: arg2
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: arg3
+          in: query
+          description: Page size
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 10
+      responses:
+        '200':
+          description: Attendees retrieved successfully
+          content:
+            application/json: {}
+        '403':
+          description: Access forbidden
+        '404':
+          description: Organizer or event not found
+      security:
+        - bearerAuth: []
+  /metrics:
+    get:
+      tags:
+        - Utility
+      operationId: getMetrics
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+  /health:
+    get:
+      tags:
+        - Utility
+      summary: Health check
+      description: Check service health status
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json: {}
+components:
+  schemas:
+    UserUpdateRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phoneNumber:
+          type: string
+      description: User update details
+    Role:
+      required:
+        - name
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          maxLength: 50
+          minLength: 2
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    User:
+      required:
+        - email
+        - firstName
+        - lastName
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the user
+          format: int64
+          example: 1
+        email:
+          type: string
+          description: User's email address
+          example: user@example.com
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phoneNumber:
+          type: string
+        emailVerified:
+          type: boolean
+        emailVerifiedAt:
+          type: string
+          format: date-time
+        active:
+          type: boolean
+        lastLogin:
+          type: string
+          format: date-time
+        passwordChangedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        roles:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+        fullName:
+          type: string
+      description: User entity representing a registered user in the system
+    RoleUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+      description: Role update details
+    EventUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        date:
+          type: string
+        time:
+          type: string
+        location:
+          type: string
+        price:
+          type: number
+          format: double
+        capacity:
+          type: integer
+          format: int32
+      description: Event update details
+    UserRegistrationRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phoneNumber:
+          type: string
+      description: User registration details
+    RoleCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+      description: Role creation details
+    RoleAssignmentRequest:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        roleId:
+          type: integer
+          format: int64
+      description: Role assignment details
+    EventCreateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        date:
+          type: string
+        time:
+          type: string
+        location:
+          type: string
+        price:
+          type: number
+          format: double
+        capacity:
+          type: integer
+          format: int32
+      description: Event creation details
+    EmailVerificationRequest:
+      type: object
+      properties:
+        token:
+          type: string
+      description: Email verification request
+    RefreshTokenRequest:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+      description: Refresh token request
+    JwtToken:
+      type: object
+      properties:
+        timeToExpiry:
+          type: integer
+          format: int64
+        authorizationHeader:
+          type: string
+        expired:
+          type: boolean
+        valid:
+          type: boolean
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+        token_type:
+          type: string
+        expires_in:
+          type: integer
+          format: int64
+        issued_at:
+          type: string
+          format: date-time
+        expires_at:
+          type: string
+          format: date-time
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      description: Login credentials
+  securitySchemes:
+    bearerAuth:
+      type: http
+      description: JWT Authentication
+      scheme: bearer
+      bearerFormat: JWT
