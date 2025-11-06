@@ -2,12 +2,17 @@ openapi: 3.0.4
 info:
   title: Eventix Booking Service API
   description: |
-    This is the API specification for the Eventix Booking Service.
-    It allows clients to create, view, update, and delete event bookings,
-    and retrieve detailed analytics such as recent bookings, wishlists, and ratings.
- 
-    - Version: 1.0.0
-    - Base URL: http://localhost:8080
+    This is the API specification for the **Eventix Booking Service**.
+    It manages creation, retrieval, and deletion of event bookings, and provides advanced analytics
+    via a **GraphQL endpoint**.
+
+    - Version: 1.0.0  
+    - Base URL: http://localhost:8080  
+
+    **Architecture:**  
+    - REST endpoints for standard CRUD operations  
+    - GraphQL endpoint for analytics, filtering, and nested queries  
+
   termsOfService: https://eventix.io/terms/
   contact:
     email: support@eventix.io
@@ -15,17 +20,17 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
- 
+
 servers:
   - url: http://localhost:8080
     description: Local development server
- 
+
 tags:
   - name: Booking
-    description: Operations related to bookings
-  - name: Stats
-    description: Booking statistics and analytics
- 
+    description: Booking management operations (CRUD)
+  - name: GraphQL
+    description: Primary interface for analytics, filtering, and flexible queries
+
 paths:
   /bookings:
     get:
@@ -45,7 +50,7 @@ paths:
                   $ref: '#/components/schemas/Booking'
         '500':
           description: Server error
- 
+
     post:
       tags:
         - Booking
@@ -70,7 +75,7 @@ paths:
           description: Invalid booking data provided.
         '500':
           description: Server error.
- 
+
   /bookings/{id}:
     get:
       tags:
@@ -94,37 +99,7 @@ paths:
                 $ref: '#/components/schemas/Booking'
         '404':
           description: Booking not found.
- 
-    put:
-      tags:
-        - Booking
-      summary: Update booking by ID
-      description: Modify details of an existing booking.
-      operationId: updateBooking
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Booking ID
-          schema:
-            type: integer
-      requestBody:
-        description: Updated booking data.
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BookingRequest'
-      responses:
-        '200':
-          description: Booking updated successfully.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Booking'
-        '404':
-          description: Booking not found.
- 
+
     delete:
       tags:
         - Booking
@@ -143,45 +118,51 @@ paths:
           description: Booking deleted successfully.
         '404':
           description: Booking not found.
- 
-  /stats:
-    get:
+
+  /graphql:
+    post:
       tags:
-        - Stats
-      summary: Get detailed event statistics
-      description: Retrieve analytics including total bookings, wishlists, average rating, and more.
-      operationId: getEventStats
-      parameters:
-        - name: eventId
-          in: query
-          required: false
-          description: Filter stats by specific event ID
-          schema:
-            type: integer
-        - name: city
-          in: query
-          required: false
-          description: Filter stats by city
-          schema:
-            type: string
-        - name: category
-          in: query
-          required: false
-          description: Filter stats by category
-          schema:
-            type: string
+        - GraphQL
+      summary: Execute GraphQL query (Primary analytics endpoint)
+      description: |
+        Perform advanced analytics and data queries using GraphQL.  
+        The GraphQL endpoint replaces the legacy `/stats` REST route.
+
+        **Example Query:**
+        ```graphql
+        query {
+          eventStats(eventId: 202) {
+            eventId
+            totalBookings
+            recentBookings
+            wishlistCount
+            avgRating
+            city
+            category
+            timestamp
+          }
+        }
+        ```
+      operationId: executeGraphQL
+      requestBody:
+        description: GraphQL query payload.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GraphQLRequest'
       responses:
         '200':
-          description: Statistics retrieved successfully.
+          description: GraphQL query executed successfully.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/EventStats'
+                $ref: '#/components/schemas/GraphQLResponse'
+        '400':
+          description: Invalid GraphQL query.
         '500':
           description: Server error.
- 
+
 components:
   schemas:
     Booking:
@@ -219,7 +200,7 @@ components:
         category:
           type: string
           example: Music
- 
+
     BookingRequest:
       type: object
       required:
@@ -250,7 +231,7 @@ components:
         category:
           type: string
           example: Music
- 
+
     EventStats:
       type: object
       properties:
@@ -283,3 +264,39 @@ components:
         category:
           type: string
           example: Music Festival
+
+    GraphQLRequest:
+      type: object
+      required:
+        - query
+      properties:
+        query:
+          type: string
+          example: |
+            query {
+              eventStats(eventId: 202) {
+                totalBookings
+                avgRating
+              }
+            }
+        variables:
+          type: object
+          additionalProperties: true
+          example:
+            eventId: 202
+
+    GraphQLResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          example:
+            eventStats:
+              eventId: 202
+              totalBookings: 150
+              avgRating: 4.6
+        errors:
+          type: array
+          items:
+            type: string
+          example: []
