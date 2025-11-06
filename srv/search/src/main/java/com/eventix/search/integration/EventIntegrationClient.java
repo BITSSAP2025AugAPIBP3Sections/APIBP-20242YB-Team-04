@@ -5,44 +5,46 @@ import com.eventix.search.dto.CalenderEventDTO;
 import com.eventix.search.dto.FilterOptionsDTO;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
 public class EventIntegrationClient {
 
-    // Mock data
     public List<EventDTO> getAllEvents() {
+        ZoneId zone = ZoneId.of("Asia/Kolkata");
         return Arrays.asList(
-                new EventDTO("E101", "Music Fiesta", "Music", "Delhi", "Central Park",
-                        LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(2).plusHours(3),
-                        "ORG123", 85.0),
-                new EventDTO("E102", "Tech Expo 2025", "Technology", "Bangalore", "Tech Park",
-                        LocalDateTime.now().plusDays(5), LocalDateTime.now().plusDays(5).plusHours(8),
-                        "ORG456", 92.5),
-                new EventDTO("E103", "Art Carnival", "Art", "Mumbai", "Kala Ghoda",
-                        LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(1).plusHours(5),
-                        "ORG789", 75.0)
+                new EventDTO("E201", "Beach Cleanup Drive", "Environment", "Mumbai", "Juhu Beach",
+                        ZonedDateTime.now(zone).plusDays(2), ZonedDateTime.now(zone).plusDays(2).plusHours(4),
+                        "ORG901", 88.5),
+                new EventDTO("E202", "Tree Plantation Marathon", "Nature", "Bangalore", "Cubbon Park",
+                ZonedDateTime.now(zone).plusDays(3), ZonedDateTime.now(zone).plusDays(3).plusHours(5),
+                        "ORG902", 91.2),
+                new EventDTO("E203", "Blood Donation Camp", "Health", "Delhi", "City Hospital",
+                ZonedDateTime.now(zone).plusDays(1), ZonedDateTime.now(zone).plusDays(1).plusHours(6),
+                        "ORG903", 85.0),
+                new EventDTO("E204", "Food Distribution Drive", "Social Welfare", "Pune", "Community Center",
+                ZonedDateTime.now(zone).plusDays(5), ZonedDateTime.now(zone).plusDays(5).plusHours(3),
+                        "ORG904", 82.3)
         );
     }
+    
 
-    // 🔍 Search
     public List<EventDTO> searchEvents(
-            String q, String city, String category,
-            String startDate, String endDate,
-            String sortBy, int page, int limit
+        String q, String city, String category,
+        String startDate, String endDate,
+        String sortBy, int page, int limit
     ) {
-        return getAllEvents().stream()
-                .filter(e -> q == null || e.getTitle().toLowerCase().contains(q.toLowerCase()))
-                .filter(e -> city == null || e.getCity().equalsIgnoreCase(city))
-                .filter(e -> category == null || e.getCategory().equalsIgnoreCase(category))
-                .limit(limit)
-                .collect(Collectors.toList());
+    return getAllEvents().stream()
+            .filter(e -> q == null || e.getTitle().toLowerCase().contains(q.toLowerCase()))
+            .filter(e -> city == null || e.getCity().equalsIgnoreCase(city))
+            .filter(e -> category == null || e.getCategory().equalsIgnoreCase(category))
+            .limit(limit)
+            .collect(Collectors.toList());
     }
 
-    // ⭐ Trending
     public List<EventDTO> getTrendingEvents(String city, String category, int limit) {
         return getAllEvents().stream()
                 .filter(e -> city == null || e.getCity().equalsIgnoreCase(city))
@@ -52,23 +54,20 @@ public class EventIntegrationClient {
                 .collect(Collectors.toList());
     }
 
-    // 📅 Calendar view
     public CalenderEventDTO getEventsByCalendar(String month, String city, String category) {
         List<EventDTO> filtered = getAllEvents().stream()
                 .filter(e -> city == null || e.getCity().equalsIgnoreCase(city))
                 .filter(e -> category == null || e.getCategory().equalsIgnoreCase(category))
-                .filter(e -> e.getStartDate().getMonth().name().equalsIgnoreCase(month))
+                .filter(e -> e.getStartDate().withZoneSameInstant(ZoneId.of("Asia/Kolkata")).getMonth().name().equalsIgnoreCase(month))
                 .sorted(Comparator.comparing(EventDTO::getStartDate))
                 .collect(Collectors.toList());
         return new CalenderEventDTO(month, filtered);
     }
 
-    // 🧭 Filter options
     public FilterOptionsDTO getFilters() {
-        return new FilterOptionsDTO(getAllCategories(), getAllCities());
+        return new FilterOptionsDTO(getAllCategories(), getAllCities(), getAllTags());
     }
 
-    // 💡 Suggestions
     public List<String> getSuggestions(String q, String type) {
         if (type != null && type.equalsIgnoreCase("category")) {
             return getAllCategories().stream()
@@ -82,15 +81,12 @@ public class EventIntegrationClient {
         }
     }
 
-    // 🗺️ Map-based events
     public List<EventDTO> getMapEvents(double lat, double lon, double radius, String category, String date) {
-        // Just return filtered mock data (no real geo logic)
         return getAllEvents().stream()
                 .filter(e -> category == null || e.getCategory().equalsIgnoreCase(category))
                 .collect(Collectors.toList());
     }
 
-    // 🆕 Recent events
     public List<EventDTO> getRecentEvents(int limit, String city) {
         return getAllEvents().stream()
                 .filter(e -> city == null || e.getCity().equalsIgnoreCase(city))
@@ -99,12 +95,15 @@ public class EventIntegrationClient {
                 .collect(Collectors.toList());
     }
 
-    // 📂 Categories and Cities
     public List<String> getAllCategories() {
-        return List.of("Music", "Technology", "Art", "Sports");
+        return List.of("Environmental", "Education", "Health", "Animal Welfare", "Community Service");
     }
 
     public List<String> getAllCities() {
-        return List.of("Delhi", "Mumbai", "Bangalore", "Pune");
+        return List.of("Mumbai", "Delhi", "Bangalore", "Pune", "Hyderabad", "Chennai");
+    }
+
+    public List<String> getAllTags() {
+        return List.of("Cleanup", "Awareness", "Teaching", "Fundraising", "Medical Aid", "Shelter");
     }
 }
