@@ -51,4 +51,8 @@ public class SearchService {
     public List<EventDTO> getRecentEvents(int limit, String city) {
         return eventServiceClient.getRecentEvents(limit, city);
     }
+
+    public List<EventDTO> getPersonalizedEvents(String userId, int limit, String basedOn) {
+        return authServiceClient.getUserInterests(userId, limit, basedOn);
+    }
 }
