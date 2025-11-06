@@ -3,7 +3,8 @@ package com.eventix.search.integration;
 import org.springframework.stereotype.Component;
 import com.eventix.search.dto.EventDTO;
 
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -11,36 +12,49 @@ import java.util.stream.Collectors;
 public class BookingIntegrationClient {
 
     public Map<String, Integer> getTrendingEventStats() {
-        // Mock popularity data (eventId → bookings count)
         return Map.of(
-            "E101", 240,
-            "E102", 310,
-            "E103", 120
+            "EVT101", 340,
+            "EVT102", 295,
+            "EVT103", 180,
+            "EVT104", 410,
+            "EVT105", 260
         );
     }
 
     public Map<String, Double> getCategoryPopularityStats() {
         return Map.of(
-            "Music", 78.5,
-            "Technology", 92.3,
-            "Sports", 60.2
+            "Environmental", 91.2,
+            "Education", 84.7,
+            "Health", 78.9,
+            "Animal Welfare", 72.3,
+            "Community Service", 88.1
         );
     }
 
-    // ✅ Mock event list for demonstration
+    ZoneId zone = ZoneId.of("Asia/Kolkata");
+
     private final List<EventDTO> mockEvents = List.of(
-        new EventDTO("E101", "Music Fiesta", "Music", "Delhi", "Central Park",
-                LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(2).plusHours(3),
-                "ORG123", 85.0),
-        new EventDTO("E102", "Tech Expo 2025", "Technology", "Bangalore", "Tech Park",
-                LocalDateTime.now().plusDays(5), LocalDateTime.now().plusDays(5).plusHours(8),
-                "ORG456", 92.5),
-        new EventDTO("E103", "Sports Gala", "Sports", "Mumbai", "National Stadium",
-                LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(3).plusHours(4),
-                "ORG789", 76.0)
+        new EventDTO("EVT101", "Beach Cleanup Drive", "Environmental", "Mumbai", "Juhu Beach",
+        ZonedDateTime.now(zone).plusDays(2), ZonedDateTime.now(zone).plusDays(2).plusHours(3),
+                "ORG001", 95.0),
+
+        new EventDTO("EVT102", "Tree Plantation Marathon", "Environmental", "Pune", "Aundh Park",
+        ZonedDateTime.now(zone).plusDays(3), ZonedDateTime.now(zone).plusDays(3).plusHours(4),
+                "ORG002", 89.0),
+
+        new EventDTO("EVT103", "Community Health Camp", "Health", "Delhi", "Nehru Nagar Center",
+        ZonedDateTime.now(zone).plusDays(5), ZonedDateTime.now(zone).plusDays(5).plusHours(6),
+                "ORG003", 92.0),
+
+        new EventDTO("EVT104", "Animal Shelter Volunteering", "Animal Welfare", "Bangalore", "JP Nagar Shelter",
+        ZonedDateTime.now(zone).plusDays(7), ZonedDateTime.now(zone).plusDays(7).plusHours(5),
+                "ORG004", 87.5),
+                
+        new EventDTO("EVT105", "Weekend Teaching Program", "Education", "Hyderabad", "Secunderabad Community School",
+                ZonedDateTime.now(zone).plusDays(10), ZonedDateTime.now(zone).plusDays(10).plusHours(4),
+                "ORG005", 90.0)
     );
 
-    // ✅ This is the method SearchService expects
     public List<EventDTO> getTrendingEvents(String city, String category, int limit) {
         Map<String, Integer> popularity = getTrendingEventStats();
 
