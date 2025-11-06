@@ -12,4 +12,5 @@ import java.util.List;
 public class FilterOptionsDTO {
     private List<String> categories;
     private List<String> cities;
+    private List<String> tags;
 }
