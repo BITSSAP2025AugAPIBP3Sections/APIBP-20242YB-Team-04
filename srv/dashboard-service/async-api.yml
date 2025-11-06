@@ -1,0 +1,109 @@
+asyncapi: 2.6.0
+info:
+  title: Organizer Utility Service - Notification Consumer
+  version: 1.0.0
+  description: |
+    Asynchronous messaging specification for the notification consumer functionality.
+    
+    This service listens to a RabbitMQ queue for booking notification messages
+    published by the booking-service. When a message is received, the service
+    automatically sends a confirmation email to the user via SendGrid.
+    
+    **Queue:** booking.notifications.q
+    **Protocol:** AMQP
+    **Port:** 5672
+
+servers:
+  development:
+    url: localhost:5672
+    protocol: amqp
+    description: Local RabbitMQ server
+    variables:
+      username:
+        default: guest
+        description: RabbitMQ username
+      password:
+        default: guest
+        description: RabbitMQ password
+
+  production:
+    url: rabbitmq.eventix.com:5672
+    protocol: amqp
+    description: Production RabbitMQ server
+
+channels:
+  booking.notifications.q:
+    description: |
+      Queue for booking notification messages from booking-service.
+      
+      **Purpose:** When a booking is confirmed, the booking-service publishes
+      a message to this queue. The organizer-utility-service consumes these
+      messages and sends confirmation emails to users.
+      
+      **Durability:** Queue is durable (survives broker restarts)
+      **Consumer:** organizer-utility-service (NotificationConsumer.java)
+      **Producer:** booking-service
+
+    subscribe:
+      summary: Consume booking notification messages
+      description: |
+        The service listens to this queue using @RabbitListener annotation.
+        When a message arrives:
+        1. Spring automatically deserializes JSON to NotificationMessage object
+        2. NotificationConsumer.handleMessage() is triggered
+        3. EmailService sends confirmation email via SendGrid
+        4. If successful, message is acknowledged and removed from queue
+        5. If failed, exception is thrown and message is requeued for retry
+      operationId: handleBookingNotification
+      message:
+        $ref: '#/components/messages/NotificationMessage'
+
+components:
+  messages:
+    NotificationMessage:
+      name: NotificationMessage
+      title: Booking Notification Message
+      summary: Message sent when a booking is created or confirmed
+      contentType: application/json
+      payload:
+        type: object
+        required:
+          - userEmail
+          - userName
+          - eventName
+          - bookingId
+        properties:
+          userEmail:
+            type: string
+            format: email
+            description: User's email address for sending the confirmation
+            example: jane.smith@example.com
+          userName:
+            type: string
+            description: User's full name (used in email greeting)
+            example: Jane Smith
+          eventName:
+            type: string
+            description: Name of the event that was booked
+            example: Advanced Java Programming Workshop
+          bookingId:
+            type: string
+            description: Unique booking identifier (displayed in confirmation email)
+            pattern: '^booking-[a-zA-Z0-9-]+$'
+            example: booking-xyz-789
+      examples:
+        - name: standardBooking
+          summary: Standard booking confirmation
+          payload:
+            userEmail: user@example.com
+            userName: Test User
+            eventName: Spring Boot Masterclass
+            bookingId: booking-test-001
+        - name: realWorldBooking
+          summary: Real-world booking example
+          payload:
+            userEmail: john.doe@company.com
+            userName: John Doe
+            eventName: Microservices Architecture Workshop 2025
+            bookingId: booking-2025-11-06-001
+

@@ -1,0 +1,233 @@
+openapi: 3.0.3
+info:
+  title: Organizer Utility Service API
+  description: |
+    Dual-purpose microservice providing:
+    1. **Dashboard API** - Aggregates statistics from booking-service and event-service for organizer dashboards
+    2. **Notification Consumer** - Consumes RabbitMQ messages for sending email notifications (documented in async-api.yml)
+    
+    This service runs on port 8082 and provides REST endpoints for dashboard functionality
+    and asynchronously processes booking notifications via RabbitMQ.
+  version: 1.0.0
+  contact:
+    name: Eventix Team
+    email: support@eventix.com
+
+servers:
+  - url: http://localhost:8082
+    description: Local development server
+  - url: https://api.eventix.com/organizer-utility
+    description: Production server (update as needed)
+
+tags:
+  - name: Dashboard
+    description: Organizer dashboard statistics endpoints
+  - name: Test
+    description: Testing and debugging endpoints (development only)
+
+paths:
+  /api/dashboard/organizer/{organizerId}/stats:
+    get:
+      tags:
+        - Dashboard
+      summary: Get organizer dashboard statistics
+      description: |
+        Retrieves aggregated statistics for an event organizer by making HTTP calls to:
+        - **Booking Service** (localhost:8080) - Gets booking counts, revenue, and attendee data
+        - **Event Service** (localhost:8081) - Gets event counts and published status
+        
+        The service combines both responses into a single unified response.
+      operationId: getDashboardStats
+      parameters:
+        - name: organizerId
+          in: path
+          required: true
+          description: Unique identifier of the event organizer
+          schema:
+            type: string
+          example: org-123
+      responses:
+        '200':
+          description: Successfully retrieved dashboard statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardStatsDTO'
+              examples:
+                successful:
+                  summary: Successful response with statistics
+                  value:
+                    totalEvents: 8
+                    publishedEvents: 6
+                    totalBookings: 150
+                    confirmedAttendees: 135
+                    totalRevenue: 45000.00
+                emptyStats:
+                  summary: Organizer with no data
+                  value:
+                    totalEvents: 0
+                    publishedEvents: 0
+                    totalBookings: 0
+                    confirmedAttendees: 0
+                    totalRevenue: 0.00
+        '503':
+          description: Service Unavailable - One or both dependent services (booking/event) are down
+          content:
+            application/json:
+              schema:
+                type: object
+                nullable: true
+              example: null
+
+  /api/dashboard/health:
+    get:
+      tags:
+        - Dashboard
+      summary: Dashboard API health check
+      description: Returns the health status of the dashboard API
+      operationId: dashboardHealth
+      responses:
+        '200':
+          description: Dashboard API is running
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Dashboard API is running!
+
+  /api/test/send-notification:
+    post:
+      tags:
+        - Test
+      summary: Send test notification email
+      description: |
+        Manually trigger a test notification email by publishing a message to the RabbitMQ queue.
+        This is useful for testing the notification flow without needing the booking service.
+        
+        **Note:** This endpoint requires:
+        - RabbitMQ running on localhost:5672
+        - SendGrid API key configured
+        - Verified sender email in SendGrid
+      operationId: sendTestNotification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationMessage'
+            examples:
+              testBooking:
+                summary: Test booking confirmation
+                value:
+                  userEmail: test@example.com
+                  userName: John Doe
+                  eventName: Spring Boot Workshop
+                  bookingId: test-booking-123
+              realScenario:
+                summary: Realistic booking scenario
+                value:
+                  userEmail: jane.smith@example.com
+                  userName: Jane Smith
+                  eventName: Advanced Java Programming Masterclass
+                  bookingId: booking-2025-001
+      responses:
+        '200':
+          description: Test notification sent successfully to queue
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                success:
+                  value: "✅ Test message sent to queue: NotificationMessage[userEmail=test@example.com, userName=John Doe, eventName=Spring Boot Workshop, bookingId=test-booking-123]"
+        '500':
+          description: Failed to send message to queue
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                failure:
+                  value: "❌ Failed to send message: Connection refused"
+
+  /api/test/health:
+    get:
+      tags:
+        - Test
+      summary: Service health check
+      description: Returns the health status of the notification service
+      operationId: testHealth
+      responses:
+        '200':
+          description: Service is running
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Notification Service is running!
+
+components:
+  schemas:
+    DashboardStatsDTO:
+      type: object
+      description: Aggregated dashboard statistics for an event organizer
+      required:
+        - totalEvents
+        - publishedEvents
+        - totalBookings
+        - confirmedAttendees
+        - totalRevenue
+      properties:
+        totalEvents:
+          type: integer
+          format: int64
+          description: Total number of events created by the organizer
+          example: 8
+        publishedEvents:
+          type: integer
+          format: int64
+          description: Number of events that are currently published and visible
+          example: 6
+        totalBookings:
+          type: integer
+          format: int64
+          description: Total number of bookings across all events
+          example: 150
+        confirmedAttendees:
+          type: integer
+          format: int64
+          description: Number of attendees who confirmed their booking
+          example: 135
+        totalRevenue:
+          type: number
+          format: decimal
+          description: Total revenue generated from all bookings (in currency units)
+          example: 45000.00
+
+    NotificationMessage:
+      type: object
+      description: Message structure for booking notification emails
+      required:
+        - userEmail
+        - userName
+        - eventName
+        - bookingId
+      properties:
+        userEmail:
+          type: string
+          format: email
+          description: Email address of the user who made the booking
+          example: john.doe@example.com
+        userName:
+          type: string
+          description: Full name of the user
+          example: John Doe
+        eventName:
+          type: string
+          description: Name of the event that was booked
+          example: Spring Boot Workshop 2024
+        bookingId:
+          type: string
+          description: Unique identifier for the booking
+          example: booking-abc-123
+
