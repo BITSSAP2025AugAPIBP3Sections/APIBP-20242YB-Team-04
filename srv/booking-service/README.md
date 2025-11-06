@@ -40,4 +40,4 @@ mvn -U -DskipTests package
 java -jar target/booking-service-1.0.0.jar
 
 ## Service will be available at:
-http://localhost:8080
+http://localhost:8082
