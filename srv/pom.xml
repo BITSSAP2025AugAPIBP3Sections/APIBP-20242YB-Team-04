@@ -8,12 +8,12 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>srv/booking-service</module>
-    <module>srv/event-service</module>
-    <module>srv/user-service</module>
-    <module>srv/dashboard-service</module>
-    <module>srv/search</module>
-    <module>srv/aggregator</module>
+    <module>booking-service</module>
+    <module>event-service</module>
+    <module>user-service</module>
+    <module>dashboard-service</module>
+    <module>search</module>
+    <module>aggregator</module>
   </modules>
 
   <build>
