@@ -136,3 +136,42 @@ Triggered by events from other services (via message broker):
 | `/dashboard/attendees/{eventId}` | GET | Lists all attendees for a specific event |
 
 ---
+
+## Project Setup
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/<your-repo>/event-management-microservices.git
+cd event-management-microservices
+```
+### 2. Build the Project
+```bash
+cd srv
+mvn clean install
+```
+### 3. Run All Services Together
+
+You can use the included **run.sh** script to start all microservices automatically.
+
+##### 1. Make the Script Executable
+```bash
+chmod +x run.sh
+```
+##### 2. Run the Script
+```bash
+./run.sh
+```
+This will start:
+
+- User Service → http://localhost:8081
+- Booking Service → http://localhost:8082
+- Event Service → http://localhost:8083
+- Search Service → http://localhost:8084
+- Dashboard Service → http://localhost:8085
+- Aggregator (Gateway) → http://localhost:8080
+
+After ~10 seconds, visit:
+
+-http://localhost:8080/swagger-ui.html
+
+to access the unified Swagger interface for all microservices.
