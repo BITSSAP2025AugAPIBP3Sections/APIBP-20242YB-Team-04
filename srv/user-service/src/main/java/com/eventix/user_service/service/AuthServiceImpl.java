@@ -2,6 +2,9 @@ package com.eventix.user_service.service;
 
 import com.eventix.user_service.dto.LoginDTO;
 import com.eventix.user_service.dto.JwtResponseDTO;
+import com.eventix.user_service.exception.NotFoundException;
+import com.eventix.user_service.exception.UnauthorizedException;
+import com.eventix.user_service.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +16,14 @@ public class AuthServiceImpl implements AuthService {
     public JwtResponseDTO login(LoginDTO loginDTO) {
         // 1. Find user by email
         var userOpt = userRepository.findByEmail(loginDTO.getEmail());
-        if (userOpt.isEmpty()) return null;
+        if (userOpt.isEmpty()) {
+            throw new NotFoundException("User not found with email: " + loginDTO.getEmail());
+        }
         var user = userOpt.get();
         // 2. Check password (should hash and compare, here plain for demo)
-        if (!user.getPassword().equals(loginDTO.getPassword())) return null;
+        if (!user.getPassword().equals(loginDTO.getPassword())) {
+            throw new UnauthorizedException("Invalid credentials");
+        }
         // 3. Generate JWT and refresh token
         java.util.Map<String, Object> claims = new java.util.HashMap<>();
         claims.put("userId", user.getId());
@@ -34,7 +41,9 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public JwtResponseDTO refreshToken(String refreshToken) {
         // For demo: accept any non-empty refresh token
-        if (refreshToken == null || refreshToken.isEmpty()) return null;
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            throw new BadRequestException("Refresh token is required");
+        }
         // In production, validate refresh token and get user info
         // Here, just return a dummy token for demonstration
         // You would typically look up the user by refresh token
@@ -53,8 +62,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void sendForgotPassword(String email) {
         // 1. Find user by email
-    var userOpt = userRepository.findByEmail(email);
-    if (userOpt.isEmpty()) return;
+        var userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) {
+            throw new NotFoundException("User not found with email: " + email);
+        }
         // 2. Generate reset token (UUID for demo)
         String resetToken = java.util.UUID.randomUUID().toString();
         // 3. Log the token (in production, send email)

@@ -49,6 +49,17 @@ public class EventController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Get events by organizer", description = "Fetch all events created by a specific organizer.")
+    @GetMapping("/organizer/{organizerId}")
+    public ResponseEntity<Page<EventResponse>> getByOrganizer(
+            @PathVariable String organizerId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<EventResponse> events = service.getEventsByOrganizer(organizerId, page, size);
+        return ResponseEntity.ok(events);
+    }
+
     @Operation(summary = "Search events", description = "Search events by filters like city, category, date range, and organizer.")
     @GetMapping("/search")
     public ResponseEntity<Page<EventResponse>> search(

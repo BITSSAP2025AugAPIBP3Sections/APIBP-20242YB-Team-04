@@ -1,7 +1,9 @@
 package com.eventix.eventservice.service;
 
+import com.eventix.eventservice.config.UserServiceClient;
 import com.eventix.eventservice.dto.EventRequest;
 import com.eventix.eventservice.dto.EventResponse;
+import com.eventix.eventservice.exception.BadRequestException;
 import com.eventix.eventservice.exception.NotFoundException;
 import com.eventix.eventservice.model.Event;
 import com.eventix.eventservice.model.EventStatus;
@@ -22,6 +24,9 @@ public class EventService {
 
     @Autowired
     private EventRepository repository;
+
+    @Autowired
+    private UserServiceClient userServiceClient;
 
     private final Function<Event, EventResponse> toDto = e -> {
         EventResponse r = new EventResponse();
@@ -44,6 +49,20 @@ public class EventService {
 
     @Transactional
     public EventResponse createEvent(EventRequest req) {
+        // Validate date/time logic
+        if (req.getEndTime().isBefore(req.getStartTime())) {
+            throw new BadRequestException("End time must be after start time");
+        }
+        
+        if (req.getStartTime().isBefore(ZonedDateTime.now())) {
+            throw new BadRequestException("Start time cannot be in the past");
+        }
+        
+        // Validate that the organizer exists in User Service
+        if (!userServiceClient.validateUser(req.getOrganizerId())) {
+            throw new BadRequestException("Invalid organizer ID: " + req.getOrganizerId());
+        }
+        
         Event e = new Event();
         e.setTitle(req.getTitle());
         e.setDescription(req.getDescription());
@@ -93,6 +112,14 @@ public class EventService {
     public void deleteEvent(UUID id) {
         Event e = repository.findById(id).orElseThrow(() -> new NotFoundException("Event not found: " + id));
         repository.delete(e);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<EventResponse> getEventsByOrganizer(String organizerId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "startTime"));
+        Specification<Event> spec = EventSpecification.hasOrganizer(organizerId);
+        Page<Event> events = repository.findAll(spec, pageable);
+        return events.map(toDto);
     }
 
     @Transactional(readOnly = true)
