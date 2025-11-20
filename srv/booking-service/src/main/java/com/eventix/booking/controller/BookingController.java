@@ -92,6 +92,30 @@ public class BookingController {
         return ResponseEntity.ok(results);
     }
 
+    @Operation(summary = "Get bookings by event IDs", description = "Fetch bookings for one or more event IDs")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Bookings retrieved successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request parameters")
+    })
+    @GetMapping("/by-events")
+    public ResponseEntity<?> getBookingsByEventIds(
+            @Parameter(description = "Single event ID to filter bookings", required = false)
+            @RequestParam(name = "eventId", required = false) String eventId,
+            @Parameter(description = "Multiple event IDs to filter bookings (comma-separated)", required = false)
+            @RequestParam(name = "eventIds", required = false) List<String> eventIds) {
+
+        if (eventId != null && !eventId.isBlank()) {
+            List<Booking> results = svc.getBookingsByEventId(eventId);
+            return ResponseEntity.ok(results);
+        } else if (eventIds != null && !eventIds.isEmpty()) {
+            List<Booking> results = svc.getBookingsByEventIds(eventIds);
+            return ResponseEntity.ok(results);
+        } else {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Either eventId or eventIds parameter is required"));
+        }
+    }
+
     @Operation(summary = "Get booking statistics")
     @GetMapping("/stats")
     public ResponseEntity<Map<String, Object>> getStats() {
