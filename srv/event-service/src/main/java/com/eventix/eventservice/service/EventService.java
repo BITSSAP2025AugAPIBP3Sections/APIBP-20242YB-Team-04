@@ -106,6 +106,14 @@ public class EventService {
     }
 
     @Transactional(readOnly = true)
+    public Page<EventResponse> getEventsByOrganizer(String organizerId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "startTime"));
+        Specification<Event> spec = EventSpecification.hasOrganizer(organizerId);
+        Page<Event> events = repository.findAll(spec, pageable);
+        return events.map(toDto);
+    }
+
+    @Transactional(readOnly = true)
     public Page<EventResponse> search(
             String city,
             String category,
