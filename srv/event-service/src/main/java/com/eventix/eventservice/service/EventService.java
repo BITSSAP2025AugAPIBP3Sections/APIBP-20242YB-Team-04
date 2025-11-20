@@ -59,9 +59,10 @@ public class EventService {
         }
         
         // Validate that the organizer exists in User Service
-        if (!userServiceClient.validateUser(req.getOrganizerId())) {
-            throw new BadRequestException("Invalid organizer ID: " + req.getOrganizerId());
-        }
+        // TODO: Re-enable when user service is properly integrated
+        // if (!userServiceClient.validateUser(req.getOrganizerId())) {
+        //     throw new BadRequestException("Invalid organizer ID: " + req.getOrganizerId());
+        // }
         
         Event e = new Event();
         e.setTitle(req.getTitle());

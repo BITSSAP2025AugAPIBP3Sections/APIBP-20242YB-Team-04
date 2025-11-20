@@ -3,12 +3,12 @@ spring.application.name=event-service
 # ===============================
 # = SERVER CONFIGURATION
 # ===============================
-server.port=8083
+server.port=8080
 
 # ===============================
-# = H2 DATABASE CONFIGURATION (FILE-BASED FOR PERSISTENCE)
+# = H2 DATABASE CONFIGURATION
 # ===============================
-spring.datasource.url=jdbc:h2:file:./data/eventdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL
+spring.datasource.url=jdbc:h2:mem:eventdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL
 spring.datasource.driver-class-name=org.h2.Driver
 spring.datasource.username=sa
 spring.datasource.password=
