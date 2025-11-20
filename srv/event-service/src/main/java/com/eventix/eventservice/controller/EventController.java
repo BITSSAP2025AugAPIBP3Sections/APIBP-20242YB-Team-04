@@ -65,6 +65,7 @@ public class EventController {
         return ResponseEntity.ok(p);
     }
 
+    @Operation(hidden = true)
     @GetMapping("/map")
     public ResponseEntity<List<EventResponse>> mapEvents(
             @RequestParam double lat,
@@ -76,6 +77,7 @@ public class EventController {
         return ResponseEntity.ok(service.getMapEvents(lat, lon, radius, category, date));
     }
 
+    @Operation(hidden = true)
     @GetMapping("/recent")
     public ResponseEntity<List<EventResponse>> recentEvents(
             @RequestParam(defaultValue = "20") int limit,
@@ -84,6 +86,7 @@ public class EventController {
         return ResponseEntity.ok(service.getRecentEvents(limit, city));
     }
 
+    @Operation(hidden = true)
     @GetMapping("/calendar")
     public ResponseEntity<?> calendarEvents(
             @RequestParam String month,
@@ -98,6 +101,7 @@ public class EventController {
         return ResponseEntity.ok(service.getFilterOptions());
     }
 
+    @Operation(hidden = true)
     @GetMapping("/suggestions")
     public ResponseEntity<List<String>> suggestions(
             @RequestParam String q,
