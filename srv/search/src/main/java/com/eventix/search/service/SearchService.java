@@ -17,9 +17,12 @@ import java.util.List;
 public class SearchService {
 
     private final EventIntegrationClient eventServiceClient;
-    private final BookingIntegrationClient bookingServiceClient;
+    private final BookingIntegrationClient bookingServiceClient; // read-only: provides trending/popularity info
     private final AuthIntegrationClient authServiceClient;
 
+    /**
+     * Main search endpoint - delegates to event service
+     */
     public SearchResponseDTO searchEvents(String q, String city, String category,
                                           String startDate, String endDate,
                                           String sortBy, int page, int limit) {
@@ -27,6 +30,10 @@ public class SearchService {
         return new SearchResponseDTO(events);
     }
 
+    /**
+     * Trending/popular events — uses booking-service statistics (READ only).
+     * Search service should NOT create bookings; bookingServiceClient provides analytics only.
+     */
     public List<EventDTO> getTrendingEvents(String city, String category, int limit) {
         return bookingServiceClient.getTrendingEvents(city, category, limit);
     }
