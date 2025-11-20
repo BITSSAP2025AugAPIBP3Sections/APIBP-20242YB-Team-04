@@ -1,5 +1,6 @@
 package com.eventix.search.config;
 
+import com.eventix.search.config.JwtFilter; // adjust package if JwtFilter placed elsewhere
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -23,22 +24,27 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                // public search endpoints
+                // PUBLIC (permit all)
                 .requestMatchers(
                     "/api/v1/events/search",
                     "/api/v1/events/map",
                     "/api/v1/events/recent",
                     "/api/v1/events/filters",
                     "/api/v1/events/suggestions",
-                    "/api/v1/events/calendar"
+                    "/api/v1/events/calendar",
+                    "/api/v1/search/**",
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html",
+                    "/api-specs/**",
+                    "/openapi.yaml"
                 ).permitAll()
-                // personalized requires authentication
+                // AUTHENTICATED (explicit)
                 .requestMatchers("/graphql").authenticated()
-                // everything else: authenticated by default
+                // fallback: everything else requires authentication
                 .anyRequest().authenticated()
             )
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            // add your JwtFilter before UsernamePasswordAuthenticationFilter
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
