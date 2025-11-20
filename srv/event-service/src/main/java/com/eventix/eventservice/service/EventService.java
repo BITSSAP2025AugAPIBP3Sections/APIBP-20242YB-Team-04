@@ -49,6 +49,15 @@ public class EventService {
 
     @Transactional
     public EventResponse createEvent(EventRequest req) {
+        // Validate date/time logic
+        if (req.getEndTime().isBefore(req.getStartTime())) {
+            throw new BadRequestException("End time must be after start time");
+        }
+        
+        if (req.getStartTime().isBefore(ZonedDateTime.now())) {
+            throw new BadRequestException("Start time cannot be in the past");
+        }
+        
         // Validate that the organizer exists in User Service
         if (!userServiceClient.validateUser(req.getOrganizerId())) {
             throw new BadRequestException("Invalid organizer ID: " + req.getOrganizerId());
