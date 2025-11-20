@@ -65,4 +65,22 @@ public class UserController {
         );
         return ResponseEntity.ok(user);
     }
+
+    @GetMapping("/validate/{userId}")
+    public ResponseEntity<Boolean> validateUser(@PathVariable Long userId) {
+        boolean exists = userService.getUserById(userId).isPresent();
+        return ResponseEntity.ok(exists);
+    }
+
+    @GetMapping("/details/{userId}")
+    public ResponseEntity<java.util.Map<String, String>> getUserDetails(@PathVariable Long userId) {
+        User user = userService.getUserById(userId).orElseThrow(
+            () -> new NotFoundException("User not found with id: " + userId)
+        );
+        java.util.Map<String, String> details = new java.util.HashMap<>();
+        details.put("id", user.getId().toString());
+        details.put("name", user.getName());
+        details.put("email", user.getEmail());
+        return ResponseEntity.ok(details);
+    }
 }

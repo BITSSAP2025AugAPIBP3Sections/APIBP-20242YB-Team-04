@@ -1,7 +1,9 @@
 package com.eventix.eventservice.service;
 
+import com.eventix.eventservice.config.UserServiceClient;
 import com.eventix.eventservice.dto.EventRequest;
 import com.eventix.eventservice.dto.EventResponse;
+import com.eventix.eventservice.exception.BadRequestException;
 import com.eventix.eventservice.exception.NotFoundException;
 import com.eventix.eventservice.model.Event;
 import com.eventix.eventservice.model.EventStatus;
@@ -22,6 +24,9 @@ public class EventService {
 
     @Autowired
     private EventRepository repository;
+
+    @Autowired
+    private UserServiceClient userServiceClient;
 
     private final Function<Event, EventResponse> toDto = e -> {
         EventResponse r = new EventResponse();
@@ -44,6 +49,11 @@ public class EventService {
 
     @Transactional
     public EventResponse createEvent(EventRequest req) {
+        // Validate that the organizer exists in User Service
+        if (!userServiceClient.validateUser(req.getOrganizerId())) {
+            throw new BadRequestException("Invalid organizer ID: " + req.getOrganizerId());
+        }
+        
         Event e = new Event();
         e.setTitle(req.getTitle());
         e.setDescription(req.getDescription());
