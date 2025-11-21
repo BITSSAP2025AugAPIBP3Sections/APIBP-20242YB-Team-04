@@ -65,9 +65,11 @@ public class BookingService {
         return repository.findAll();
     }
 
-    public List<Booking> findAll() {
-        return repository.findAll();
-    }
+public List<Booking> findAll() {
+    return repository.findAll().stream()
+        .filter(b -> b.getEventId() != null && b.getUserId() != null)
+        .toList();
+}
     public List<Booking> getBookingsByUser(String userId) {
         return repository.findByUserId(userId);
     }

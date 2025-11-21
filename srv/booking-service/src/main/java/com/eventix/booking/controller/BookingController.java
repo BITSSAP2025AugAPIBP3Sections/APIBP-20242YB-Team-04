@@ -74,7 +74,7 @@ public class BookingController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getBooking(
             @Parameter(description = "Booking ID to retrieve", required = true)
-            @PathVariable String id) {
+            @PathVariable("id") String id) {
         return svc.getBooking(id)
                 .<ResponseEntity<?>>map(ResponseEntity::ok)
                 .orElseGet(() ->
@@ -148,22 +148,17 @@ public class BookingController {
             @ApiResponse(responseCode = "500", description = "Failed to delete booking")
     })
     @DeleteMapping("/{id}")
-public ResponseEntity<?> deleteBooking(@PathVariable String id, HttpServletRequest req) {
-
-    String role = (String) req.getAttribute("role");
-
-    if (!"ADMIN".equals(role) && !"ORGANIZER".equals(role)) {
-        return ResponseEntity.status(403)
-                .body(Map.of("error", "You do not have permission to delete bookings"));
-    }
-
-    try {
-        svc.deleteBooking(id);
-        return ResponseEntity.noContent().build();
-    } catch (NoSuchElementException e) {
-        return ResponseEntity.status(404)
-                .body(Map.of("error", "Booking not found", "id", id));
-    }
-}
+    public ResponseEntity<?> deleteBooking(@PathVariable("id") String id) {
+        try {
+            svc.deleteBooking(id);
+            return ResponseEntity.noContent().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(404)
+                    .body(Map.of("error", "Booking not found", "id", id));
+        } catch (Exception e) {
+            return ResponseEntity.status(500)
+                    .body(Map.of("error", "Failed to delete booking", "details", e.getMessage()));
+        }
+    } 
 
 }
