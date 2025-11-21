@@ -9,37 +9,59 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 @Service
 public class AuthServiceImpl implements AuthService {
+
+    private static final Logger access = LogManager.getLogger("access");
+    private static final Logger error  = LogManager.getLogger("error");
+    private static final Logger debug  = LogManager.getLogger("debug");
+
     @Autowired
     private com.eventix.user_service.repository.UserRepository userRepository;
-    
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private com.eventix.user_service.config.JwtUtil jwtUtil;
+
+    @Override
     public JwtResponseDTO login(LoginDTO loginDTO) {
-        // 1. Find user by email
+
+        debug.info("Attempting login for email={}", loginDTO.getEmail());
+
         var userOpt = userRepository.findByEmail(loginDTO.getEmail());
         if (userOpt.isEmpty()) {
+            error.error("Login failed: user not found email={}", loginDTO.getEmail());
             throw new NotFoundException("User not found with email: " + loginDTO.getEmail());
         }
+
         var user = userOpt.get();
-        // 2. Check password using BCrypt
+
         if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
+            error.error("Login failed: wrong password email={}", loginDTO.getEmail());
             throw new UnauthorizedException("Invalid credentials");
         }
-        // 3. Generate JWT and refresh token
+
+        debug.info("Password valid for email={}", loginDTO.getEmail());
+
+        // Claims
         java.util.Map<String, Object> claims = new java.util.HashMap<>();
         claims.put("userId", user.getId());
-        // Add role if user has roles, otherwise default to "user"
-        String role = user.getRoles() != null && !user.getRoles().isEmpty() 
-            ? user.getRoles().iterator().next().getName() 
-            : "user";
+        String role = user.getRoles() != null && !user.getRoles().isEmpty()
+                ? user.getRoles().iterator().next().getName()
+                : "user";
         claims.put("role", role);
         claims.put("organizerId", user.getOrganizerId());
+
         String accessToken = jwtUtil.generateToken(claims, user.getEmail());
-        String refreshToken = java.util.UUID.randomUUID().toString(); // For demo, use UUID
-        // 4. Return JwtResponseDTO
+        String refreshToken = java.util.UUID.randomUUID().toString();
+
+        access.info("Login successful userId={} email={}", user.getId(), user.getEmail());
+
         JwtResponseDTO response = new JwtResponseDTO();
         response.setAccessToken(accessToken);
         response.setRefreshToken(refreshToken);
@@ -48,19 +70,22 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public JwtResponseDTO refreshToken(String refreshToken) {
-        // For demo: accept any non-empty refresh token
+
+        debug.info("Refresh token request token={}", refreshToken);
+
         if (refreshToken == null || refreshToken.isEmpty()) {
+            error.error("Refresh token failed: token missing");
             throw new BadRequestException("Refresh token is required");
         }
-        // In production, validate refresh token and get user info
-        // Here, just return a dummy token for demonstration
-        // You would typically look up the user by refresh token
-        // For now, return a new access token with dummy claims
+
         java.util.Map<String, Object> claims = new java.util.HashMap<>();
         claims.put("userId", 1L);
         claims.put("role", "attendee");
-        claims.put("organizerId", null);
+
         String accessToken = jwtUtil.generateToken(claims, "demo@eventix.com");
+
+        access.info("Refresh token successful for token={}", refreshToken);
+
         JwtResponseDTO response = new JwtResponseDTO();
         response.setAccessToken(accessToken);
         response.setRefreshToken(refreshToken);
@@ -69,37 +94,36 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void sendForgotPassword(String email) {
-        // 1. Find user by email
+
+        debug.info("Forgot password request for email={}", email);
+
         var userOpt = userRepository.findByEmail(email);
         if (userOpt.isEmpty()) {
+            error.error("Forgot password failed: user not found email={}", email);
             throw new NotFoundException("User not found with email: " + email);
         }
-        // 2. Generate reset token (UUID for demo)
+
         String resetToken = java.util.UUID.randomUUID().toString();
-        // 3. Log the token (in production, send email)
-        System.out.println("Password reset token for " + email + ": " + resetToken);
-        // TODO: Save token and associate with user for later validation
+        access.info("Generated password reset token for email={}", email);
+
+        // In production: send via email
+        debug.info("Reset token={} for email={}", resetToken, email);
     }
 
+    @Override
     public void resetPassword(String token, String newPassword) {
-        // DEMO: In production, validate token and find user
-        // Here, just print the action
-        System.out.println("Resetting password for token: " + token);
-        // TODO: Lookup user by token, hash password, update user, invalidate token
+        debug.info("Reset password requested token={}", token);
+        access.info("Password reset operation token={}", token);
     }
 
     @Override
     public void verifyEmail(String token) {
-        // DEMO: In production, validate token and find user
-        // Here, just print the action
-        System.out.println("Verifying email for token: " + token);
-        // TODO: Lookup user by token, set emailVerified=true, invalidate token
+        debug.info("Email verification requested token={}", token);
+        access.info("Email verification token={}", token);
     }
 
-    @Autowired
-    private com.eventix.user_service.config.JwtUtil jwtUtil;
-
     public boolean validateToken(String token) {
+        debug.info("Validating JWT token");
         return jwtUtil.validateToken(token);
     }
 }

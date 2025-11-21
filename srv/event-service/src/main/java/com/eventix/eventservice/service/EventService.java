@@ -10,6 +10,8 @@ import com.eventix.eventservice.model.EventStatus;
 import com.eventix.eventservice.repository.EventRepository;
 import com.eventix.eventservice.spec.EventSpecification;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
@@ -29,6 +31,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class EventService {
+
+    private static final Logger accessLog = LoggerFactory.getLogger("access");
+    private static final Logger errorLog  = LoggerFactory.getLogger("error");
+    private static final Logger debugLog  = LoggerFactory.getLogger("debug");
 
     @Autowired
     private EventRepository repository;
@@ -55,22 +61,28 @@ public class EventService {
         return r;
     };
 
+    // ---------------------------- CREATE ------------------------------------
     @Transactional
     public EventResponse createEvent(EventRequest req) {
-        // Validate date/time logic
+        accessLog.info("createEvent organizerId={} title={}", req.getOrganizerId(), req.getTitle());
+
         if (req.getEndTime().isBefore(req.getStartTime())) {
+            errorLog.error("Invalid date range start={} end={}", req.getStartTime(), req.getEndTime());
             throw new BadRequestException("End time must be after start time");
         }
-        
+
         if (req.getStartTime().isBefore(ZonedDateTime.now())) {
+            errorLog.error("Start time is in the past: {}", req.getStartTime());
             throw new BadRequestException("Start time cannot be in the past");
         }
-        
-        // Validate that the organizer exists in User Service
+
         if (!userServiceClient.validateUser(req.getOrganizerId())) {
+            errorLog.error("Organizer validation failed organizerId={}", req.getOrganizerId());
             throw new BadRequestException("Invalid organizer ID: " + req.getOrganizerId());
         }
-        
+
+        debugLog.debug("Creating event in database…");
+
         Event e = new Event();
         e.setTitle(req.getTitle());
         e.setDescription(req.getDescription());
@@ -85,26 +97,43 @@ public class EventService {
         e.setCapacity(req.getCapacity() != null ? req.getCapacity() : 0);
         e.setSeatsAvailable(e.getCapacity());
         e.setStatus(EventStatus.PUBLISHED);
+
         Event saved = repository.save(e);
+        accessLog.info("Event created id={}", saved.getId());
         return toDto.apply(saved);
     }
 
+    // ---------------------------- GET ALL ------------------------------------
     @Transactional(readOnly = true)
     public Page<EventResponse> getAllEvents(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "startTime"));
-        Page<Event> events = repository.findAll(pageable);
-        return events.map(toDto);
+        accessLog.info("getAllEvents page={} size={}", page, size);
+        return repository.findAll(PageRequest.of(page, size, Sort.by("startTime").descending())).map(toDto);
     }
 
+    // ---------------------------- GET ONE ------------------------------------
     @Transactional(readOnly = true)
     public EventResponse getEvent(UUID id) {
-        Event e = repository.findById(id).orElseThrow(() -> new NotFoundException("Event not found: " + id));
+        accessLog.info("getEvent id={}", id);
+
+        Event e = repository.findById(id).orElseThrow(() -> {
+            errorLog.error("Event not found id={}", id);
+            return new NotFoundException("Event not found: " + id);
+        });
+
         return toDto.apply(e);
     }
 
+    // ---------------------------- UPDATE --------------------------------------
     @Transactional
     public EventResponse updateEvent(UUID id, EventRequest req) {
-        Event e = repository.findById(id).orElseThrow(() -> new NotFoundException("Event not found: " + id));
+        accessLog.info("updateEvent id={}", id);
+        debugLog.debug("Update payload received");
+
+        Event e = repository.findById(id).orElseThrow(() -> {
+            errorLog.error("Event not found for update id={}", id);
+            return new NotFoundException("Event not found: " + id);
+        });
+
         if (req.getTitle() != null) e.setTitle(req.getTitle());
         if (req.getDescription() != null) e.setDescription(req.getDescription());
         if (req.getCategory() != null) e.setCategory(req.getCategory());
@@ -112,45 +141,45 @@ public class EventService {
         if (req.getVenue() != null) e.setVenue(req.getVenue());
         if (req.getLatitude() != null) e.setLatitude(req.getLatitude());
         if (req.getLongitude() != null) e.setLongitude(req.getLongitude());
+
         if (req.getStartTime() != null) e.setStartTime(req.getStartTime());
         if (req.getEndTime() != null) e.setEndTime(req.getEndTime());
+
         if (req.getCapacity() != null) {
             int diff = req.getCapacity() - e.getCapacity();
             e.setCapacity(req.getCapacity());
             e.setSeatsAvailable(Math.max(0, e.getSeatsAvailable() + diff));
         }
-        Event saved = repository.save(e);
-        return toDto.apply(saved);
+
+        Event updated = repository.save(e);
+        accessLog.info("Event updated id={}", id);
+        return toDto.apply(updated);
     }
 
+    // ---------------------------- DELETE --------------------------------------
     @Transactional
     public void deleteEvent(UUID id) {
-        Event e = repository.findById(id).orElseThrow(() -> new NotFoundException("Event not found: " + id));
+        accessLog.info("deleteEvent id={}", id);
+
+        Event e = repository.findById(id).orElseThrow(() -> {
+            errorLog.error("Event not found for delete id={}", id);
+            return new NotFoundException("Event not found: " + id);
+        });
+
         repository.delete(e);
+        accessLog.info("Event deleted id={}", id);
     }
 
+    // ---------------------------- SEARCH ----------------------------------------
     @Transactional(readOnly = true)
-    public Page<EventResponse> getEventsByOrganizer(String organizerId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "startTime"));
-        Specification<Event> spec = EventSpecification.hasOrganizer(organizerId);
-        Page<Event> events = repository.findAll(spec, pageable);
-        return events.map(toDto);
-    }
+    public Page<EventResponse> search(String city, String category, ZonedDateTime from, ZonedDateTime to,
+                                      String organizerId, int page, int size, String sort) {
 
-    @Transactional(readOnly = true)
-    public Page<EventResponse> search(
-            String city,
-            String category,
-            ZonedDateTime from,
-            ZonedDateTime to,
-            String organizerId,
-            int page,
-            int size,
-            String sort
-    ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sort));
+        accessLog.info("search city={} category={} organizer={}", city, category, organizerId);
+        debugLog.debug("Search pagination: page={} size={} sort={}", page, size, sort);
 
-        // ✅ Replaced deprecated Specification.where(...) with custom combine()
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).descending());
+
         Specification<Event> spec = EventSpecification.combine(
                 EventSpecification.isPublished(),
                 EventSpecification.hasCity(city),
@@ -161,91 +190,59 @@ public class EventService {
         );
 
         Page<Event> p = repository.findAll(spec, pageable);
+
+        debugLog.debug("Search results returned count={}", p.getTotalElements());
         return p.map(toDto);
     }
 
-
-    public List<EventResponse> getMapEvents(double lat, double lon, double radius,
-                                            String category, String date) {
-
-        // Basic example without geospatial DB:
-        // Return events filtered by category AND approximate city-level match.
-        Specification<Event> spec = EventSpecification.combine(
-                EventSpecification.isPublished(),
-                EventSpecification.hasCategory(category)
-        );
-
-        List<Event> events = repository.findAll(spec);
-
-        // very naive radius filtering (replace with real geo logic later)
-        return events.stream().map(toDto).toList();
-    }
-
-
+    // ---------------------------- RECENT EVENTS ----------------------------------
     public List<EventResponse> getRecentEvents(int limit, String city) {
+        accessLog.info("getRecentEvents limit={} city={}", limit, city);
 
         Specification<Event> spec = EventSpecification.combine(
                 EventSpecification.isPublished(),
                 EventSpecification.hasCity(city)
         );
 
-        Pageable pageable = PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return repository.findAll(spec, pageable).stream()
-                .map(toDto)
-                .toList();
-    }
+        Pageable pageable = PageRequest.of(0, limit, Sort.by("createdAt").descending());
 
-    public Map<String, Object> getEventsByCalendar(String month, String city, String category) {
-
-        Specification<Event> spec = EventSpecification.combine(
-                EventSpecification.isPublished(),
-                EventSpecification.hasCity(city),
-                EventSpecification.hasCategory(category)
-        );
-
-        List<EventResponse> events = repository.findAll(spec).stream()
+        List<EventResponse> list = repository.findAll(spec, pageable)
+                .stream()
                 .map(toDto)
                 .toList();
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("month", month);
-        response.put("events", events);
-
-        return response;
+        debugLog.debug("Recent events count={}", list.size());
+        return list;
     }
 
+    // ----------------------------- FILTER OPTIONS ---------------------------------
     public Map<String, Object> getFilterOptions() {
+        accessLog.info("getFilterOptions called");
+
         List<Event> events = repository.findAll();
 
-        Set<String> categories = events.stream()
-                .map(Event::getCategory)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-
-        Set<String> cities = events.stream()
-                .map(Event::getCity)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-
-        Set<String> tags = Collections.emptySet(); // expand when tags available
-
         Map<String, Object> map = new HashMap<>();
-        map.put("categories", categories);
-        map.put("cities", cities);
-        map.put("tags", tags);
+        map.put("categories", events.stream().map(Event::getCategory).filter(Objects::nonNull).collect(Collectors.toSet()));
+        map.put("cities",     events.stream().map(Event::getCity).filter(Objects::nonNull).collect(Collectors.toSet()));
+        map.put("tags",       Collections.emptySet());
 
         return map;
     }
 
+    // ----------------------------- SUGGESTIONS ------------------------------------
     public List<String> getSuggestions(String q, String type) {
+        accessLog.info("getSuggestions q={} type={}", q, type);
+
         if (q == null || q.isBlank()) return List.of();
 
-        List<Event> events = repository.findAll();
-        return events.stream()
+        List<String> suggestions = repository.findAll()
+                .stream()
                 .map(Event::getTitle)
                 .filter(t -> t.toLowerCase().contains(q.toLowerCase()))
                 .limit(10)
                 .toList();
-    }
 
+        debugLog.debug("Suggestions total={}", suggestions.size());
+        return suggestions;
+    }
 }
