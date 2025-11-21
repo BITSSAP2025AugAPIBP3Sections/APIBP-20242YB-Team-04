@@ -17,13 +17,12 @@ import java.util.stream.Collectors;
 public class BookingService {
 
     private final BookingRepository repository;
+    private final NotificationPublisher notificationPublisher;
 
     @Autowired
-    private EventClient eventClient; 
-
-    @Autowired
-    public BookingService(BookingRepository repository) {
+    public BookingService(BookingRepository repository, NotificationPublisher notificationPublisher) {
         this.repository = repository;
+        this.notificationPublisher = notificationPublisher;
     }
 
     // ---------- CRUD & async logic ----------
@@ -37,7 +36,12 @@ public class BookingService {
         
         setDefaults(booking);
         booking.setStatus("CONFIRMED");
-        return repository.save(booking);
+        Booking saved = repository.save(booking);
+
+        // Publish notification to RabbitMQ
+        publishBookingNotification(saved);
+
+        return saved;
     }
 
     @Async
@@ -53,8 +57,12 @@ public class BookingService {
         }
 
         saved.setStatus("CONFIRMED");
-        repository.save(saved);
-        return CompletableFuture.completedFuture(saved);
+        Booking confirmed = repository.save(saved);
+
+        // Publish notification to RabbitMQ after confirmation
+        publishBookingNotification(confirmed);
+
+        return CompletableFuture.completedFuture(confirmed);
     }
 
     public Optional<Booking> getBooking(String id) {
@@ -186,5 +194,26 @@ public class BookingService {
         if (booking.getStatus() == null) {
             booking.setStatus("NEW");
         }
+    }
+
+    /**
+     * Publishes a booking notification to RabbitMQ.
+     * Uses placeholder values for userEmail, userName, and eventName since they're not in the Booking model.
+     * In a real application, you would fetch these from user-service and event-service.
+     */
+    private void publishBookingNotification(Booking booking) {
+        // TODO: In production, fetch actual user email and name from user-service
+        // TODO: In production, fetch actual event name from event-service
+
+        String userEmail = booking.getUserId() != null ? booking.getUserId() + "@example.com" : "user@example.com";
+        String userName = "User " + (booking.getUserId() != null ? booking.getUserId() : "Unknown");
+        String eventName = "Event " + (booking.getEventId() != null ? booking.getEventId() : "Unknown");
+
+        notificationPublisher.publishBookingNotification(
+            userEmail,
+            userName,
+            eventName,
+            booking.getId()
+        );
     }
 }
