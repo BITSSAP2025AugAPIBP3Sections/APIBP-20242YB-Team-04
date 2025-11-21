@@ -1,71 +1,94 @@
 package com.eventix.search.integration;
 
-import org.springframework.stereotype.Component;
 import com.eventix.search.dto.EventDTO;
+import com.eventix.search.exception.ServiceUnavailableException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
+/**
+ * RestTemplate-based Booking integration client with proper exception propagation.
+ *
+ * - ResourceAccessException -> ServiceUnavailableException (maps to 503)
+ * - HttpClientErrorException / HttpServerErrorException -> rethrown (4xx/5xx forwarded)
+ * - Other exceptions -> RuntimeException (becomes 500)
+ */
 @Component
 public class BookingIntegrationClient {
 
+    private final RestTemplate restTemplate;
+    private final String baseUrl;
+    private final ObjectMapper mapper = new ObjectMapper();
+
+    public BookingIntegrationClient(RestTemplate restTemplate,
+                                    @Value("${remote.booking.base-url:http://localhost:8082}") String baseUrl) {
+        this.restTemplate = restTemplate;
+        // normalize baseUrl (no trailing slash)
+        this.baseUrl = (baseUrl != null && baseUrl.endsWith("/")) ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
+    }
+
+    // --------------------------------------------------------------------
+    // 1) Trending Event Stats
+    // --------------------------------------------------------------------
     public Map<String, Integer> getTrendingEventStats() {
-        return Map.of(
-            "EVT101", 340,
-            "EVT102", 295,
-            "EVT103", 180,
-            "EVT104", 410,
-            "EVT105", 260
-        );
+        try {
+            ResponseEntity<Map<String, Integer>> resp =
+                    restTemplate.exchange(
+                            baseUrl + "/api/v1/bookings/trending/stats",
+                            HttpMethod.GET,
+                            null,
+                            new ParameterizedTypeReference<Map<String, Integer>>() {}
+                    );
+
+            return resp.getBody() != null ? resp.getBody() : Map.of();
+
+        } catch (ResourceAccessException ex) {
+            // network/connect/timeout -> downstream unavailable
+            throw new ServiceUnavailableException("Booking service is unavailable.");
+        } catch (HttpClientErrorException | HttpServerErrorException ex) {
+            // forward remote 4xx/5xx to caller
+            throw ex;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
-    public Map<String, Double> getCategoryPopularityStats() {
-        return Map.of(
-            "Environmental", 91.2,
-            "Education", 84.7,
-            "Health", 78.9,
-            "Animal Welfare", 72.3,
-            "Community Service", 88.1
-        );
-    }
-
-    ZoneId zone = ZoneId.of("Asia/Kolkata");
-
-    private final List<EventDTO> mockEvents = List.of(
-        new EventDTO("EVT101", "Beach Cleanup Drive", "Environmental", "Mumbai", "Juhu Beach",
-        ZonedDateTime.now(zone).plusDays(2), ZonedDateTime.now(zone).plusDays(2).plusHours(3),
-                "ORG001", 95.0),
-
-        new EventDTO("EVT102", "Tree Plantation Marathon", "Environmental", "Pune", "Aundh Park",
-        ZonedDateTime.now(zone).plusDays(3), ZonedDateTime.now(zone).plusDays(3).plusHours(4),
-                "ORG002", 89.0),
-
-        new EventDTO("EVT103", "Community Health Camp", "Health", "Delhi", "Nehru Nagar Center",
-        ZonedDateTime.now(zone).plusDays(5), ZonedDateTime.now(zone).plusDays(5).plusHours(6),
-                "ORG003", 92.0),
-
-        new EventDTO("EVT104", "Animal Shelter Volunteering", "Animal Welfare", "Bangalore", "JP Nagar Shelter",
-        ZonedDateTime.now(zone).plusDays(7), ZonedDateTime.now(zone).plusDays(7).plusHours(5),
-                "ORG004", 87.5),
-                
-        new EventDTO("EVT105", "Weekend Teaching Program", "Education", "Hyderabad", "Secunderabad Community School",
-                ZonedDateTime.now(zone).plusDays(10), ZonedDateTime.now(zone).plusDays(10).plusHours(4),
-                "ORG005", 90.0)
-    );
-
+    // --------------------------------------------------------------------
+    // 2) Trending Events (FULL EVENT DTO LIST)
+    // --------------------------------------------------------------------
     public List<EventDTO> getTrendingEvents(String city, String category, int limit) {
-        Map<String, Integer> popularity = getTrendingEventStats();
 
-        return mockEvents.stream()
-                .filter(e -> city == null || e.getCity().equalsIgnoreCase(city))
-                .filter(e -> category == null || e.getCategory().equalsIgnoreCase(category))
-                .sorted((a, b) -> Integer.compare(
-                        popularity.getOrDefault(b.getEventId(), 0),
-                        popularity.getOrDefault(a.getEventId(), 0)
-                ))
-                .limit(limit)
-                .collect(Collectors.toList());
+        UriComponentsBuilder uri = UriComponentsBuilder
+                .fromUriString(baseUrl + "/api/v1/bookings/trending")
+                .queryParam("limit", limit);
+
+        if (city != null) uri.queryParam("city", city);
+        if (category != null) uri.queryParam("category", category);
+
+        try {
+            ResponseEntity<List> resp = restTemplate.getForEntity(uri.toUriString(), List.class);
+
+            if (resp.getBody() == null) return List.of();
+
+            return resp.getBody().stream()
+                    .map(o -> mapper.convertValue(o, EventDTO.class))
+                    .toList();
+
+        } catch (ResourceAccessException ex) {
+            throw new ServiceUnavailableException("Booking service is unavailable.");
+        } catch (HttpClientErrorException | HttpServerErrorException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }
