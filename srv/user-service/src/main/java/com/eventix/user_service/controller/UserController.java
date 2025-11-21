@@ -89,7 +89,7 @@ public class UserController {
         );
         java.util.Map<String, String> details = new java.util.HashMap<>();
         details.put("id", user.getId().toString());
-        details.put("name", user.getName());
+        details.put("name", user.getFullName());
         details.put("email", user.getEmail());
         return ResponseEntity.ok(details);
     }

@@ -28,7 +28,10 @@ public class OrganizerServiceImpl implements OrganizerService {
             com.eventix.user_service.model.User user = new com.eventix.user_service.model.User();
             user.setEmail(dto.getEmail());
             user.setPassword(dto.getPassword()); // TODO: hash password
-            user.setName(dto.getName());
+            // Split name into first and last name
+            String[] nameParts = dto.getName().split(" ", 2);
+            user.setFirstName(nameParts[0]);
+            user.setLastName(nameParts.length > 1 ? nameParts[1] : "");
             user.setEmailVerified(false);
             user.setActive(true);
             user.setOrganizerId(savedOrganizer.getId());
