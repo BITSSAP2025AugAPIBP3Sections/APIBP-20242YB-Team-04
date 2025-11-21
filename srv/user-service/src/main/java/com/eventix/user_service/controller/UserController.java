@@ -9,6 +9,8 @@ import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Refill;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +29,14 @@ public class UserController {
     private final Bucket registrationBucket = Bucket.builder()
         .addLimit(Bandwidth.classic(10, Refill.intervally(10, Duration.ofHours(1))))
         .build();
+
+    @GetMapping
+    public ResponseEntity<Page<User>> getAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<User> users = userService.getAllUsers(PageRequest.of(page, size));
+        return ResponseEntity.ok(users);
+    }
 
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@Valid @RequestBody UserRegistrationDTO dto, HttpServletRequest request) {

@@ -59,10 +59,9 @@ public class EventService {
         }
         
         // Validate that the organizer exists in User Service
-        // TODO: Re-enable when user service is properly integrated
-        // if (!userServiceClient.validateUser(req.getOrganizerId())) {
-        //     throw new BadRequestException("Invalid organizer ID: " + req.getOrganizerId());
-        // }
+        if (!userServiceClient.validateUser(req.getOrganizerId())) {
+            throw new BadRequestException("Invalid organizer ID: " + req.getOrganizerId());
+        }
         
         Event e = new Event();
         e.setTitle(req.getTitle());
@@ -80,6 +79,13 @@ public class EventService {
         e.setStatus(EventStatus.PUBLISHED);
         Event saved = repository.save(e);
         return toDto.apply(saved);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<EventResponse> getAllEvents(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "startTime"));
+        Page<Event> events = repository.findAll(pageable);
+        return events.map(toDto);
     }
 
     @Transactional(readOnly = true)

@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ApiError> handleBadRequest(BadRequestException ex, HttpServletRequest req) {
         String id = newErrorId();
-        String message = "The request is invalid. Review the parameters and try again.";
+        String message = ex.getMessage(); // Use the actual exception message
         ApiError a = buildApiError(HttpStatus.BAD_REQUEST, message, req.getRequestURI(), id);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(a);
     }
