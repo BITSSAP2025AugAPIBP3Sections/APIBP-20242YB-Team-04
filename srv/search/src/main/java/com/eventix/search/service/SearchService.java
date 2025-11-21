@@ -8,6 +8,8 @@ import com.eventix.search.integration.AuthIntegrationClient;
 import com.eventix.search.integration.BookingIntegrationClient;
 import com.eventix.search.integration.EventIntegrationClient;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,50 +18,115 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SearchService {
 
+    private static final Logger accessLog = LoggerFactory.getLogger("access");
+    private static final Logger debugLog = LoggerFactory.getLogger("debug");
+    private static final Logger errorLog = LoggerFactory.getLogger("error");
+
     private final EventIntegrationClient eventServiceClient;
-    private final BookingIntegrationClient bookingServiceClient; // read-only: provides trending/popularity info
+    private final BookingIntegrationClient bookingServiceClient;
     private final AuthIntegrationClient authServiceClient;
 
-    /**
-     * Main search endpoint - delegates to event service
-     */
     public SearchResponseDTO searchEvents(String q, String city, String category,
                                           String startDate, String endDate,
                                           String sortBy, int page, int limit) {
-        List<EventDTO> events = eventServiceClient.searchEvents(q, city, category, startDate, endDate, sortBy, page, limit);
-        return new SearchResponseDTO(events);
+
+        accessLog.info("searchEvents called city={}, category={}, q={}", city, category, q);
+
+        try {
+            debugLog.debug("Forwarding search request to event service");
+            List<EventDTO> events = eventServiceClient.searchEvents(
+                    q, city, category, startDate, endDate, sortBy, page, limit);
+
+            return new SearchResponseDTO(events);
+
+        } catch (Exception e) {
+            errorLog.error("searchEvents failed: {}", e);
+            throw e;
+        }
     }
 
-    /**
-     * Trending/popular events — uses booking-service statistics (READ only).
-     * Search service should NOT create bookings; bookingServiceClient provides analytics only.
-     */
     public List<EventDTO> getTrendingEvents(String city, String category, int limit) {
-        return bookingServiceClient.getTrendingEvents(city, category, limit);
+
+        accessLog.info("getTrendingEvents called city={}, category={}", city, category);
+
+        try {
+            return bookingServiceClient.getTrendingEvents(city, category, limit);
+        } catch (Exception e) {
+            errorLog.error("getTrendingEvents failed: {}", e);
+            throw e;
+        }
     }
 
     public CalenderEventDTO getEventsByCalendar(String month, String city, String category) {
-        return eventServiceClient.getEventsByCalendar(month, city, category);
+
+        accessLog.info("getEventsByCalendar month={}, city={}", month, city);
+
+        try {
+            return eventServiceClient.getEventsByCalendar(month, city, category);
+        } catch (Exception e) {
+            errorLog.error("getEventsByCalendar failed: {}", e);
+            throw e;
+        }
     }
 
     public FilterOptionsDTO getAvailableFilters() {
-        return eventServiceClient.getFilters();
+
+        accessLog.info("getAvailableFilters called");
+
+        try {
+            return eventServiceClient.getFilters();
+        } catch (Exception e) {
+            errorLog.error("getAvailableFilters failed: {}", e);
+            throw e;
+        }
     }
 
     public List<String> getSuggestions(String q, String type) {
-        return eventServiceClient.getSuggestions(q, type);
+
+        accessLog.info("getSuggestions q={}, type={}", q, type);
+
+        try {
+            return eventServiceClient.getSuggestions(q, type);
+        } catch (Exception e) {
+            errorLog.error("getSuggestions failed: {}", e);
+            throw e;
+        }
     }
 
     public List<EventDTO> getMapEvents(double lat, double lon, double radius,
                                        String category, String date) {
-        return eventServiceClient.getMapEvents(lat, lon, radius, category, date);
+
+        accessLog.info("getMapEvents lat={}, lon={}, radius={}", lat, lon, radius);
+
+        try {
+            return eventServiceClient.getMapEvents(lat, lon, radius, category, date);
+        } catch (Exception e) {
+            errorLog.error("getMapEvents failed: {}", e);
+            throw e;
+        }
     }
 
     public List<EventDTO> getRecentEvents(int limit, String city) {
-        return eventServiceClient.getRecentEvents(limit, city);
+
+        accessLog.info("getRecentEvents limit={}, city={}", limit, city);
+
+        try {
+            return eventServiceClient.getRecentEvents(limit, city);
+        } catch (Exception e) {
+            errorLog.error("getRecentEvents failed: {}", e);
+            throw e;
+        }
     }
 
     public List<EventDTO> getPersonalizedEvents(String userId, int limit, String basedOn) {
-        return authServiceClient.getUserInterests(userId, limit, basedOn);
+
+        accessLog.info("getPersonalizedEvents userId={}, basedOn={}", userId, basedOn);
+
+        try {
+            return authServiceClient.getUserInterests(userId, limit, basedOn);
+        } catch (Exception e) {
+            errorLog.error("getPersonalizedEvents failed: {}", e);
+            throw e;
+        }
     }
 }
