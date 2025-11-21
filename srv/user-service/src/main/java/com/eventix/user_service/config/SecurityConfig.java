@@ -24,6 +24,7 @@ public class SecurityConfig {
 
         http
                 .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
@@ -38,7 +39,8 @@ public class SecurityConfig {
                                 "/api-specs/**",
                                 "/v3/api-docs/**",
                                 "/v3/api-docs/swagger-config",
-                                "/graphql"
+                                "/graphql",
+                                "/h2-console/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
