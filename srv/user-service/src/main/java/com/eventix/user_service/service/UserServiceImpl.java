@@ -6,6 +6,8 @@ import com.eventix.user_service.repository.UserRepository;
 import com.eventix.user_service.exception.NotFoundException;
 import com.eventix.user_service.exception.ConflictException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
@@ -15,6 +17,8 @@ public class UserServiceImpl implements UserService {
     private com.eventix.user_service.repository.RoleRepository roleRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     @Override
     public User registerUser(UserRegistrationDTO dto) {
@@ -25,8 +29,10 @@ public class UserServiceImpl implements UserService {
         
         User user = new User();
         user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword()); 
-        user.setName(dto.getName());
+        user.setPassword(passwordEncoder.encode(dto.getPassword())); 
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setPhoneNumber(dto.getPhoneNumber());
         user.setEmailVerified(false);
         user.setActive(true);
         user.setOrganizerId(null); // attendee registration
@@ -52,11 +58,13 @@ public class UserServiceImpl implements UserService {
             () -> new NotFoundException("User not found with id: " + id)
         );
         
-        user.setName(dto.getName());
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setPhoneNumber(dto.getPhoneNumber());
         user.setEmail(dto.getEmail());
         // Optionally update password (should be hashed)
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
-            user.setPassword(dto.getPassword());
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
         return userRepository.save(user);
     }
@@ -82,5 +90,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public java.util.List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public Page<User> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 }

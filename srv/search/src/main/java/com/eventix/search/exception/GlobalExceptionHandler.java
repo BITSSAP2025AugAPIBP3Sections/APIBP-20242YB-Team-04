@@ -1,4 +1,4 @@
-package com.eventix.eventservice.exception;
+package com.eventix.search.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.*;
@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ApiError> handleBadRequest(BadRequestException ex, HttpServletRequest req) {
         String id = newErrorId();
-        String message = ex.getMessage(); // Use the actual exception message
+        String message = "The request is invalid. Review the parameters and try again.";
         ApiError a = buildApiError(HttpStatus.BAD_REQUEST, message, req.getRequestURI(), id);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(a);
     }
