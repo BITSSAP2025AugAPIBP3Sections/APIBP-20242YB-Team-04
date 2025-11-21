@@ -13,6 +13,7 @@ public class User {
     private Long id;
     private String email;
     private String password;
+    private String name;
     private String firstName;
     private String lastName;
     private String phoneNumber;
@@ -26,6 +27,9 @@ public class User {
     // Computed property for full name
     @Transient
     public String getFullName() {
+        if (name != null) {
+            return name;
+        }
         if (firstName != null && lastName != null) {
             return firstName + " " + lastName;
         }
