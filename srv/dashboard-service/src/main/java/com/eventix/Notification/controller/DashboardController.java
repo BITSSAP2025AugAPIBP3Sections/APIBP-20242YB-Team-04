@@ -34,7 +34,7 @@ public class DashboardController {
 
     @Operation(
         summary = "Get organizer dashboard statistics",
-        description = "Retrieves aggregated statistics for an event organizer by pulling data from booking-service and event-service"
+        description = "Retrieves aggregated statistics for an event organizer. First fetches all events by organizerId from event-service, then fetches all bookings for those events from booking-service to calculate comprehensive statistics."
     )
     @ApiResponses(value = {
         @ApiResponse(

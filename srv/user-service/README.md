@@ -15,7 +15,7 @@ It is built using Spring Boot, follows microservices architecture best practices
 
 ## Swagger API Documentation
 Access the Swagger UI here:  
-🔗 **http://localhost:8081/swagger-ui/swagger-ui/index.html#/**
+🔗 **http://localhost:8081/swagger-ui/index.html#/**
 
 ---
 

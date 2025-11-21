@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -49,6 +50,17 @@ public class EventController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Get events by organizer", description = "Fetch all events created by a specific organizer.")
+    @GetMapping("/organizer/{organizerId}")
+    public ResponseEntity<Page<EventResponse>> getByOrganizer(
+            @PathVariable String organizerId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<EventResponse> events = service.getEventsByOrganizer(organizerId, page, size);
+        return ResponseEntity.ok(events);
+    }
+
     @Operation(summary = "Search events", description = "Search events by filters like city, category, date range, and organizer.")
     @GetMapping("/search")
     public ResponseEntity<Page<EventResponse>> search(
@@ -62,5 +74,50 @@ public class EventController {
     ) {
         Page<EventResponse> p = service.search(city, category, from, to, organizerId, page, size, "startTime");
         return ResponseEntity.ok(p);
+    }
+
+    @Operation(hidden = true)
+    @GetMapping("/map")
+    public ResponseEntity<List<EventResponse>> mapEvents(
+            @RequestParam double lat,
+            @RequestParam double lon,
+            @RequestParam double radius,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String date
+    ) {
+        return ResponseEntity.ok(service.getMapEvents(lat, lon, radius, category, date));
+    }
+
+    @Operation(hidden = true)
+    @GetMapping("/recent")
+    public ResponseEntity<List<EventResponse>> recentEvents(
+            @RequestParam(defaultValue = "20") int limit,
+            @RequestParam(required = false) String city
+    ) {
+        return ResponseEntity.ok(service.getRecentEvents(limit, city));
+    }
+
+    @Operation(hidden = true)
+    @GetMapping("/calendar")
+    public ResponseEntity<?> calendarEvents(
+            @RequestParam String month,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String category
+    ) {
+        return ResponseEntity.ok(service.getEventsByCalendar(month, city, category));
+    }
+
+    @GetMapping("/filters")
+    public ResponseEntity<?> filters() {
+        return ResponseEntity.ok(service.getFilterOptions());
+    }
+
+    @Operation(hidden = true)
+    @GetMapping("/suggestions")
+    public ResponseEntity<List<String>> suggestions(
+            @RequestParam String q,
+            @RequestParam(required = false) String type
+    ) {
+        return ResponseEntity.ok(service.getSuggestions(q, type));
     }
 }

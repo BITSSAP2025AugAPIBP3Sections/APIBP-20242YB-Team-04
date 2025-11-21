@@ -72,6 +72,16 @@ public class BookingService {
         return repository.findByUserId(userId);
     }
 
+    public List<Booking> getBookingsByEventId(String eventId) {
+        return repository.findByEventId(eventId);
+    }
+
+    public List<Booking> getBookingsByEventIds(List<String> eventIds) {
+        return repository.findAll().stream()
+                .filter(booking -> eventIds.contains(booking.getEventId()))
+                .collect(Collectors.toList());
+    }
+
     public Booking save(Booking booking) {
         return repository.save(booking);
     }

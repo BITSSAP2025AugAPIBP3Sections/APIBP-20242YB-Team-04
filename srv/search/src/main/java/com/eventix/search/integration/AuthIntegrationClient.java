@@ -1,83 +1,60 @@
 package com.eventix.search.integration;
 
-import org.springframework.stereotype.Component;
 import com.eventix.search.dto.EventDTO;
+import com.eventix.search.exception.ServiceUnavailableException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 @Component
 public class AuthIntegrationClient {
 
-    public Map<String, List<String>> getUserInterests(String userId) {
-        return Map.of(
-            "U123", List.of("Environmental", "Education"),
-            "U456", List.of("Animal Welfare", "Community Service"),
-            "U789", List.of("Health", "Fundraising")
-        );
+    private final RestTemplate restTemplate;
+    private final String baseUrl;
+
+    public AuthIntegrationClient(RestTemplate restTemplate,
+                                 @Value("${remote.auth.base-url:http://localhost:8081}") String baseUrl) {
+        this.restTemplate = restTemplate;
+        // normalize baseUrl (no trailing slash)
+        this.baseUrl = baseUrl != null && baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
     }
 
-    ZoneId zone = ZoneId.of("Asia/Kolkata");
-
+    /**
+     * Calls: GET {baseUrl}/users/{userId}/interests?limit={limit}&basedOn={basedOn}
+     * Returns list of EventDTO (or empty list). Errors are propagated as:
+     *  - ResourceAccessException -> ServiceUnavailableException (503)
+     *  - HttpClientErrorException -> rethrown (4xx forwarded)
+     *  - other exceptions -> RuntimeException (500)
+     */
     public List<EventDTO> getUserInterests(String userId, int limit, String basedOn) {
-        return List.of(
-            new EventDTO(
-                "EVT201",
-                "Beach Cleanup Drive",
-                "Environmental",
-                "Mumbai",
-                "Juhu Beach",
-                ZonedDateTime.now(zone).plusDays(2),
-                ZonedDateTime.now(zone).plusDays(2).plusHours(3),
-                "ORG001",
-                95.0
-            ),
-            new EventDTO(
-                "EVT202",
-                "Teach a Child – Weekend Literacy Program",
-                "Education",
-                "Delhi",
-                "Nehru Nagar Community Center",
-                ZonedDateTime.now(zone).plusDays(5),
-                ZonedDateTime.now(zone).plusDays(5).plusHours(4),
-                "ORG014",
-                91.5
-            ),
-            new EventDTO(
-                "EVT203",
-                "Animal Shelter Volunteering",
-                "Animal Welfare",
-                "Bangalore",
-                "JP Nagar Shelter",
-                ZonedDateTime.now(zone).plusDays(7),
-                ZonedDateTime.now(zone).plusDays(7).plusHours(6),
-                "ORG032",
-                88.0
-            ),
-            new EventDTO(
-                "EVT204",
-                "Community Tree Plantation",
-                "Environmental",
-                "Pune",
-                "Aundh Park",
-                ZonedDateTime.now(zone).plusDays(10),
-                ZonedDateTime.now(zone).plusDays(10).plusHours(5),
-                "ORG021",
-                86.0
-            ),
-            new EventDTO(
-                "EVT205",
-                "Health Awareness Marathon",
-                "Health",
-                "Chennai",
-                "Marina Beach Road",
-                ZonedDateTime.now(zone).plusDays(15),
-                ZonedDateTime.now(zone).plusDays(15).plusHours(3),
-                "ORG099",
-                92.0
-            )
-        );
+        String uri = UriComponentsBuilder
+                .fromUriString(baseUrl + "/users/{userId}/interests")
+                .queryParam("limit", limit)
+                .queryParamIfPresent("basedOn", java.util.Optional.ofNullable(basedOn))
+                .buildAndExpand(userId)
+                .toUriString();
+
+        try {
+            ResponseEntity<EventDTO[]> resp = restTemplate.getForEntity(uri, EventDTO[].class);
+            EventDTO[] arr = resp.getBody();
+            return arr == null ? List.of() : Arrays.asList(arr);
+        } catch (ResourceAccessException ex) {
+            // network/connect/timeout -> treat as downstream unavailable
+            throw new ServiceUnavailableException("Auth service is unavailable.");
+        } catch (HttpClientErrorException ex) {
+            // forward 4xx (and 5xx if thrown as HttpClientErrorException)
+            throw ex;
+        } catch (Exception ex) {
+            // unexpected -> let global handler map to 500
+            throw new RuntimeException(ex);
+        }
     }
 }
