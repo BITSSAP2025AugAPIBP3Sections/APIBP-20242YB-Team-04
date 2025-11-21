@@ -12,8 +12,8 @@ import java.util.UUID;
 public class Event {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(updatable = false, nullable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private UUID id;
 
     @Column(nullable = false)
@@ -56,4 +56,3 @@ public class Event {
     private EventStatus status = EventStatus.DRAFT;
 
 }
-
