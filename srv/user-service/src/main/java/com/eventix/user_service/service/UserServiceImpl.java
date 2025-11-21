@@ -3,7 +3,11 @@ package com.eventix.user_service.service;
 import com.eventix.user_service.model.User;
 import com.eventix.user_service.dto.UserRegistrationDTO;
 import com.eventix.user_service.repository.UserRepository;
+import com.eventix.user_service.exception.NotFoundException;
+import com.eventix.user_service.exception.ConflictException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
@@ -13,23 +17,33 @@ public class UserServiceImpl implements UserService {
     private com.eventix.user_service.repository.RoleRepository roleRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     @Override
     public User registerUser(UserRegistrationDTO dto) {
+        // Check if email already exists
+        if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
+            throw new ConflictException("User with email " + dto.getEmail() + " already exists");
+        }
+        
         User user = new User();
         user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword()); // TODO: hash password in AuthService
-        user.setName(dto.getName());
+        user.setPassword(passwordEncoder.encode(dto.getPassword())); 
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setPhoneNumber(dto.getPhoneNumber());
         user.setEmailVerified(false);
         user.setActive(true);
         user.setOrganizerId(null); // attendee registration
         // Assign default role 'attendee'
-        var attendeeRole = roleRepository.findByName("attendee").orElse(null);
-        if (attendeeRole != null) {
-            java.util.Set<com.eventix.user_service.model.Role> roles = new java.util.HashSet<>();
-            roles.add(attendeeRole);
-            user.setRoles(roles);
-        }
+        var attendeeRole = roleRepository.findByName("attendee").orElseThrow(
+            () -> new NotFoundException("Default role 'attendee' not found")
+        );
+        java.util.Set<com.eventix.user_service.model.Role> roles = new java.util.HashSet<>();
+        roles.add(attendeeRole);
+        user.setRoles(roles);
+        
         return userRepository.save(user);
     }
 
@@ -40,28 +54,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(Long id, UserRegistrationDTO dto) {
-        Optional<User> userOpt = userRepository.findById(id);
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            user.setName(dto.getName());
-            user.setEmail(dto.getEmail());
-            // Optionally update password (should be hashed)
-            if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
-                user.setPassword(dto.getPassword());
-            }
-            return userRepository.save(user);
+        User user = userRepository.findById(id).orElseThrow(
+            () -> new NotFoundException("User not found with id: " + id)
+        );
+        
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setPhoneNumber(dto.getPhoneNumber());
+        user.setEmail(dto.getEmail());
+        // Optionally update password (should be hashed)
+        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
-        return null;
+        return userRepository.save(user);
     }
 
     @Override
     public void deactivateUser(Long id) {
-        Optional<User> userOpt = userRepository.findById(id);
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            user.setActive(false);
-            userRepository.save(user);
-        }
+        User user = userRepository.findById(id).orElseThrow(
+            () -> new NotFoundException("User not found with id: " + id)
+        );
+        user.setActive(false);
+        userRepository.save(user);
     }
 
     @Override
@@ -76,5 +90,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public java.util.List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public Page<User> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 }

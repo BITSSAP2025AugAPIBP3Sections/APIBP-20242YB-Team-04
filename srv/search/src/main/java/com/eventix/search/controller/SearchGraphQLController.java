@@ -1,10 +1,12 @@
 package com.eventix.search.controller;
 
 import com.eventix.search.dto.EventDTO;
+import org.springframework.security.core.Authentication;
 import com.eventix.search.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -32,11 +34,18 @@ public class SearchGraphQLController {
 
     @QueryMapping
     public List<EventDTO> personalizedEvents(
-            @Argument String userId,
             @Argument Integer limit,
             @Argument String basedOn
     ) {
-        return searchService.getPersonalizedEvents(userId, limit != null ? limit : 10, basedOn);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = (Long) auth.getPrincipal();
+
+        return searchService.getPersonalizedEvents(
+                String.valueOf(userId),
+                limit != null ? limit : 10,
+                basedOn
+        );
     }
+
 }
 

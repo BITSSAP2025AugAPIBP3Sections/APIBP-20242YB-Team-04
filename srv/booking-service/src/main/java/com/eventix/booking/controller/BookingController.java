@@ -5,6 +5,7 @@ import com.eventix.booking.service.BookingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,11 +59,11 @@ public class BookingController {
                             "status", "PENDING",
                             "location", location.toString()
                     ));
-        } else {
-            Booking created = svc.createBooking(booking);
-            URI location = URI.create("/bookings/" + created.getId());
-            return ResponseEntity.created(location).body(created);
         }
+
+        Booking created = svc.createBooking(booking);   // <-- Calls EventClient internally
+        URI location = URI.create("/bookings/" + created.getId());
+        return ResponseEntity.created(location).body(created);
     }
 
     @Operation(summary = "Get booking by ID")
@@ -90,6 +91,30 @@ public class BookingController {
                 ? svc.getBookingsByUser(userId)
                 : svc.getAllBookings();
         return ResponseEntity.ok(results);
+    }
+
+    @Operation(summary = "Get bookings by event IDs", description = "Fetch bookings for one or more event IDs")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Bookings retrieved successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request parameters")
+    })
+    @GetMapping("/by-events")
+    public ResponseEntity<?> getBookingsByEventIds(
+            @Parameter(description = "Single event ID to filter bookings", required = false)
+            @RequestParam(name = "eventId", required = false) String eventId,
+            @Parameter(description = "Multiple event IDs to filter bookings (comma-separated)", required = false)
+            @RequestParam(name = "eventIds", required = false) List<String> eventIds) {
+
+        if (eventId != null && !eventId.isBlank()) {
+            List<Booking> results = svc.getBookingsByEventId(eventId);
+            return ResponseEntity.ok(results);
+        } else if (eventIds != null && !eventIds.isEmpty()) {
+            List<Booking> results = svc.getBookingsByEventIds(eventIds);
+            return ResponseEntity.ok(results);
+        } else {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Either eventId or eventIds parameter is required"));
+        }
     }
 
     @Operation(summary = "Get booking statistics")
@@ -123,18 +148,22 @@ public class BookingController {
             @ApiResponse(responseCode = "500", description = "Failed to delete booking")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteBooking(
-            @Parameter(description = "Booking ID to delete", required = true)
-            @PathVariable String id) {
-        try {
-            svc.deleteBooking(id);
-            return ResponseEntity.noContent().build();
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("error", "Booking not found", "id", id));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Failed to delete booking", "details", e.getMessage()));
-        }
+public ResponseEntity<?> deleteBooking(@PathVariable String id, HttpServletRequest req) {
+
+    String role = (String) req.getAttribute("role");
+
+    if (!"ADMIN".equals(role) && !"ORGANIZER".equals(role)) {
+        return ResponseEntity.status(403)
+                .body(Map.of("error", "You do not have permission to delete bookings"));
     }
+
+    try {
+        svc.deleteBooking(id);
+        return ResponseEntity.noContent().build();
+    } catch (NoSuchElementException e) {
+        return ResponseEntity.status(404)
+                .body(Map.of("error", "Booking not found", "id", id));
+    }
+}
+
 }

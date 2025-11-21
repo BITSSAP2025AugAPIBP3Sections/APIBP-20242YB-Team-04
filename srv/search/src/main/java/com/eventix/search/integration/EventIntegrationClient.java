@@ -1,109 +1,236 @@
 package com.eventix.search.integration;
 
-import com.eventix.search.dto.EventDTO;
 import com.eventix.search.dto.CalenderEventDTO;
+import com.eventix.search.dto.EventDTO;
 import com.eventix.search.dto.FilterOptionsDTO;
+import com.eventix.search.exception.ServiceUnavailableException;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class EventIntegrationClient {
 
-    public List<EventDTO> getAllEvents() {
-        ZoneId zone = ZoneId.of("Asia/Kolkata");
-        return Arrays.asList(
-                new EventDTO("E201", "Beach Cleanup Drive", "Environment", "Mumbai", "Juhu Beach",
-                        ZonedDateTime.now(zone).plusDays(2), ZonedDateTime.now(zone).plusDays(2).plusHours(4),
-                        "ORG901", 88.5),
-                new EventDTO("E202", "Tree Plantation Marathon", "Nature", "Bangalore", "Cubbon Park",
-                ZonedDateTime.now(zone).plusDays(3), ZonedDateTime.now(zone).plusDays(3).plusHours(5),
-                        "ORG902", 91.2),
-                new EventDTO("E203", "Blood Donation Camp", "Health", "Delhi", "City Hospital",
-                ZonedDateTime.now(zone).plusDays(1), ZonedDateTime.now(zone).plusDays(1).plusHours(6),
-                        "ORG903", 85.0),
-                new EventDTO("E204", "Food Distribution Drive", "Social Welfare", "Pune", "Community Center",
-                ZonedDateTime.now(zone).plusDays(5), ZonedDateTime.now(zone).plusDays(5).plusHours(3),
-                        "ORG904", 82.3)
-        );
-    }
-    
+    private final RestTemplate restTemplate;
+    private final String baseUrl;
+    private final ObjectMapper mapper = new ObjectMapper();
 
-    public List<EventDTO> searchEvents(
-        String q, String city, String category,
-        String startDate, String endDate,
-        String sortBy, int page, int limit
-    ) {
-    return getAllEvents().stream()
-            .filter(e -> q == null || e.getTitle().toLowerCase().contains(q.toLowerCase()))
-            .filter(e -> city == null || e.getCity().equalsIgnoreCase(city))
-            .filter(e -> category == null || e.getCategory().equalsIgnoreCase(category))
-            .limit(limit)
-            .collect(Collectors.toList());
+    public EventIntegrationClient(RestTemplate restTemplate,
+                                  @Value("${remote.event.base-url:http://localhost:8083}") String baseUrl) {
+        this.restTemplate = restTemplate;
+        this.baseUrl = baseUrl;
     }
 
-    public List<EventDTO> getTrendingEvents(String city, String category, int limit) {
-        return getAllEvents().stream()
-                .filter(e -> city == null || e.getCity().equalsIgnoreCase(city))
-                .filter(e -> category == null || e.getCategory().equalsIgnoreCase(category))
-                .sorted((a, b) -> Double.compare(b.getPopularityScore(), a.getPopularityScore()))
-                .limit(limit)
-                .collect(Collectors.toList());
+    // ------------------------------
+    // 1) SEARCH EVENTS (Page)
+    // ------------------------------
+    public List<EventDTO> searchEvents(String q,
+                                       String city,
+                                       String category,
+                                       String startDate,
+                                       String endDate,
+                                       String sortBy,
+                                       int page,
+                                       int limit) {
+
+        UriComponentsBuilder uri = UriComponentsBuilder
+                .fromUriString(baseUrl + "/api/v1/events/search")
+                .queryParam("page", page)
+                .queryParam("size", limit);
+
+        if (city != null) uri.queryParam("city", city);
+        if (category != null) uri.queryParam("category", category);
+        if (startDate != null) uri.queryParam("from", startDate);
+        if (endDate != null) uri.queryParam("to", endDate);
+
+        try {
+            ResponseEntity<PageResponse> resp =
+                    restTemplate.getForEntity(uri.toUriString(), PageResponse.class);
+
+            if (resp.getBody() != null && resp.getBody().content != null) {
+                return resp.getBody().content.stream()
+                        .map(e -> mapper.convertValue(e, EventDTO.class))
+                        .toList();
+            }
+
+        } catch (ResourceAccessException ex) {
+            // network/connect/timeout to event-service
+            throw new ServiceUnavailableException("Event service is unavailable.");
+        } catch (HttpClientErrorException | HttpServerErrorException ex) {
+            // forward remote 4xx/5xx to client
+            throw ex;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+
+        return Collections.emptyList();
     }
 
-    public CalenderEventDTO getEventsByCalendar(String month, String city, String category) {
-        List<EventDTO> filtered = getAllEvents().stream()
-                .filter(e -> city == null || e.getCity().equalsIgnoreCase(city))
-                .filter(e -> category == null || e.getCategory().equalsIgnoreCase(category))
-                .filter(e -> e.getStartDate().withZoneSameInstant(ZoneId.of("Asia/Kolkata")).getMonth().name().equalsIgnoreCase(month))
-                .sorted(Comparator.comparing(EventDTO::getStartDate))
-                .collect(Collectors.toList());
-        return new CalenderEventDTO(month, filtered);
-    }
+    // ------------------------------
+    // 2) MAP EVENTS
+    // ------------------------------
+    public List<EventDTO> getMapEvents(double lat, double lon, double radius,
+                                       String category, String date) {
 
-    public FilterOptionsDTO getFilters() {
-        return new FilterOptionsDTO(getAllCategories(), getAllCities(), getAllTags());
-    }
+        UriComponentsBuilder uri = UriComponentsBuilder
+                .fromUriString(baseUrl + "/api/v1/events/map")
+                .queryParam("lat", lat)
+                .queryParam("lon", lon)
+                .queryParam("radius", radius);
 
-    public List<String> getSuggestions(String q, String type) {
-        if (type != null && type.equalsIgnoreCase("category")) {
-            return getAllCategories().stream()
-                    .filter(c -> c.toLowerCase().contains(q.toLowerCase()))
-                    .collect(Collectors.toList());
-        } else {
-            return getAllEvents().stream()
-                    .map(EventDTO::getTitle)
-                    .filter(t -> t.toLowerCase().contains(q.toLowerCase()))
-                    .collect(Collectors.toList());
+        if (category != null) uri.queryParam("category", category);
+        if (date != null) uri.queryParam("date", date);
+
+        try {
+            ResponseEntity<List> resp =
+                    restTemplate.getForEntity(uri.toUriString(), List.class);
+
+            return resp.getBody() == null ? List.of()
+                    : resp.getBody().stream()
+                        .map(o -> mapper.convertValue(o, EventDTO.class))
+                        .toList();
+
+        } catch (ResourceAccessException ex) {
+            throw new ServiceUnavailableException("Event service is unavailable.");
+        } catch (HttpClientErrorException | HttpServerErrorException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
     }
 
-    public List<EventDTO> getMapEvents(double lat, double lon, double radius, String category, String date) {
-        return getAllEvents().stream()
-                .filter(e -> category == null || e.getCategory().equalsIgnoreCase(category))
-                .collect(Collectors.toList());
-    }
-
+    // ------------------------------
+    // 3) RECENT EVENTS
+    // ------------------------------
     public List<EventDTO> getRecentEvents(int limit, String city) {
-        return getAllEvents().stream()
-                .filter(e -> city == null || e.getCity().equalsIgnoreCase(city))
-                .sorted(Comparator.comparing(EventDTO::getStartDate))
-                .limit(limit)
-                .collect(Collectors.toList());
+
+        UriComponentsBuilder uri = UriComponentsBuilder
+                .fromUriString(baseUrl + "/api/v1/events/recent")
+                .queryParam("limit", limit);
+
+        if (city != null) uri.queryParam("city", city);
+
+        try {
+            ResponseEntity<List> resp =
+                    restTemplate.getForEntity(uri.toUriString(), List.class);
+
+            return resp.getBody() == null ? List.of()
+                    : resp.getBody().stream()
+                        .map(o -> mapper.convertValue(o, EventDTO.class))
+                        .toList();
+
+        } catch (ResourceAccessException ex) {
+            throw new ServiceUnavailableException("Event service is unavailable.");
+        } catch (HttpClientErrorException | HttpServerErrorException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
-    public List<String> getAllCategories() {
-        return List.of("Environmental", "Education", "Health", "Animal Welfare", "Community Service");
+    // ------------------------------
+    // 4) CALENDAR EVENTS
+    // ------------------------------
+    public CalenderEventDTO getEventsByCalendar(String month, String city, String category) {
+
+        UriComponentsBuilder uri = UriComponentsBuilder
+                .fromUriString(baseUrl + "/api/v1/events/calendar")
+                .queryParam("month", month);
+
+        if (city != null) uri.queryParam("city", city);
+        if (category != null) uri.queryParam("category", category);
+
+        try {
+            ResponseEntity<Map> resp =
+                    restTemplate.getForEntity(uri.toUriString(), Map.class);
+
+            if (resp.getBody() == null) return new CalenderEventDTO(month, List.of());
+
+            List<EventDTO> events =
+                    ((List<?>) resp.getBody().get("events")).stream()
+                            .map(o -> mapper.convertValue(o, EventDTO.class))
+                            .toList();
+
+            return new CalenderEventDTO(
+                    resp.getBody().get("month").toString(),
+                    events
+            );
+
+        } catch (ResourceAccessException ex) {
+            throw new ServiceUnavailableException("Event service is unavailable.");
+        } catch (HttpClientErrorException | HttpServerErrorException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
-    public List<String> getAllCities() {
-        return List.of("Mumbai", "Delhi", "Bangalore", "Pune", "Hyderabad", "Chennai");
+    // ------------------------------
+    // 5) FILTER OPTIONS
+    // ------------------------------
+    public FilterOptionsDTO getFilters() {
+        try {
+            ResponseEntity<Map> resp =
+                    restTemplate.getForEntity(baseUrl + "/api/v1/events/filters", Map.class);
+
+            if (resp.getBody() == null) return new FilterOptionsDTO(List.of(), List.of(), List.of());
+
+            return new FilterOptionsDTO(
+                    (List<String>) resp.getBody().getOrDefault("categories", List.of()),
+                    (List<String>) resp.getBody().getOrDefault("cities", List.of()),
+                    (List<String>) resp.getBody().getOrDefault("tags", List.of())
+            );
+
+        } catch (ResourceAccessException ex) {
+            throw new ServiceUnavailableException("Event service is unavailable.");
+        } catch (HttpClientErrorException | HttpServerErrorException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
-    public List<String> getAllTags() {
-        return List.of("Cleanup", "Awareness", "Teaching", "Fundraising", "Medical Aid", "Shelter");
+    // ------------------------------
+    // 6) SUGGESTIONS
+    // ------------------------------
+    public List<String> getSuggestions(String q, String type) {
+
+        UriComponentsBuilder uri = UriComponentsBuilder
+                .fromUriString(baseUrl + "/api/v1/events/suggestions")
+                .queryParam("q", q);
+
+        if (type != null) uri.queryParam("type", type);
+
+        try {
+            ResponseEntity<List> resp =
+                    restTemplate.getForEntity(uri.toUriString(), List.class);
+
+            return resp.getBody() == null ? List.of()
+                    : resp.getBody().stream()
+                        .map(Object::toString)
+                        .toList();
+
+        } catch (ResourceAccessException ex) {
+            throw new ServiceUnavailableException("Event service is unavailable.");
+        } catch (HttpClientErrorException | HttpServerErrorException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+
+    // Page wrapper class
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private static class PageResponse {
+        public List<Object> content;
     }
 }

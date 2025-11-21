@@ -1,5 +1,7 @@
 package com.eventix.booking.service;
 
+import com.eventix.booking.clients.EventClient;
+import com.eventix.booking.dto.EventResponse;
 import com.eventix.booking.model.Booking;
 import com.eventix.booking.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class BookingService {
     private final BookingRepository repository;
 
     @Autowired
+    private EventClient eventClient; 
+
+    @Autowired
     public BookingService(BookingRepository repository) {
         this.repository = repository;
     }
@@ -24,6 +29,12 @@ public class BookingService {
     // ---------- CRUD & async logic ----------
 
     public Booking createBooking(Booking booking) {
+
+        EventResponse event = eventClient.getEvent(UUID.fromString(booking.getEventId()));
+        if (event == null) {
+            throw new RuntimeException("Event not found");
+        }
+        
         setDefaults(booking);
         booking.setStatus("CONFIRMED");
         return repository.save(booking);
@@ -59,6 +70,16 @@ public class BookingService {
     }
     public List<Booking> getBookingsByUser(String userId) {
         return repository.findByUserId(userId);
+    }
+
+    public List<Booking> getBookingsByEventId(String eventId) {
+        return repository.findByEventId(eventId);
+    }
+
+    public List<Booking> getBookingsByEventIds(List<String> eventIds) {
+        return repository.findAll().stream()
+                .filter(booking -> eventIds.contains(booking.getEventId()))
+                .collect(Collectors.toList());
     }
 
     public Booking save(Booking booking) {
