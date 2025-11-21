@@ -25,6 +25,16 @@ public class EventController {
     @Autowired
     private EventService service;
 
+    @Operation(summary = "Get all events", description = "Fetch all events with pagination.")
+    @GetMapping
+    public ResponseEntity<Page<EventResponse>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<EventResponse> events = service.getAllEvents(page, size);
+        return ResponseEntity.ok(events);
+    }
+
     @Operation(summary = "Create a new event", description = "Organizers use this to create new volunteering or donation events.")
     @PostMapping
     public ResponseEntity<EventResponse> create(@Valid @RequestBody EventRequest req) {
