@@ -56,4 +56,3 @@ public class Event {
     private EventStatus status = EventStatus.DRAFT;
 
 }
-
