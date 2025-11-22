@@ -1,8 +1,11 @@
 package com.eventix.booking.graphql;
 
 import com.eventix.booking.dto.StatsResponse;
+import com.eventix.booking.model.Booking;
 import com.eventix.booking.service.BookingService;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
@@ -20,12 +23,46 @@ public class BookingQueryResolver {
         this.svc = svc;
     }
 
+    // --------------------------------------------
+    // 1. ALL BOOKINGS
+    // --------------------------------------------
+    @QueryMapping
+    public List<Booking> allBookings() {
+        return svc.findAll();
+    }
+
+    // --------------------------------------------
+    // 2. TRENDING BOOKINGS
+    // --------------------------------------------
+    @QueryMapping
+    public List<Booking> trending(@Argument Integer limit) {
+        int safeLimit = (limit == null || limit <= 0) ? 10 : limit;
+        return svc.trending(safeLimit);
+    }
+
+    // --------------------------------------------
+    // 3. PERSONALIZED BOOKINGS
+    // --------------------------------------------
+    @QueryMapping
+    public List<Booking> personalized(
+            @Argument String userId,
+            @Argument Integer limit
+    ) {
+        int safeLimit = (limit == null || limit <= 0) ? 10 : limit;
+        return svc.personalized(userId, safeLimit);
+    }
+
+    // --------------------------------------------
+    // 4. STATS
+    // --------------------------------------------
     @QueryMapping
     public StatsResponse stats() {
+
         Map<String, Object> map = svc.stats();
 
-        // Convert Map<String, Long> to List<CityCount>
-        List<StatsResponse.CityCount> cityCounts = ((Map<String, Long>) map.get("byCity"))
+        // Convert byCity map to list format
+        List<StatsResponse.CityCount> cityCounts =
+                ((Map<String, Long>) map.get("byCity"))
                 .entrySet()
                 .stream()
                 .map(entry -> new StatsResponse.CityCount(entry.getKey(), entry.getValue().intValue()))
