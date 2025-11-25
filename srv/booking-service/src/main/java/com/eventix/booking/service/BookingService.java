@@ -18,11 +18,13 @@ public class BookingService {
 
     private final BookingRepository repository;
     private final NotificationPublisher notificationPublisher;
+    private final EventClient eventClient; 
 
     @Autowired
-    public BookingService(BookingRepository repository, NotificationPublisher notificationPublisher) {
+    public BookingService(BookingRepository repository, NotificationPublisher notificationPublisher, EventClient eventClient) {
         this.repository = repository;
         this.notificationPublisher = notificationPublisher;
+        this.eventClient = eventClient; 
     }
 
     // ---------- CRUD & async logic ----------
