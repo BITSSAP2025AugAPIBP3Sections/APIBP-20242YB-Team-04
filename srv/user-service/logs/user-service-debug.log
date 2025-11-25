@@ -1,0 +1,117 @@
+{"ts":"2025-11-25 13:14:59,619","service":"user-service","level":"INFO","logger":"org.hibernate.validator.internal.util.Version","msg":"HV000001: Hibernate Validator 8.0.3.Final"}
+{"ts":"2025-11-25 13:14:59,630","service":"user-service","level":"INFO","logger":"com.eventix.user_service.UserServiceApplicationTests","msg":"Starting UserServiceApplicationTests using Java 23.0.1 with PID 14662 (started by I528994 in /Users/I528994/APIBP-20242YB-Team-04/srv/user-service)"}
+{"ts":"2025-11-25 13:14:59,630","service":"user-service","level":"INFO","logger":"com.eventix.user_service.UserServiceApplicationTests","msg":"No active profile set, falling back to 1 default profile: "default""}
+{"ts":"2025-11-25 13:15:00,073","service":"user-service","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","msg":"Bootstrapping Spring Data JPA repositories in DEFAULT mode."}
+{"ts":"2025-11-25 13:15:00,141","service":"user-service","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","msg":"Finished Spring Data repository scanning in 63 ms. Found 3 JPA repository interfaces."}
+{"ts":"2025-11-25 13:15:00,348","service":"user-service","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Starting..."}
+{"ts":"2025-11-25 13:15:00,419","service":"user-service","level":"INFO","logger":"com.zaxxer.hikari.pool.HikariPool","msg":"HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:2a8a6b38-267f-455c-986b-41c12d531551 user=SA"}
+{"ts":"2025-11-25 13:15:00,419","service":"user-service","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Start completed."}
+{"ts":"2025-11-25 13:15:00,439","service":"user-service","level":"INFO","logger":"org.hibernate.jpa.internal.util.LogHelper","msg":"HHH000204: Processing PersistenceUnitInfo [name: default]"}
+{"ts":"2025-11-25 13:15:00,483","service":"user-service","level":"INFO","logger":"org.hibernate.Version","msg":"HHH000412: Hibernate ORM core version 6.6.33.Final"}
+{"ts":"2025-11-25 13:15:00,498","service":"user-service","level":"INFO","logger":"org.hibernate.cache.internal.RegionFactoryInitiator","msg":"HHH000026: Second-level cache disabled"}
+{"ts":"2025-11-25 13:15:00,613","service":"user-service","level":"INFO","logger":"org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo","msg":"No LoadTimeWeaver setup: ignoring JPA class transformer"}
+{"ts":"2025-11-25 13:15:00,646","service":"user-service","level":"INFO","logger":"org.hibernate.orm.connections.pooling","msg":"HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown"}
+{"ts":"2025-11-25 13:15:01,135","service":"user-service","level":"INFO","logger":"org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator","msg":"HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)"}
+{"ts":"2025-11-25 13:15:01,187","service":"user-service","level":"INFO","logger":"org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean","msg":"Initialized JPA EntityManagerFactory for persistence unit 'default'"}
+{"ts":"2025-11-25 13:15:01,400","service":"user-service","level":"WARN","logger":"org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration","msg":"spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning"}
+{"ts":"2025-11-25 13:15:01,418","service":"user-service","level":"WARN","logger":"org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration","msg":"
+
+Using generated security password: 8e14f9f1-1f02-4f48-88ab-ad377b04ad4e
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+"}
+{"ts":"2025-11-25 13:15:01,421","service":"user-service","level":"INFO","logger":"org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer","msg":"Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager"}
+{"ts":"2025-11-25 13:15:01,580","service":"user-service","level":"INFO","logger":"org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver","msg":"Exposing 1 endpoint beneath base path '/actuator'"}
+{"ts":"2025-11-25 13:15:01,820","service":"user-service","level":"INFO","logger":"com.eventix.user_service.UserServiceApplicationTests","msg":"Started UserServiceApplicationTests in 2.35 seconds (process running for 2.727)"}
+{"ts":"2025-11-25 13:15:03,541","service":"user-service","level":"INFO","logger":"org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean","msg":"Closing JPA EntityManagerFactory for persistence unit 'default'"}
+{"ts":"2025-11-25 13:15:03,544","service":"user-service","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Shutdown initiated..."}
+{"ts":"2025-11-25 13:15:03,545","service":"user-service","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Shutdown completed."}
+{"ts":"2025-11-25 13:15:23,304","service":"user-service","level":"INFO","logger":"org.hibernate.validator.internal.util.Version","msg":"HV000001: Hibernate Validator 8.0.3.Final"}
+{"ts":"2025-11-25 13:15:23,316","service":"user-service","level":"INFO","logger":"com.eventix.user_service.UserServiceApplicationTests","msg":"Starting UserServiceApplicationTests using Java 23.0.1 with PID 15323 (started by I528994 in /Users/I528994/APIBP-20242YB-Team-04/srv/user-service)"}
+{"ts":"2025-11-25 13:15:23,317","service":"user-service","level":"INFO","logger":"com.eventix.user_service.UserServiceApplicationTests","msg":"No active profile set, falling back to 1 default profile: "default""}
+{"ts":"2025-11-25 13:15:23,765","service":"user-service","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","msg":"Bootstrapping Spring Data JPA repositories in DEFAULT mode."}
+{"ts":"2025-11-25 13:15:23,821","service":"user-service","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","msg":"Finished Spring Data repository scanning in 52 ms. Found 3 JPA repository interfaces."}
+{"ts":"2025-11-25 13:15:24,008","service":"user-service","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Starting..."}
+{"ts":"2025-11-25 13:15:24,070","service":"user-service","level":"INFO","logger":"com.zaxxer.hikari.pool.HikariPool","msg":"HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:59b1df42-567d-4431-921a-2b74c2117a33 user=SA"}
+{"ts":"2025-11-25 13:15:24,071","service":"user-service","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Start completed."}
+{"ts":"2025-11-25 13:15:24,086","service":"user-service","level":"INFO","logger":"org.hibernate.jpa.internal.util.LogHelper","msg":"HHH000204: Processing PersistenceUnitInfo [name: default]"}
+{"ts":"2025-11-25 13:15:24,101","service":"user-service","level":"INFO","logger":"org.hibernate.Version","msg":"HHH000412: Hibernate ORM core version 6.6.33.Final"}
+{"ts":"2025-11-25 13:15:24,110","service":"user-service","level":"INFO","logger":"org.hibernate.cache.internal.RegionFactoryInitiator","msg":"HHH000026: Second-level cache disabled"}
+{"ts":"2025-11-25 13:15:24,196","service":"user-service","level":"INFO","logger":"org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo","msg":"No LoadTimeWeaver setup: ignoring JPA class transformer"}
+{"ts":"2025-11-25 13:15:24,220","service":"user-service","level":"INFO","logger":"org.hibernate.orm.connections.pooling","msg":"HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown"}
+{"ts":"2025-11-25 13:15:24,541","service":"user-service","level":"INFO","logger":"org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator","msg":"HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)"}
+{"ts":"2025-11-25 13:15:24,560","service":"user-service","level":"INFO","logger":"org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean","msg":"Initialized JPA EntityManagerFactory for persistence unit 'default'"}
+{"ts":"2025-11-25 13:15:24,739","service":"user-service","level":"WARN","logger":"org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration","msg":"spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning"}
+{"ts":"2025-11-25 13:15:24,752","service":"user-service","level":"WARN","logger":"org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration","msg":"
+
+Using generated security password: 57c5098f-0304-49ec-8630-b6f7714b2ef2
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+"}
+{"ts":"2025-11-25 13:15:24,754","service":"user-service","level":"INFO","logger":"org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer","msg":"Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager"}
+{"ts":"2025-11-25 13:15:24,898","service":"user-service","level":"INFO","logger":"org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver","msg":"Exposing 1 endpoint beneath base path '/actuator'"}
+{"ts":"2025-11-25 13:15:25,110","service":"user-service","level":"INFO","logger":"com.eventix.user_service.UserServiceApplicationTests","msg":"Started UserServiceApplicationTests in 1.955 seconds (process running for 2.307)"}
+{"ts":"2025-11-25 13:15:26,736","service":"user-service","level":"INFO","logger":"org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean","msg":"Closing JPA EntityManagerFactory for persistence unit 'default'"}
+{"ts":"2025-11-25 13:15:26,742","service":"user-service","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Shutdown initiated..."}
+{"ts":"2025-11-25 13:15:26,743","service":"user-service","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Shutdown completed."}
+{"ts":"2025-11-25 13:15:50,623","service":"user-service","level":"INFO","logger":"org.hibernate.validator.internal.util.Version","msg":"HV000001: Hibernate Validator 8.0.3.Final"}
+{"ts":"2025-11-25 13:15:50,640","service":"user-service","level":"INFO","logger":"com.eventix.user_service.UserServiceApplication","msg":"Starting UserServiceApplication using Java 23.0.1 with PID 15595 (/Users/I528994/APIBP-20242YB-Team-04/srv/user-service/target/classes started by I528994 in /Users/I528994/APIBP-20242YB-Team-04/srv/user-service)"}
+{"ts":"2025-11-25 13:15:50,640","service":"user-service","level":"INFO","logger":"com.eventix.user_service.UserServiceApplication","msg":"No active profile set, falling back to 1 default profile: "default""}
+{"ts":"2025-11-25 13:15:50,658","service":"user-service","level":"INFO","logger":"org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor","msg":"Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable"}
+{"ts":"2025-11-25 13:15:50,658","service":"user-service","level":"INFO","logger":"org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor","msg":"For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'"}
+{"ts":"2025-11-25 13:15:51,153","service":"user-service","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","msg":"Bootstrapping Spring Data JPA repositories in DEFAULT mode."}
+{"ts":"2025-11-25 13:15:51,223","service":"user-service","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","msg":"Finished Spring Data repository scanning in 66 ms. Found 3 JPA repository interfaces."}
+{"ts":"2025-11-25 13:15:51,457","service":"user-service","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.TomcatWebServer","msg":"Tomcat initialized with port 8081 (http)"}
+{"ts":"2025-11-25 13:15:51,462","service":"user-service","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","msg":"Initializing ProtocolHandler ["http-nio-8081"]"}
+{"ts":"2025-11-25 13:15:51,463","service":"user-service","level":"INFO","logger":"org.apache.catalina.core.StandardService","msg":"Starting service [Tomcat]"}
+{"ts":"2025-11-25 13:15:51,463","service":"user-service","level":"INFO","logger":"org.apache.catalina.core.StandardEngine","msg":"Starting Servlet engine: [Apache Tomcat/10.1.48]"}
+{"ts":"2025-11-25 13:15:51,480","service":"user-service","level":"INFO","logger":"org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]","msg":"Initializing Spring embedded WebApplicationContext"}
+{"ts":"2025-11-25 13:15:51,481","service":"user-service","level":"INFO","logger":"org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext","msg":"Root WebApplicationContext: initialization completed in 822 ms"}
+{"ts":"2025-11-25 13:15:51,567","service":"user-service","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Starting..."}
+{"ts":"2025-11-25 13:15:51,626","service":"user-service","level":"INFO","logger":"com.zaxxer.hikari.pool.HikariPool","msg":"HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:b41aa947-b237-40dd-9072-daa824b5b1ff user=SA"}
+{"ts":"2025-11-25 13:15:51,627","service":"user-service","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Start completed."}
+{"ts":"2025-11-25 13:15:51,642","service":"user-service","level":"INFO","logger":"org.hibernate.jpa.internal.util.LogHelper","msg":"HHH000204: Processing PersistenceUnitInfo [name: default]"}
+{"ts":"2025-11-25 13:15:51,658","service":"user-service","level":"INFO","logger":"org.hibernate.Version","msg":"HHH000412: Hibernate ORM core version 6.6.33.Final"}
+{"ts":"2025-11-25 13:15:51,667","service":"user-service","level":"INFO","logger":"org.hibernate.cache.internal.RegionFactoryInitiator","msg":"HHH000026: Second-level cache disabled"}
+{"ts":"2025-11-25 13:15:51,741","service":"user-service","level":"INFO","logger":"org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo","msg":"No LoadTimeWeaver setup: ignoring JPA class transformer"}
+{"ts":"2025-11-25 13:15:51,763","service":"user-service","level":"INFO","logger":"org.hibernate.orm.connections.pooling","msg":"HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown"}
+{"ts":"2025-11-25 13:15:52,070","service":"user-service","level":"INFO","logger":"org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator","msg":"HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)"}
+{"ts":"2025-11-25 13:15:52,093","service":"user-service","level":"INFO","logger":"org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean","msg":"Initialized JPA EntityManagerFactory for persistence unit 'default'"}
+{"ts":"2025-11-25 13:15:52,272","service":"user-service","level":"WARN","logger":"org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration","msg":"spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning"}
+{"ts":"2025-11-25 13:15:52,286","service":"user-service","level":"WARN","logger":"org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration","msg":"
+
+Using generated security password: 482346da-2deb-43f5-9696-7032635a7a68
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+"}
+{"ts":"2025-11-25 13:15:52,289","service":"user-service","level":"INFO","logger":"org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer","msg":"Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager"}
+{"ts":"2025-11-25 13:15:52,407","service":"user-service","level":"INFO","logger":"org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver","msg":"Exposing 1 endpoint beneath base path '/actuator'"}
+{"ts":"2025-11-25 13:15:52,531","service":"user-service","level":"INFO","logger":"org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration","msg":"H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:b41aa947-b237-40dd-9072-daa824b5b1ff'"}
+{"ts":"2025-11-25 13:15:52,575","service":"user-service","level":"WARN","logger":"org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer","msg":"Unable to start LiveReload server"}
+{"ts":"2025-11-25 13:15:52,596","service":"user-service","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","msg":"Starting ProtocolHandler ["http-nio-8081"]"}
+{"ts":"2025-11-25 13:15:52,602","service":"user-service","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.TomcatWebServer","msg":"Tomcat started on port 8081 (http) with context path '/'"}
+{"ts":"2025-11-25 13:15:52,611","service":"user-service","level":"INFO","logger":"com.eventix.user_service.UserServiceApplication","msg":"Started UserServiceApplication in 2.142 seconds (process running for 2.292)"}
+{"ts":"2025-11-25 13:17:40,161","service":"user-service","level":"INFO","logger":"org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]","msg":"Initializing Spring DispatcherServlet 'dispatcherServlet'"}
+{"ts":"2025-11-25 13:17:40,161","service":"user-service","level":"INFO","logger":"org.springframework.web.servlet.DispatcherServlet","msg":"Initializing Servlet 'dispatcherServlet'"}
+{"ts":"2025-11-25 13:17:40,164","service":"user-service","level":"INFO","logger":"org.springframework.web.servlet.DispatcherServlet","msg":"Completed initialization in 3 ms"}
