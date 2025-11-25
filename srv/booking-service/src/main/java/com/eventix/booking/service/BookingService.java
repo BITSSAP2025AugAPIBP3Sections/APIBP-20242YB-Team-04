@@ -31,10 +31,10 @@ public class BookingService {
 
     public Booking createBooking(Booking booking) {
 
-        EventResponse event = eventClient.getEvent(UUID.fromString(booking.getEventId()));
-        if (event == null) {
-            throw new RuntimeException("Event not found");
-        }
+//        EventResponse event = eventClient.getEvent(UUID.fromString(booking.getEventId()));
+//        if (event == null) {
+//            throw new RuntimeException("Event not found");
+//        }
         
         setDefaults(booking);
         booking.setStatus("CONFIRMED");
@@ -209,7 +209,7 @@ public List<Booking> findAll() {
         // TODO: In production, fetch actual user email and name from user-service
         // TODO: In production, fetch actual event name from event-service
 
-        String userEmail = booking.getUserId() != null ? booking.getUserId() + "@example.com" : "user@example.com";
+        String userEmail = booking.getUserId() != null ? booking.getUserId() + "@gmail.com" : "sivaram2001ram@gmail.com";
         String userName = "User " + (booking.getUserId() != null ? booking.getUserId() : "Unknown");
         String eventName = "Event " + (booking.getEventId() != null ? booking.getEventId() : "Unknown");
 
