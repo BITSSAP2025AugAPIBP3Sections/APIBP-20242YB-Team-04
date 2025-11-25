@@ -44,3 +44,10 @@
 {"ts":"2025-11-25 13:21:44,225","service":"event-service","level":"INFO","logger":"org.springframework.web.servlet.DispatcherServlet","msg":"Initializing Servlet 'dispatcherServlet'"}
 {"ts":"2025-11-25 13:21:44,226","service":"event-service","level":"INFO","logger":"org.springframework.web.servlet.DispatcherServlet","msg":"Completed initialization in 1 ms"}
 {"ts":"2025-11-25 13:21:44,482","service":"event-service","level":"INFO","logger":"org.springdoc.api.AbstractOpenApiResource","msg":"Init duration for springdoc-openapi is: 149 ms"}
+{"ts":"2025-11-25 13:24:09,879","service":"event-service","level":"WARN","logger":"org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver","msg":"Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource swagger-ui.]"}
+{"ts":"2025-11-25 13:24:10,018","service":"event-service","level":"WARN","logger":"org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver","msg":"Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource favicon.ico.]"}
+{"ts":"2025-11-25 13:25:10,277","service":"event-service","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.GracefulShutdown","msg":"Commencing graceful shutdown. Waiting for active requests to complete"}
+{"ts":"2025-11-25 13:25:10,296","service":"event-service","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.GracefulShutdown","msg":"Graceful shutdown complete"}
+{"ts":"2025-11-25 13:25:10,300","service":"event-service","level":"INFO","logger":"org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean","msg":"Closing JPA EntityManagerFactory for persistence unit 'default'"}
+{"ts":"2025-11-25 13:25:10,305","service":"event-service","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Shutdown initiated..."}
+{"ts":"2025-11-25 13:25:10,307","service":"event-service","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Shutdown completed."}

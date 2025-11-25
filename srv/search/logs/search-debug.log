@@ -1,0 +1,358 @@
+{"ts":"2025-11-25 13:25:48,138","service":"search","level":"INFO","logger":"com.eventix.search.SearchApplication","msg":"Starting SearchApplication using Java 23.0.1 with PID 47672 (/Users/I528994/APIBP-20242YB-Team-04/srv/search/target/classes started by I528994 in /Users/I528994/APIBP-20242YB-Team-04/srv/search)"}
+{"ts":"2025-11-25 13:25:48,139","service":"search","level":"INFO","logger":"com.eventix.search.SearchApplication","msg":"No active profile set, falling back to 1 default profile: "default""}
+{"ts":"2025-11-25 13:25:48,288","service":"search","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","msg":"Bootstrapping Spring Data JPA repositories in DEFAULT mode."}
+{"ts":"2025-11-25 13:25:48,292","service":"search","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","msg":"Finished Spring Data repository scanning in 3 ms. Found 0 JPA repository interfaces."}
+{"ts":"2025-11-25 13:25:48,370","service":"search","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.TomcatWebServer","msg":"Tomcat initialized with port 8084 (http)"}
+{"ts":"2025-11-25 13:25:48,372","service":"search","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","msg":"Initializing ProtocolHandler ["http-nio-8084"]"}
+{"ts":"2025-11-25 13:25:48,372","service":"search","level":"INFO","logger":"org.apache.catalina.core.StandardService","msg":"Starting service [Tomcat]"}
+{"ts":"2025-11-25 13:25:48,372","service":"search","level":"INFO","logger":"org.apache.catalina.core.StandardEngine","msg":"Starting Servlet engine: [Apache Tomcat/10.1.48]"}
+{"ts":"2025-11-25 13:25:48,378","service":"search","level":"INFO","logger":"org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]","msg":"Initializing Spring embedded WebApplicationContext"}
+{"ts":"2025-11-25 13:25:48,379","service":"search","level":"INFO","logger":"org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext","msg":"Root WebApplicationContext: initialization completed in 239 ms"}
+{"ts":"2025-11-25 13:25:48,414","service":"search","level":"INFO","logger":"org.hibernate.jpa.internal.util.LogHelper","msg":"HHH000204: Processing PersistenceUnitInfo [name: default]"}
+{"ts":"2025-11-25 13:25:48,415","service":"search","level":"INFO","logger":"org.hibernate.cache.internal.RegionFactoryInitiator","msg":"HHH000026: Second-level cache disabled"}
+{"ts":"2025-11-25 13:25:48,419","service":"search","level":"INFO","logger":"org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo","msg":"No LoadTimeWeaver setup: ignoring JPA class transformer"}
+{"ts":"2025-11-25 13:25:48,419","service":"search","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-2 - Starting..."}
+{"ts":"2025-11-25 13:25:48,421","service":"search","level":"INFO","logger":"com.zaxxer.hikari.pool.HikariPool","msg":"HikariPool-2 - Added connection conn73: url=jdbc:h2:mem:searchdb user=SA"}
+{"ts":"2025-11-25 13:25:48,421","service":"search","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-2 - Start completed."}
+{"ts":"2025-11-25 13:25:48,422","service":"search","level":"INFO","logger":"org.hibernate.orm.connections.pooling","msg":"HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown"}
+{"ts":"2025-11-25 13:25:48,429","service":"search","level":"INFO","logger":"org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator","msg":"HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)"}
+{"ts":"2025-11-25 13:25:48,429","service":"search","level":"INFO","logger":"org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean","msg":"Initialized JPA EntityManagerFactory for persistence unit 'default'"}
+{"ts":"2025-11-25 13:25:48,450","service":"search","level":"WARN","logger":"org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration","msg":"spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning"}
+{"ts":"2025-11-25 13:25:48,458","service":"search","level":"WARN","logger":"org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration","msg":"
+
+Using generated security password: 6ed71a23-1b80-4318-9390-61b8214e9823
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+"}
+{"ts":"2025-11-25 13:25:48,458","service":"search","level":"INFO","logger":"org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer","msg":"Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager"}
+{"ts":"2025-11-25 13:25:48,504","service":"search","level":"INFO","logger":"org.springframework.graphql.execution.DefaultSchemaResourceGraphQlSourceBuilder","msg":"Loaded 1 resource(s) in the GraphQL schema."}
+{"ts":"2025-11-25 13:25:48,512","service":"search","level":"INFO","logger":"org.springframework.boot.autoconfigure.graphql.GraphQlAutoConfiguration","msg":"GraphQL schema inspection:
+	Unmapped fields: {}
+	Unmapped registrations: {}
+	Unmapped arguments: {}
+	Skipped types: []"}
+{"ts":"2025-11-25 13:25:48,514","service":"search","level":"INFO","logger":"org.springframework.boot.autoconfigure.graphql.servlet.GraphQlWebMvcAutoConfiguration","msg":"GraphQL endpoint HTTP POST /graphql"}
+{"ts":"2025-11-25 13:25:48,534","service":"search","level":"INFO","logger":"org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver","msg":"Exposing 2 endpoints beneath base path '/actuator'"}
+{"ts":"2025-11-25 13:25:48,594","service":"search","level":"INFO","logger":"org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration","msg":"H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:searchdb'"}
+{"ts":"2025-11-25 13:25:48,603","service":"search","level":"INFO","logger":"org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer","msg":"LiveReload server is running on port 35729"}
+{"ts":"2025-11-25 13:25:48,609","service":"search","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","msg":"Starting ProtocolHandler ["http-nio-8084"]"}
+{"ts":"2025-11-25 13:25:48,610","service":"search","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.TomcatWebServer","msg":"Tomcat started on port 8084 (http) with context path '/'"}
+{"ts":"2025-11-25 13:25:48,615","service":"search","level":"INFO","logger":"com.eventix.search.SearchApplication","msg":"Started SearchApplication in 0.499 seconds (process running for 11129.022)"}
+{"ts":"2025-11-25 13:25:48,616","service":"search","level":"INFO","logger":"org.springframework.boot.devtools.autoconfigure.ConditionEvaluationDeltaLoggingListener","msg":"Condition evaluation unchanged"}
+{"ts":"2025-11-25 13:25:50,022","service":"search","level":"INFO","logger":"org.springframework.boot.devtools.autoconfigure.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener","msg":"Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)"}
+{"ts":"2025-11-25 13:25:50,026","service":"search","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.GracefulShutdown","msg":"Commencing graceful shutdown. Waiting for active requests to complete"}
+{"ts":"2025-11-25 13:25:50,027","service":"search","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","msg":"Pausing ProtocolHandler ["http-nio-8084"]"}
+{"ts":"2025-11-25 13:25:50,031","service":"search","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.GracefulShutdown","msg":"Graceful shutdown complete"}
+{"ts":"2025-11-25 13:25:50,032","service":"search","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","msg":"Stopping ProtocolHandler ["http-nio-8084"]"}
+{"ts":"2025-11-25 13:25:50,039","service":"search","level":"INFO","logger":"org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean","msg":"Closing JPA EntityManagerFactory for persistence unit 'default'"}
+{"ts":"2025-11-25 13:25:50,041","service":"search","level":"WARN","logger":"org.springframework.beans.factory.support.DisposableBeanAdapter","msg":"Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-232]"}
+{"ts":"2025-11-25 13:25:50,041","service":"search","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-2 - Shutdown initiated..."}
+{"ts":"2025-11-25 13:25:50,042","service":"search","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-2 - Shutdown completed."}
+{"ts":"2025-11-25 13:25:50,128","service":"search","level":"INFO","logger":"com.eventix.search.SearchApplication","msg":"Starting SearchApplication using Java 23.0.1 with PID 47672 (/Users/I528994/APIBP-20242YB-Team-04/srv/search/target/classes started by I528994 in /Users/I528994/APIBP-20242YB-Team-04/srv/search)"}
+{"ts":"2025-11-25 13:25:50,128","service":"search","level":"INFO","logger":"com.eventix.search.SearchApplication","msg":"No active profile set, falling back to 1 default profile: "default""}
+{"ts":"2025-11-25 13:25:50,227","service":"search","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","msg":"Bootstrapping Spring Data JPA repositories in DEFAULT mode."}
+{"ts":"2025-11-25 13:25:50,230","service":"search","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","msg":"Finished Spring Data repository scanning in 2 ms. Found 0 JPA repository interfaces."}
+{"ts":"2025-11-25 13:25:50,274","service":"search","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.TomcatWebServer","msg":"Tomcat initialized with port 8084 (http)"}
+{"ts":"2025-11-25 13:25:50,275","service":"search","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","msg":"Initializing ProtocolHandler ["http-nio-8084"]"}
+{"ts":"2025-11-25 13:25:50,275","service":"search","level":"INFO","logger":"org.apache.catalina.core.StandardService","msg":"Starting service [Tomcat]"}
+{"ts":"2025-11-25 13:25:50,275","service":"search","level":"INFO","logger":"org.apache.catalina.core.StandardEngine","msg":"Starting Servlet engine: [Apache Tomcat/10.1.48]"}
+{"ts":"2025-11-25 13:25:50,280","service":"search","level":"INFO","logger":"org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]","msg":"Initializing Spring embedded WebApplicationContext"}
+{"ts":"2025-11-25 13:25:50,280","service":"search","level":"INFO","logger":"org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext","msg":"Root WebApplicationContext: initialization completed in 151 ms"}
+{"ts":"2025-11-25 13:25:50,307","service":"search","level":"INFO","logger":"org.hibernate.jpa.internal.util.LogHelper","msg":"HHH000204: Processing PersistenceUnitInfo [name: default]"}
+{"ts":"2025-11-25 13:25:50,308","service":"search","level":"INFO","logger":"org.hibernate.cache.internal.RegionFactoryInitiator","msg":"HHH000026: Second-level cache disabled"}
+{"ts":"2025-11-25 13:25:50,310","service":"search","level":"INFO","logger":"org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo","msg":"No LoadTimeWeaver setup: ignoring JPA class transformer"}
+{"ts":"2025-11-25 13:25:50,310","service":"search","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-3 - Starting..."}
+{"ts":"2025-11-25 13:25:50,311","service":"search","level":"INFO","logger":"com.zaxxer.hikari.pool.HikariPool","msg":"HikariPool-3 - Added connection conn83: url=jdbc:h2:mem:searchdb user=SA"}
+{"ts":"2025-11-25 13:25:50,311","service":"search","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-3 - Start completed."}
+{"ts":"2025-11-25 13:25:50,311","service":"search","level":"INFO","logger":"org.hibernate.orm.connections.pooling","msg":"HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-3)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown"}
+{"ts":"2025-11-25 13:25:50,317","service":"search","level":"INFO","logger":"org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator","msg":"HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)"}
+{"ts":"2025-11-25 13:25:50,317","service":"search","level":"INFO","logger":"org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean","msg":"Initialized JPA EntityManagerFactory for persistence unit 'default'"}
+{"ts":"2025-11-25 13:25:50,334","service":"search","level":"WARN","logger":"org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration","msg":"spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning"}
+{"ts":"2025-11-25 13:25:50,341","service":"search","level":"WARN","logger":"org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration","msg":"
+
+Using generated security password: 3e0f8acc-b5a1-4433-94a4-df73d9528fa4
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+"}
+{"ts":"2025-11-25 13:25:50,341","service":"search","level":"INFO","logger":"org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer","msg":"Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager"}
+{"ts":"2025-11-25 13:25:50,376","service":"search","level":"INFO","logger":"org.springframework.graphql.execution.DefaultSchemaResourceGraphQlSourceBuilder","msg":"Loaded 1 resource(s) in the GraphQL schema."}
+{"ts":"2025-11-25 13:25:50,381","service":"search","level":"INFO","logger":"org.springframework.boot.autoconfigure.graphql.GraphQlAutoConfiguration","msg":"GraphQL schema inspection:
+	Unmapped fields: {}
+	Unmapped registrations: {}
+	Unmapped arguments: {}
+	Skipped types: []"}
+{"ts":"2025-11-25 13:25:50,382","service":"search","level":"INFO","logger":"org.springframework.boot.autoconfigure.graphql.servlet.GraphQlWebMvcAutoConfiguration","msg":"GraphQL endpoint HTTP POST /graphql"}
+{"ts":"2025-11-25 13:25:50,400","service":"search","level":"INFO","logger":"org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver","msg":"Exposing 2 endpoints beneath base path '/actuator'"}
+{"ts":"2025-11-25 13:25:50,448","service":"search","level":"INFO","logger":"org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration","msg":"H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:searchdb'"}
+{"ts":"2025-11-25 13:25:50,455","service":"search","level":"INFO","logger":"org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer","msg":"LiveReload server is running on port 35729"}
+{"ts":"2025-11-25 13:25:50,461","service":"search","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","msg":"Starting ProtocolHandler ["http-nio-8084"]"}
+{"ts":"2025-11-25 13:25:50,462","service":"search","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.TomcatWebServer","msg":"Tomcat started on port 8084 (http) with context path '/'"}
+{"ts":"2025-11-25 13:25:50,466","service":"search","level":"INFO","logger":"com.eventix.search.SearchApplication","msg":"Started SearchApplication in 0.375 seconds (process running for 11130.873)"}
+{"ts":"2025-11-25 13:25:50,466","service":"search","level":"INFO","logger":"org.springframework.boot.devtools.autoconfigure.ConditionEvaluationDeltaLoggingListener","msg":"Condition evaluation unchanged"}
+{"ts":"2025-11-25 13:26:19,595","service":"search","level":"INFO","logger":"org.springframework.boot.devtools.autoconfigure.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener","msg":"Restarting due to 40 class path changes (0 additions, 0 deletions, 40 modifications)"}
+{"ts":"2025-11-25 13:26:19,596","service":"search","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.GracefulShutdown","msg":"Commencing graceful shutdown. Waiting for active requests to complete"}
+{"ts":"2025-11-25 13:26:19,596","service":"search","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","msg":"Pausing ProtocolHandler ["http-nio-8084"]"}
+{"ts":"2025-11-25 13:26:19,597","service":"search","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.GracefulShutdown","msg":"Graceful shutdown complete"}
+{"ts":"2025-11-25 13:26:19,597","service":"search","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","msg":"Stopping ProtocolHandler ["http-nio-8084"]"}
+{"ts":"2025-11-25 13:26:19,598","service":"search","level":"INFO","logger":"org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean","msg":"Closing JPA EntityManagerFactory for persistence unit 'default'"}
+{"ts":"2025-11-25 13:26:19,599","service":"search","level":"WARN","logger":"org.springframework.beans.factory.support.DisposableBeanAdapter","msg":"Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-232]"}
+{"ts":"2025-11-25 13:26:19,599","service":"search","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-3 - Shutdown initiated..."}
+{"ts":"2025-11-25 13:26:19,599","service":"search","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-3 - Shutdown completed."}
+{"ts":"2025-11-25 13:26:19,648","service":"search","level":"INFO","logger":"com.eventix.search.SearchApplication","msg":"Starting SearchApplication using Java 23.0.1 with PID 47672 (/Users/I528994/APIBP-20242YB-Team-04/srv/search/target/classes started by I528994 in /Users/I528994/APIBP-20242YB-Team-04/srv/search)"}
+{"ts":"2025-11-25 13:26:19,648","service":"search","level":"INFO","logger":"com.eventix.search.SearchApplication","msg":"No active profile set, falling back to 1 default profile: "default""}
+{"ts":"2025-11-25 13:26:19,756","service":"search","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","msg":"Bootstrapping Spring Data JPA repositories in DEFAULT mode."}
+{"ts":"2025-11-25 13:26:19,759","service":"search","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","msg":"Finished Spring Data repository scanning in 1 ms. Found 0 JPA repository interfaces."}
+{"ts":"2025-11-25 13:26:19,817","service":"search","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.TomcatWebServer","msg":"Tomcat initialized with port 8084 (http)"}
+{"ts":"2025-11-25 13:26:19,817","service":"search","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","msg":"Initializing ProtocolHandler ["http-nio-8084"]"}
+{"ts":"2025-11-25 13:26:19,817","service":"search","level":"INFO","logger":"org.apache.catalina.core.StandardService","msg":"Starting service [Tomcat]"}
+{"ts":"2025-11-25 13:26:19,817","service":"search","level":"INFO","logger":"org.apache.catalina.core.StandardEngine","msg":"Starting Servlet engine: [Apache Tomcat/10.1.48]"}
+{"ts":"2025-11-25 13:26:19,822","service":"search","level":"INFO","logger":"org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]","msg":"Initializing Spring embedded WebApplicationContext"}
+{"ts":"2025-11-25 13:26:19,822","service":"search","level":"INFO","logger":"org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext","msg":"Root WebApplicationContext: initialization completed in 174 ms"}
+{"ts":"2025-11-25 13:26:19,851","service":"search","level":"INFO","logger":"org.hibernate.jpa.internal.util.LogHelper","msg":"HHH000204: Processing PersistenceUnitInfo [name: default]"}
+{"ts":"2025-11-25 13:26:19,852","service":"search","level":"INFO","logger":"org.hibernate.cache.internal.RegionFactoryInitiator","msg":"HHH000026: Second-level cache disabled"}
+{"ts":"2025-11-25 13:26:19,854","service":"search","level":"INFO","logger":"org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo","msg":"No LoadTimeWeaver setup: ignoring JPA class transformer"}
+{"ts":"2025-11-25 13:26:19,854","service":"search","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-4 - Starting..."}
+{"ts":"2025-11-25 13:26:19,855","service":"search","level":"INFO","logger":"com.zaxxer.hikari.pool.HikariPool","msg":"HikariPool-4 - Added connection conn93: url=jdbc:h2:mem:searchdb user=SA"}
+{"ts":"2025-11-25 13:26:19,855","service":"search","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-4 - Start completed."}
+{"ts":"2025-11-25 13:26:19,855","service":"search","level":"INFO","logger":"org.hibernate.orm.connections.pooling","msg":"HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-4)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown"}
+{"ts":"2025-11-25 13:26:19,861","service":"search","level":"INFO","logger":"org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator","msg":"HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)"}
+{"ts":"2025-11-25 13:26:19,861","service":"search","level":"INFO","logger":"org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean","msg":"Initialized JPA EntityManagerFactory for persistence unit 'default'"}
+{"ts":"2025-11-25 13:26:19,880","service":"search","level":"WARN","logger":"org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration","msg":"spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning"}
+{"ts":"2025-11-25 13:26:19,887","service":"search","level":"WARN","logger":"org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration","msg":"
+
+Using generated security password: 9edd5c23-de34-4e75-92c6-068b90af624e
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+"}
+{"ts":"2025-11-25 13:26:19,887","service":"search","level":"INFO","logger":"org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer","msg":"Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager"}
+{"ts":"2025-11-25 13:26:19,920","service":"search","level":"INFO","logger":"org.springframework.graphql.execution.DefaultSchemaResourceGraphQlSourceBuilder","msg":"Loaded 1 resource(s) in the GraphQL schema."}
+{"ts":"2025-11-25 13:26:19,924","service":"search","level":"INFO","logger":"org.springframework.boot.autoconfigure.graphql.GraphQlAutoConfiguration","msg":"GraphQL schema inspection:
+	Unmapped fields: {}
+	Unmapped registrations: {}
+	Unmapped arguments: {}
+	Skipped types: []"}
+{"ts":"2025-11-25 13:26:19,924","service":"search","level":"INFO","logger":"org.springframework.boot.autoconfigure.graphql.servlet.GraphQlWebMvcAutoConfiguration","msg":"GraphQL endpoint HTTP POST /graphql"}
+{"ts":"2025-11-25 13:26:19,942","service":"search","level":"INFO","logger":"org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver","msg":"Exposing 2 endpoints beneath base path '/actuator'"}
+{"ts":"2025-11-25 13:26:19,990","service":"search","level":"INFO","logger":"org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration","msg":"H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:searchdb'"}
+{"ts":"2025-11-25 13:26:19,998","service":"search","level":"INFO","logger":"org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer","msg":"LiveReload server is running on port 35729"}
+{"ts":"2025-11-25 13:26:20,003","service":"search","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","msg":"Starting ProtocolHandler ["http-nio-8084"]"}
+{"ts":"2025-11-25 13:26:20,006","service":"search","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.TomcatWebServer","msg":"Tomcat started on port 8084 (http) with context path '/'"}
+{"ts":"2025-11-25 13:26:20,010","service":"search","level":"INFO","logger":"com.eventix.search.SearchApplication","msg":"Started SearchApplication in 0.381 seconds (process running for 11160.417)"}
+{"ts":"2025-11-25 13:26:20,011","service":"search","level":"INFO","logger":"org.springframework.boot.devtools.autoconfigure.ConditionEvaluationDeltaLoggingListener","msg":"Condition evaluation unchanged"}
+{"ts":"2025-11-25 13:26:37,378","service":"search","level":"INFO","logger":"org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]","msg":"Initializing Spring DispatcherServlet 'dispatcherServlet'"}
+{"ts":"2025-11-25 13:26:37,378","service":"search","level":"INFO","logger":"org.springframework.web.servlet.DispatcherServlet","msg":"Initializing Servlet 'dispatcherServlet'"}
+{"ts":"2025-11-25 13:26:37,379","service":"search","level":"INFO","logger":"org.springframework.web.servlet.DispatcherServlet","msg":"Completed initialization in 1 ms"}
+{"ts":"2025-11-25 13:26:37,387","service":"search","level":"WARN","logger":"org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver","msg":"Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource swagger-ui.]"}
+{"ts":"2025-11-25 13:26:50,714","service":"search","level":"INFO","logger":"org.hibernate.validator.internal.util.Version","msg":"HV000001: Hibernate Validator 8.0.3.Final"}
+{"ts":"2025-11-25 13:26:50,730","service":"search","level":"INFO","logger":"com.eventix.search.SearchApplication","msg":"Starting SearchApplication using Java 23.0.1 with PID 25049 (/Users/I528994/APIBP-20242YB-Team-04/srv/search/target/classes started by I528994 in /Users/I528994/APIBP-20242YB-Team-04/srv/search)"}
+{"ts":"2025-11-25 13:26:50,730","service":"search","level":"INFO","logger":"com.eventix.search.SearchApplication","msg":"No active profile set, falling back to 1 default profile: "default""}
+{"ts":"2025-11-25 13:26:50,747","service":"search","level":"INFO","logger":"org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor","msg":"Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable"}
+{"ts":"2025-11-25 13:26:50,748","service":"search","level":"INFO","logger":"org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor","msg":"For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'"}
+{"ts":"2025-11-25 13:26:51,115","service":"search","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","msg":"Bootstrapping Spring Data JPA repositories in DEFAULT mode."}
+{"ts":"2025-11-25 13:26:51,124","service":"search","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","msg":"Finished Spring Data repository scanning in 5 ms. Found 0 JPA repository interfaces."}
+{"ts":"2025-11-25 13:26:51,370","service":"search","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.TomcatWebServer","msg":"Tomcat initialized with port 8084 (http)"}
+{"ts":"2025-11-25 13:26:51,375","service":"search","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","msg":"Initializing ProtocolHandler ["http-nio-8084"]"}
+{"ts":"2025-11-25 13:26:51,376","service":"search","level":"INFO","logger":"org.apache.catalina.core.StandardService","msg":"Starting service [Tomcat]"}
+{"ts":"2025-11-25 13:26:51,376","service":"search","level":"INFO","logger":"org.apache.catalina.core.StandardEngine","msg":"Starting Servlet engine: [Apache Tomcat/10.1.48]"}
+{"ts":"2025-11-25 13:26:51,391","service":"search","level":"INFO","logger":"org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]","msg":"Initializing Spring embedded WebApplicationContext"}
+{"ts":"2025-11-25 13:26:51,391","service":"search","level":"INFO","logger":"org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext","msg":"Root WebApplicationContext: initialization completed in 643 ms"}
+{"ts":"2025-11-25 13:26:51,484","service":"search","level":"INFO","logger":"org.hibernate.jpa.internal.util.LogHelper","msg":"HHH000204: Processing PersistenceUnitInfo [name: default]"}
+{"ts":"2025-11-25 13:26:51,500","service":"search","level":"INFO","logger":"org.hibernate.Version","msg":"HHH000412: Hibernate ORM core version 6.6.33.Final"}
+{"ts":"2025-11-25 13:26:51,513","service":"search","level":"INFO","logger":"org.hibernate.cache.internal.RegionFactoryInitiator","msg":"HHH000026: Second-level cache disabled"}
+{"ts":"2025-11-25 13:26:51,603","service":"search","level":"INFO","logger":"org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo","msg":"No LoadTimeWeaver setup: ignoring JPA class transformer"}
+{"ts":"2025-11-25 13:26:51,613","service":"search","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Starting..."}
+{"ts":"2025-11-25 13:26:51,680","service":"search","level":"INFO","logger":"com.zaxxer.hikari.pool.HikariPool","msg":"HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:searchdb user=SA"}
+{"ts":"2025-11-25 13:26:51,680","service":"search","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Start completed."}
+{"ts":"2025-11-25 13:26:51,701","service":"search","level":"INFO","logger":"org.hibernate.orm.connections.pooling","msg":"HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown"}
+{"ts":"2025-11-25 13:26:51,807","service":"search","level":"INFO","logger":"org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator","msg":"HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)"}
+{"ts":"2025-11-25 13:26:51,809","service":"search","level":"INFO","logger":"org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean","msg":"Initialized JPA EntityManagerFactory for persistence unit 'default'"}
+{"ts":"2025-11-25 13:26:51,861","service":"search","level":"WARN","logger":"org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration","msg":"spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning"}
+{"ts":"2025-11-25 13:26:51,876","service":"search","level":"WARN","logger":"org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration","msg":"
+
+Using generated security password: 4f59dea4-78fb-4c5f-a0d6-da7d6ecfee5f
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+"}
+{"ts":"2025-11-25 13:26:51,879","service":"search","level":"INFO","logger":"org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer","msg":"Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager"}
+{"ts":"2025-11-25 13:26:52,047","service":"search","level":"INFO","logger":"org.springframework.graphql.execution.DefaultSchemaResourceGraphQlSourceBuilder","msg":"Loaded 1 resource(s) in the GraphQL schema."}
+{"ts":"2025-11-25 13:26:52,102","service":"search","level":"INFO","logger":"org.springframework.boot.autoconfigure.graphql.GraphQlAutoConfiguration","msg":"GraphQL schema inspection:
+	Unmapped fields: {}
+	Unmapped registrations: {}
+	Unmapped arguments: {}
+	Skipped types: []"}
+{"ts":"2025-11-25 13:26:52,111","service":"search","level":"INFO","logger":"org.springframework.boot.autoconfigure.graphql.servlet.GraphQlWebMvcAutoConfiguration","msg":"GraphQL endpoint HTTP POST /graphql"}
+{"ts":"2025-11-25 13:26:52,155","service":"search","level":"INFO","logger":"org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver","msg":"Exposing 2 endpoints beneath base path '/actuator'"}
+{"ts":"2025-11-25 13:26:52,274","service":"search","level":"INFO","logger":"org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration","msg":"H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:searchdb'"}
+{"ts":"2025-11-25 13:26:52,298","service":"search","level":"WARN","logger":"org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer","msg":"Unable to start LiveReload server"}
+{"ts":"2025-11-25 13:26:52,333","service":"search","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","msg":"Starting ProtocolHandler ["http-nio-8084"]"}
+{"ts":"2025-11-25 13:26:52,339","service":"search","level":"WARN","logger":"org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext","msg":"Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'"}
+{"ts":"2025-11-25 13:26:52,341","service":"search","level":"INFO","logger":"org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean","msg":"Closing JPA EntityManagerFactory for persistence unit 'default'"}
+{"ts":"2025-11-25 13:26:52,344","service":"search","level":"WARN","logger":"org.springframework.beans.factory.support.DisposableBeanAdapter","msg":"Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-232]"}
+{"ts":"2025-11-25 13:26:52,344","service":"search","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Shutdown initiated..."}
+{"ts":"2025-11-25 13:26:52,345","service":"search","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Shutdown completed."}
+{"ts":"2025-11-25 13:26:52,354","service":"search","level":"INFO","logger":"org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLogger","msg":"
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled."}
+{"ts":"2025-11-25 13:26:52,360","service":"search","level":"ERROR","logger":"org.springframework.boot.diagnostics.LoggingFailureAnalysisReporter","msg":"
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 8084 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 8084 or configure this application to listen on another port.
+"}
+{"ts":"2025-11-25 13:27:15,517","service":"search","level":"INFO","logger":"org.hibernate.validator.internal.util.Version","msg":"HV000001: Hibernate Validator 8.0.3.Final"}
+{"ts":"2025-11-25 13:27:15,535","service":"search","level":"INFO","logger":"com.eventix.search.SearchApplication","msg":"Starting SearchApplication using Java 23.0.1 with PID 25884 (/Users/I528994/APIBP-20242YB-Team-04/srv/search/target/classes started by I528994 in /Users/I528994/APIBP-20242YB-Team-04/srv/search)"}
+{"ts":"2025-11-25 13:27:15,535","service":"search","level":"INFO","logger":"com.eventix.search.SearchApplication","msg":"No active profile set, falling back to 1 default profile: "default""}
+{"ts":"2025-11-25 13:27:15,553","service":"search","level":"INFO","logger":"org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor","msg":"Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable"}
+{"ts":"2025-11-25 13:27:15,553","service":"search","level":"INFO","logger":"org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor","msg":"For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'"}
+{"ts":"2025-11-25 13:27:15,917","service":"search","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","msg":"Bootstrapping Spring Data JPA repositories in DEFAULT mode."}
+{"ts":"2025-11-25 13:27:15,925","service":"search","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","msg":"Finished Spring Data repository scanning in 5 ms. Found 0 JPA repository interfaces."}
+{"ts":"2025-11-25 13:27:16,218","service":"search","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.TomcatWebServer","msg":"Tomcat initialized with port 8084 (http)"}
+{"ts":"2025-11-25 13:27:16,223","service":"search","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","msg":"Initializing ProtocolHandler ["http-nio-8084"]"}
+{"ts":"2025-11-25 13:27:16,225","service":"search","level":"INFO","logger":"org.apache.catalina.core.StandardService","msg":"Starting service [Tomcat]"}
+{"ts":"2025-11-25 13:27:16,225","service":"search","level":"INFO","logger":"org.apache.catalina.core.StandardEngine","msg":"Starting Servlet engine: [Apache Tomcat/10.1.48]"}
+{"ts":"2025-11-25 13:27:16,244","service":"search","level":"INFO","logger":"org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]","msg":"Initializing Spring embedded WebApplicationContext"}
+{"ts":"2025-11-25 13:27:16,244","service":"search","level":"INFO","logger":"org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext","msg":"Root WebApplicationContext: initialization completed in 691 ms"}
+{"ts":"2025-11-25 13:27:16,341","service":"search","level":"INFO","logger":"org.hibernate.jpa.internal.util.LogHelper","msg":"HHH000204: Processing PersistenceUnitInfo [name: default]"}
+{"ts":"2025-11-25 13:27:16,358","service":"search","level":"INFO","logger":"org.hibernate.Version","msg":"HHH000412: Hibernate ORM core version 6.6.33.Final"}
+{"ts":"2025-11-25 13:27:16,373","service":"search","level":"INFO","logger":"org.hibernate.cache.internal.RegionFactoryInitiator","msg":"HHH000026: Second-level cache disabled"}
+{"ts":"2025-11-25 13:27:16,556","service":"search","level":"INFO","logger":"org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo","msg":"No LoadTimeWeaver setup: ignoring JPA class transformer"}
+{"ts":"2025-11-25 13:27:16,570","service":"search","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Starting..."}
+{"ts":"2025-11-25 13:27:16,646","service":"search","level":"INFO","logger":"com.zaxxer.hikari.pool.HikariPool","msg":"HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:searchdb user=SA"}
+{"ts":"2025-11-25 13:27:16,646","service":"search","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Start completed."}
+{"ts":"2025-11-25 13:27:16,670","service":"search","level":"INFO","logger":"org.hibernate.orm.connections.pooling","msg":"HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown"}
+{"ts":"2025-11-25 13:27:16,787","service":"search","level":"INFO","logger":"org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator","msg":"HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)"}
+{"ts":"2025-11-25 13:27:16,788","service":"search","level":"INFO","logger":"org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean","msg":"Initialized JPA EntityManagerFactory for persistence unit 'default'"}
+{"ts":"2025-11-25 13:27:16,847","service":"search","level":"WARN","logger":"org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration","msg":"spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning"}
+{"ts":"2025-11-25 13:27:16,865","service":"search","level":"WARN","logger":"org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration","msg":"
+
+Using generated security password: b73b702f-67ad-4303-8bc3-7767f859aa1c
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+"}
+{"ts":"2025-11-25 13:27:16,868","service":"search","level":"INFO","logger":"org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer","msg":"Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager"}
+{"ts":"2025-11-25 13:27:17,039","service":"search","level":"INFO","logger":"org.springframework.graphql.execution.DefaultSchemaResourceGraphQlSourceBuilder","msg":"Loaded 1 resource(s) in the GraphQL schema."}
+{"ts":"2025-11-25 13:27:17,093","service":"search","level":"INFO","logger":"org.springframework.boot.autoconfigure.graphql.GraphQlAutoConfiguration","msg":"GraphQL schema inspection:
+	Unmapped fields: {}
+	Unmapped registrations: {}
+	Unmapped arguments: {}
+	Skipped types: []"}
+{"ts":"2025-11-25 13:27:17,102","service":"search","level":"INFO","logger":"org.springframework.boot.autoconfigure.graphql.servlet.GraphQlWebMvcAutoConfiguration","msg":"GraphQL endpoint HTTP POST /graphql"}
+{"ts":"2025-11-25 13:27:17,156","service":"search","level":"INFO","logger":"org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver","msg":"Exposing 2 endpoints beneath base path '/actuator'"}
+{"ts":"2025-11-25 13:27:17,292","service":"search","level":"INFO","logger":"org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration","msg":"H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:searchdb'"}
+{"ts":"2025-11-25 13:27:17,319","service":"search","level":"INFO","logger":"org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer","msg":"LiveReload server is running on port 35729"}
+{"ts":"2025-11-25 13:27:17,384","service":"search","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","msg":"Starting ProtocolHandler ["http-nio-8084"]"}
+{"ts":"2025-11-25 13:27:17,388","service":"search","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.TomcatWebServer","msg":"Tomcat started on port 8084 (http) with context path '/'"}
+{"ts":"2025-11-25 13:27:17,398","service":"search","level":"INFO","logger":"com.eventix.search.SearchApplication","msg":"Started SearchApplication in 2.046 seconds (process running for 2.211)"}
+{"ts":"2025-11-25 13:27:43,373","service":"search","level":"INFO","logger":"org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]","msg":"Initializing Spring DispatcherServlet 'dispatcherServlet'"}
+{"ts":"2025-11-25 13:27:43,374","service":"search","level":"INFO","logger":"org.springframework.web.servlet.DispatcherServlet","msg":"Initializing Servlet 'dispatcherServlet'"}
+{"ts":"2025-11-25 13:27:43,377","service":"search","level":"INFO","logger":"org.springframework.web.servlet.DispatcherServlet","msg":"Completed initialization in 3 ms"}
+{"ts":"2025-11-25 13:27:43,459","service":"search","level":"WARN","logger":"org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver","msg":"Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource swagger-ui.]"}
+{"ts":"2025-11-25 13:27:44,102","service":"search","level":"WARN","logger":"org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver","msg":"Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource swagger-ui.]"}
+{"ts":"2025-11-25 13:27:44,425","service":"search","level":"WARN","logger":"org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver","msg":"Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource swagger-ui.]"}
+{"ts":"2025-11-25 13:27:44,698","service":"search","level":"WARN","logger":"org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver","msg":"Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource swagger-ui.]"}
+{"ts":"2025-11-25 13:28:07,993","service":"search","level":"WARN","logger":"org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver","msg":"Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource swagger-ui.]"}
+{"ts":"2025-11-25 13:29:37,243","service":"search","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.GracefulShutdown","msg":"Commencing graceful shutdown. Waiting for active requests to complete"}
+{"ts":"2025-11-25 13:29:37,256","service":"search","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.GracefulShutdown","msg":"Graceful shutdown complete"}
+{"ts":"2025-11-25 13:29:37,274","service":"search","level":"INFO","logger":"org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean","msg":"Closing JPA EntityManagerFactory for persistence unit 'default'"}
+{"ts":"2025-11-25 13:29:37,281","service":"search","level":"WARN","logger":"org.springframework.beans.factory.support.DisposableBeanAdapter","msg":"Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-232]"}
+{"ts":"2025-11-25 13:29:37,282","service":"search","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Shutdown initiated..."}
+{"ts":"2025-11-25 13:29:37,283","service":"search","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Shutdown completed."}
+{"ts":"2025-11-25 13:30:00,986","service":"search","level":"INFO","logger":"org.hibernate.validator.internal.util.Version","msg":"HV000001: Hibernate Validator 8.0.3.Final"}
+{"ts":"2025-11-25 13:30:01,001","service":"search","level":"INFO","logger":"com.eventix.search.SearchApplication","msg":"Starting SearchApplication using Java 23.0.1 with PID 27156 (/Users/I528994/APIBP-20242YB-Team-04/srv/search/target/classes started by I528994 in /Users/I528994/APIBP-20242YB-Team-04/srv/search)"}
+{"ts":"2025-11-25 13:30:01,002","service":"search","level":"INFO","logger":"com.eventix.search.SearchApplication","msg":"No active profile set, falling back to 1 default profile: "default""}
+{"ts":"2025-11-25 13:30:01,018","service":"search","level":"INFO","logger":"org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor","msg":"Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable"}
+{"ts":"2025-11-25 13:30:01,018","service":"search","level":"INFO","logger":"org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor","msg":"For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'"}
+{"ts":"2025-11-25 13:30:01,363","service":"search","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","msg":"Bootstrapping Spring Data JPA repositories in DEFAULT mode."}
+{"ts":"2025-11-25 13:30:01,372","service":"search","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","msg":"Finished Spring Data repository scanning in 5 ms. Found 0 JPA repository interfaces."}
+{"ts":"2025-11-25 13:30:01,587","service":"search","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.TomcatWebServer","msg":"Tomcat initialized with port 8084 (http)"}
+{"ts":"2025-11-25 13:30:01,592","service":"search","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","msg":"Initializing ProtocolHandler ["http-nio-8084"]"}
+{"ts":"2025-11-25 13:30:01,592","service":"search","level":"INFO","logger":"org.apache.catalina.core.StandardService","msg":"Starting service [Tomcat]"}
+{"ts":"2025-11-25 13:30:01,593","service":"search","level":"INFO","logger":"org.apache.catalina.core.StandardEngine","msg":"Starting Servlet engine: [Apache Tomcat/10.1.48]"}
+{"ts":"2025-11-25 13:30:01,615","service":"search","level":"INFO","logger":"org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]","msg":"Initializing Spring embedded WebApplicationContext"}
+{"ts":"2025-11-25 13:30:01,615","service":"search","level":"INFO","logger":"org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext","msg":"Root WebApplicationContext: initialization completed in 597 ms"}
+{"ts":"2025-11-25 13:30:01,709","service":"search","level":"INFO","logger":"org.hibernate.jpa.internal.util.LogHelper","msg":"HHH000204: Processing PersistenceUnitInfo [name: default]"}
+{"ts":"2025-11-25 13:30:01,726","service":"search","level":"INFO","logger":"org.hibernate.Version","msg":"HHH000412: Hibernate ORM core version 6.6.33.Final"}
+{"ts":"2025-11-25 13:30:01,735","service":"search","level":"INFO","logger":"org.hibernate.cache.internal.RegionFactoryInitiator","msg":"HHH000026: Second-level cache disabled"}
+{"ts":"2025-11-25 13:30:01,818","service":"search","level":"INFO","logger":"org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo","msg":"No LoadTimeWeaver setup: ignoring JPA class transformer"}
+{"ts":"2025-11-25 13:30:01,827","service":"search","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Starting..."}
+{"ts":"2025-11-25 13:30:01,888","service":"search","level":"INFO","logger":"com.zaxxer.hikari.pool.HikariPool","msg":"HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:searchdb user=SA"}
+{"ts":"2025-11-25 13:30:01,889","service":"search","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Start completed."}
+{"ts":"2025-11-25 13:30:01,909","service":"search","level":"INFO","logger":"org.hibernate.orm.connections.pooling","msg":"HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown"}
+{"ts":"2025-11-25 13:30:02,017","service":"search","level":"INFO","logger":"org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator","msg":"HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)"}
+{"ts":"2025-11-25 13:30:02,018","service":"search","level":"INFO","logger":"org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean","msg":"Initialized JPA EntityManagerFactory for persistence unit 'default'"}
+{"ts":"2025-11-25 13:30:02,069","service":"search","level":"WARN","logger":"org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration","msg":"spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning"}
+{"ts":"2025-11-25 13:30:02,085","service":"search","level":"WARN","logger":"org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration","msg":"
+
+Using generated security password: 0ff97421-0dd0-4501-a7c4-5b596d3b7be2
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+"}
+{"ts":"2025-11-25 13:30:02,088","service":"search","level":"INFO","logger":"org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer","msg":"Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager"}
+{"ts":"2025-11-25 13:30:02,254","service":"search","level":"INFO","logger":"org.springframework.graphql.execution.DefaultSchemaResourceGraphQlSourceBuilder","msg":"Loaded 1 resource(s) in the GraphQL schema."}
+{"ts":"2025-11-25 13:30:02,321","service":"search","level":"INFO","logger":"org.springframework.boot.autoconfigure.graphql.GraphQlAutoConfiguration","msg":"GraphQL schema inspection:
+	Unmapped fields: {}
+	Unmapped registrations: {}
+	Unmapped arguments: {}
+	Skipped types: []"}
+{"ts":"2025-11-25 13:30:02,334","service":"search","level":"INFO","logger":"org.springframework.boot.autoconfigure.graphql.servlet.GraphQlWebMvcAutoConfiguration","msg":"GraphQL endpoint HTTP POST /graphql"}
+{"ts":"2025-11-25 13:30:02,468","service":"search","level":"INFO","logger":"org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver","msg":"Exposing 2 endpoints beneath base path '/actuator'"}
+{"ts":"2025-11-25 13:30:02,657","service":"search","level":"INFO","logger":"org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration","msg":"H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:searchdb'"}
+{"ts":"2025-11-25 13:30:02,685","service":"search","level":"INFO","logger":"org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer","msg":"LiveReload server is running on port 35729"}
+{"ts":"2025-11-25 13:30:02,721","service":"search","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","msg":"Starting ProtocolHandler ["http-nio-8084"]"}
+{"ts":"2025-11-25 13:30:02,726","service":"search","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.TomcatWebServer","msg":"Tomcat started on port 8084 (http) with context path '/'"}
+{"ts":"2025-11-25 13:30:02,735","service":"search","level":"INFO","logger":"com.eventix.search.SearchApplication","msg":"Started SearchApplication in 1.901 seconds (process running for 2.051)"}
+{"ts":"2025-11-25 13:30:09,089","service":"search","level":"INFO","logger":"org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]","msg":"Initializing Spring DispatcherServlet 'dispatcherServlet'"}
+{"ts":"2025-11-25 13:30:09,089","service":"search","level":"INFO","logger":"org.springframework.web.servlet.DispatcherServlet","msg":"Initializing Servlet 'dispatcherServlet'"}
+{"ts":"2025-11-25 13:30:09,090","service":"search","level":"INFO","logger":"org.springframework.web.servlet.DispatcherServlet","msg":"Completed initialization in 1 ms"}
+{"ts":"2025-11-25 13:30:09,251","service":"search","level":"INFO","logger":"org.springdoc.api.AbstractOpenApiResource","msg":"Init duration for springdoc-openapi is: 117 ms"}
+{"ts":"2025-11-25 13:30:17,750","service":"search","level":"INFO","logger":"org.springdoc.api.AbstractOpenApiResource","msg":"Init duration for springdoc-openapi is: 53 ms"}
