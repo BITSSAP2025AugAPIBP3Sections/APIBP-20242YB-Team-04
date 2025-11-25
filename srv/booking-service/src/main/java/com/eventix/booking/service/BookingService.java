@@ -31,10 +31,10 @@ public class BookingService {
 
     public Booking createBooking(Booking booking) {
 
-//        EventResponse event = eventClient.getEvent(UUID.fromString(booking.getEventId()));
-//        if (event == null) {
-//            throw new RuntimeException("Event not found");
-//        }
+       EventResponse event = eventClient.getEvent(UUID.fromString(booking.getEventId()));
+       if (event == null) {
+           throw new RuntimeException("Event not found");
+       }
         
         setDefaults(booking);
         booking.setStatus("CONFIRMED");
