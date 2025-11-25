@@ -1,0 +1,46 @@
+{"ts":"2025-11-25 13:21:00,473","service":"event-service","level":"INFO","logger":"org.hibernate.validator.internal.util.Version","msg":"HV000001: Hibernate Validator 8.0.3.Final"}
+{"ts":"2025-11-25 13:21:00,488","service":"event-service","level":"INFO","logger":"com.eventix.eventservice.EventServiceApplication","msg":"Starting EventServiceApplication using Java 23.0.1 with PID 19274 (/Users/I528994/APIBP-20242YB-Team-04/srv/event-service/target/classes started by I528994 in /Users/I528994/APIBP-20242YB-Team-04/srv/event-service)"}
+{"ts":"2025-11-25 13:21:00,489","service":"event-service","level":"INFO","logger":"com.eventix.eventservice.EventServiceApplication","msg":"No active profile set, falling back to 1 default profile: "default""}
+{"ts":"2025-11-25 13:21:00,505","service":"event-service","level":"INFO","logger":"org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor","msg":"Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable"}
+{"ts":"2025-11-25 13:21:00,505","service":"event-service","level":"INFO","logger":"org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor","msg":"For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'"}
+{"ts":"2025-11-25 13:21:00,746","service":"event-service","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","msg":"Bootstrapping Spring Data JPA repositories in DEFAULT mode."}
+{"ts":"2025-11-25 13:21:00,765","service":"event-service","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","msg":"Finished Spring Data repository scanning in 16 ms. Found 1 JPA repository interface."}
+{"ts":"2025-11-25 13:21:00,949","service":"event-service","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.TomcatWebServer","msg":"Tomcat initialized with port 8083 (http)"}
+{"ts":"2025-11-25 13:21:00,953","service":"event-service","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","msg":"Initializing ProtocolHandler ["http-nio-8083"]"}
+{"ts":"2025-11-25 13:21:00,954","service":"event-service","level":"INFO","logger":"org.apache.catalina.core.StandardService","msg":"Starting service [Tomcat]"}
+{"ts":"2025-11-25 13:21:00,954","service":"event-service","level":"INFO","logger":"org.apache.catalina.core.StandardEngine","msg":"Starting Servlet engine: [Apache Tomcat/10.1.48]"}
+{"ts":"2025-11-25 13:21:00,973","service":"event-service","level":"INFO","logger":"org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]","msg":"Initializing Spring embedded WebApplicationContext"}
+{"ts":"2025-11-25 13:21:00,973","service":"event-service","level":"INFO","logger":"org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext","msg":"Root WebApplicationContext: initialization completed in 468 ms"}
+{"ts":"2025-11-25 13:21:01,025","service":"event-service","level":"INFO","logger":"org.hibernate.jpa.internal.util.LogHelper","msg":"HHH000204: Processing PersistenceUnitInfo [name: default]"}
+{"ts":"2025-11-25 13:21:01,039","service":"event-service","level":"INFO","logger":"org.hibernate.Version","msg":"HHH000412: Hibernate ORM core version 6.6.33.Final"}
+{"ts":"2025-11-25 13:21:01,049","service":"event-service","level":"INFO","logger":"org.hibernate.cache.internal.RegionFactoryInitiator","msg":"HHH000026: Second-level cache disabled"}
+{"ts":"2025-11-25 13:21:01,131","service":"event-service","level":"INFO","logger":"org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo","msg":"No LoadTimeWeaver setup: ignoring JPA class transformer"}
+{"ts":"2025-11-25 13:21:01,140","service":"event-service","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Starting..."}
+{"ts":"2025-11-25 13:21:01,213","service":"event-service","level":"INFO","logger":"com.zaxxer.hikari.pool.HikariPool","msg":"HikariPool-1 - Added connection conn0: url=jdbc:h2:file:./data/eventdb user=SA"}
+{"ts":"2025-11-25 13:21:01,213","service":"event-service","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","msg":"HikariPool-1 - Start completed."}
+{"ts":"2025-11-25 13:21:01,220","service":"event-service","level":"WARN","logger":"org.hibernate.orm.deprecation","msg":"HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)"}
+{"ts":"2025-11-25 13:21:01,227","service":"event-service","level":"INFO","logger":"org.hibernate.orm.connections.pooling","msg":"HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown"}
+{"ts":"2025-11-25 13:21:01,484","service":"event-service","level":"INFO","logger":"org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator","msg":"HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)"}
+{"ts":"2025-11-25 13:21:01,504","service":"event-service","level":"INFO","logger":"org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean","msg":"Initialized JPA EntityManagerFactory for persistence unit 'default'"}
+{"ts":"2025-11-25 13:21:01,677","service":"event-service","level":"WARN","logger":"org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration","msg":"spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning"}
+{"ts":"2025-11-25 13:21:01,793","service":"event-service","level":"INFO","logger":"org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration","msg":"H2 console available at '/h2-console'. Database available at 'jdbc:h2:file:./data/eventdb'"}
+{"ts":"2025-11-25 13:21:01,814","service":"event-service","level":"WARN","logger":"org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer","msg":"Unable to start LiveReload server"}
+{"ts":"2025-11-25 13:21:01,820","service":"event-service","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","msg":"Starting ProtocolHandler ["http-nio-8083"]"}
+{"ts":"2025-11-25 13:21:01,830","service":"event-service","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.TomcatWebServer","msg":"Tomcat started on port 8083 (http) with context path '/'"}
+{"ts":"2025-11-25 13:21:01,834","service":"event-service","level":"INFO","logger":"com.eventix.eventservice.EventServiceApplication","msg":"Started EventServiceApplication in 1.508 seconds (process running for 1.647)"}
+{"ts":"2025-11-25 13:21:01,964","service":"event-service","level":"DEBUG","logger":"org.hibernate.SQL","msg":"
+    select
+        count(*) 
+    from
+        events e1_0"}
+{"ts":"2025-11-25 13:21:44,225","service":"event-service","level":"INFO","logger":"org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]","msg":"Initializing Spring DispatcherServlet 'dispatcherServlet'"}
+{"ts":"2025-11-25 13:21:44,225","service":"event-service","level":"INFO","logger":"org.springframework.web.servlet.DispatcherServlet","msg":"Initializing Servlet 'dispatcherServlet'"}
+{"ts":"2025-11-25 13:21:44,226","service":"event-service","level":"INFO","logger":"org.springframework.web.servlet.DispatcherServlet","msg":"Completed initialization in 1 ms"}
+{"ts":"2025-11-25 13:21:44,482","service":"event-service","level":"INFO","logger":"org.springdoc.api.AbstractOpenApiResource","msg":"Init duration for springdoc-openapi is: 149 ms"}
