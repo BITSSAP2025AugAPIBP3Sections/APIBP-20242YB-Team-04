@@ -14,9 +14,15 @@
 	<name>search</name>
 	<description>Search Service of Eventix</description>
 	<url/>
-	<licenses>
-		<license/>
-	</licenses>
+<licenses>
+    <license>
+        <name>MIT License</name>
+        <url>https://opensource.org/licenses/MIT</url>
+        <distribution>repo</distribution>
+        <comments>Open-source MIT license for Eventix microservices</comments>
+    </license>
+</licenses>
+
 	<developers>
 		<developer/>
 	</developers>
