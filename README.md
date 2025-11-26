@@ -175,3 +175,66 @@ After ~10 seconds, visit:
 -http://localhost:8080/swagger-ui.html
 
 to access the unified Swagger interface for all microservices.
+
+## Notification Flow
+
+Booking service emits a notification event after successful persistence; RabbitMQ buffers and decouples; notification service consumes asynchronously and delivers email with retry/requeue semantics for resilience.
+
+1. **Booking Creation**
+
+   * Client calls **POST /bookings**.
+   * BookingService saves the booking (status = CONFIRMED).
+   * A lightweight notification event (DTO) is published to RabbitMQ.
+
+2. **Message Publishing**
+
+   * Event sent to a **topic exchange** with a routing key (e.g., `booking.created`).
+   * Routed to a **durable queue** (`booking.notifications.q`).
+
+3. **Queue Behavior**
+
+   * Durable (survives restarts).
+   * **At-least-once** delivery → consumers must handle duplicates.
+   * Optional **DLQ** for failed messages.
+
+4. **Notification Service Consumption**
+
+   * `@RabbitListener` consumes messages.
+   * Calls EmailService to send email.
+   * Success → auto-ack.
+   * Failure → message requeue or DLQ (based on config).
+
+5. **Why This Architecture**
+
+   * Booking service is **decoupled** from email sending.
+   * Allows independent scaling.
+   * DTO contract ensures safe evolution.
+
+## Steps to Pull and Run dashboard-service from Docker Hub
+
+1. Prerequisites
+
+Docker Desktop installed
+
+Your local RabbitMQ, booking-service, and event-service must be reachable on the host (Windows).
+
+2. Pull the Docker Image
+```
+docker pull sivaramram/dashboard-service:latest
+```
+3. Run the Container
+```
+docker run -d --name dashboard-service \
+  -p 8085:8085 \
+  -e SPRING_PROFILES_ACTIVE=prod \
+  -e RABBITMQ_HOST=host.docker.internal \
+  -e RABBITMQ_PORT=5672 \
+  -e BOOKING_SERVICE_URL=http://host.docker.internal:8082 \
+  -e EVENT_SERVICE_URL=http://host.docker.internal:8081 \
+  sivaramram/dashboard-service:latest
+```
+3. Stop/cleanup:
+```
+docker stop dashboard-service
+docker rm dashboard-service
+```
