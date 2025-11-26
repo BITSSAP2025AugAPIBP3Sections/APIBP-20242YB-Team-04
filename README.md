@@ -168,7 +168,7 @@ This will start:
 - Event Service → http://localhost:8083
 - Search Service → http://localhost:8084
 - Dashboard Service → http://localhost:8085
-- Aggregator (Gateway) → http://localhost:8080
+- Gateway → http://localhost:8080
 
 After ~10 seconds, visit:
 
