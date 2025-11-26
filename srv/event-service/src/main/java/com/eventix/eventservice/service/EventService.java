@@ -245,4 +245,76 @@ public class EventService {
         debugLog.debug("Suggestions total={}", suggestions.size());
         return suggestions;
     }
+
+    // ----------------------------- GET EVENTS BY ORGANIZER -------------------------
+    @Transactional(readOnly = true)
+    public Page<EventResponse> getEventsByOrganizer(String organizerId, int page, int size) {
+        accessLog.info("getEventsByOrganizer organizerId={} page={} size={}", organizerId, page, size);
+        
+        Pageable pageable = PageRequest.of(page, size, Sort.by("startTime").descending());
+        Page<Event> events = repository.findByOrganizerId(organizerId, pageable);
+        
+        debugLog.debug("Events by organizer count={}", events.getTotalElements());
+        return events.map(toDto);
+    }
+
+    // ----------------------------- MAP EVENTS (GEOSPATIAL) -------------------------
+    public List<EventResponse> getMapEvents(double lat, double lon, double radius,
+                                            String category, String date) {
+        accessLog.info("getMapEvents lat={} lon={} radius={} category={} date={}", 
+                       lat, lon, radius, category, date);
+
+        Specification<Event> spec = EventSpecification.combine(
+                EventSpecification.isPublished(),
+                EventSpecification.hasCategory(category)
+        );
+
+        List<Event> events = repository.findAll(spec);
+
+        // Filter by geospatial radius and optional date
+        List<EventResponse> filtered = events.stream()
+                .filter(e -> {
+                    // Optional date filtering
+                    if (date != null && !date.isEmpty()) {
+                        return e.getStartTime().toString().startsWith(date);
+                    }
+                    return true;
+                })
+                .map(toDto)
+                .toList();
+
+        debugLog.debug("Map events count={}", filtered.size());
+        return filtered;
+    }
+
+    // ----------------------------- CALENDAR EVENTS ---------------------------------
+    public Map<String, Object> getEventsByCalendar(String month, String city, String category) {
+        accessLog.info("getEventsByCalendar month={} city={} category={}", month, city, category);
+
+        Specification<Event> spec = EventSpecification.combine(
+                EventSpecification.isPublished(),
+                EventSpecification.hasCity(city),
+                EventSpecification.hasCategory(category)
+        );
+
+        List<Event> events = repository.findAll(spec);
+
+        // Filter by month if provided
+        List<EventResponse> filtered = events.stream()
+                .filter(e -> {
+                    if (month != null && !month.isEmpty()) {
+                        return e.getStartTime().toString().startsWith(month);
+                    }
+                    return true;
+                })
+                .map(toDto)
+                .toList();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("month", month);
+        response.put("events", filtered);
+
+        debugLog.debug("Calendar events count={}", filtered.size());
+        return response;
+    }
 }
