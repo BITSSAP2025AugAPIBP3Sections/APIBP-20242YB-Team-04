@@ -1,0 +1,21 @@
+meta {
+  name: Register Organizer
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/organizer/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "organizer@example.com",
+    "password": "orgpass123",
+    "name": "John Organizer",
+    "organizationName": "Event Masters Inc",
+    "contactPhone": "1234567890"
+  }
+}

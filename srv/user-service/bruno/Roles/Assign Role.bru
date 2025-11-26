@@ -1,0 +1,20 @@
+meta {
+  name: Assign Role
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/roles/assign?userId={{user_id}}&roleName=ROLE_ADMIN
+  body: none
+  auth: bearer
+}
+
+params:query {
+  userId: {{user_id}}
+  roleName: ROLE_ADMIN
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
