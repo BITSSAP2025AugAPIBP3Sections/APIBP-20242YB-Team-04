@@ -27,4 +27,13 @@
       </plugins>
     </pluginManagement>
   </build>
+
+  <licenses>
+    <license>
+        <name>MIT License</name>
+        <url>https://opensource.org/licenses/MIT</url>
+        <distribution>repo</distribution>
+    </license>
+</licenses>
+
 </project>

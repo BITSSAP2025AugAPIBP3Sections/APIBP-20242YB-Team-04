@@ -14,9 +14,14 @@
 	<name>Notification</name>
 	<description>notification and dashboard service</description>
 	<url/>
-	<licenses>
-		<license/>
-	</licenses>
+<licenses>
+    <license>
+        <name>MIT License</name>
+        <url>https://opensource.org/licenses/MIT</url>
+        <distribution>repo</distribution>
+        <comments>Open-source MIT license for Eventix microservices</comments>
+    </license>
+</licenses>
 	<developers>
 		<developer/>
 	</developers>
@@ -114,5 +119,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
