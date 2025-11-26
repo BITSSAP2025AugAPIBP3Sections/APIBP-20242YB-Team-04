@@ -13,7 +13,7 @@
     <module>user-service</module>
     <module>dashboard-service</module>
     <module>search</module>
-    <module>aggregator</module>
+    <module>gateway</module>
   </modules>
 
   <build>
