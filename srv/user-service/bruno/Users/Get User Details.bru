@@ -1,0 +1,15 @@
+meta {
+  name: Get User Details
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{base_url}}/users/details/{{user_id}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
