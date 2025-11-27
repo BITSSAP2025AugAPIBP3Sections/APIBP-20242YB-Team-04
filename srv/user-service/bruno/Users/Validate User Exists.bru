@@ -1,0 +1,15 @@
+meta {
+  name: Validate User Exists
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{base_url}}/users/validate/{{user_id}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
