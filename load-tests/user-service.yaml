@@ -1,0 +1,144 @@
+config:
+  target: "http://localhost:8081"   # Change to your user-service port
+
+  phases:
+    - duration: 60
+      arrivalRate: 20
+    - duration: 60
+      arrivalRate: 50
+
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+
+  # ------------------------------------------------------
+  # AUTH CONTROLLER TESTS
+  # ------------------------------------------------------
+
+  - name: "Auth - Login"
+    flow:
+      - post:
+          url: "/auth/login"
+          json:
+            email: "testuser@example.com"
+            password: "password123"
+
+  - name: "Auth - Refresh Token"
+    flow:
+      - post:
+          url: "/auth/refresh"
+          json: "DUMMY_REFRESH_TOKEN"
+
+  - name: "Auth - Forgot Password"
+    flow:
+      - post:
+          url: "/auth/forgot-password"
+          json: "testuser@example.com"
+
+  - name: "Auth - Reset Password"
+    flow:
+      - post:
+          url: "/auth/reset-password?token=RESET123&newPassword=newpass123"
+
+  - name: "Auth - Verify Email"
+    flow:
+      - post:
+          url: "/auth/verify-email?token=VERIFY123"
+
+  - name: "Auth - Validate Token"
+    flow:
+      - get:
+          url: "/auth/validate?token=DUMMYTOKEN"
+
+  # ------------------------------------------------------
+  # USER CONTROLLER TESTS
+  # ------------------------------------------------------
+
+  - name: "Users - Register User"
+    flow:
+      - post:
+          url: "/users/register"
+          json:
+            fullName: "Load Test User"
+            email: "loadtest+{{ $randomNumber(1, 50000) }}@example.com"
+            password: "password123"
+            phone: "9876543210"
+
+  - name: "Users - Get All Users"
+    flow:
+      - get:
+          url: "/users?page=0&size=10"
+
+  - name: "Users - Get User by ID"
+    flow:
+      - get:
+          url: "/users/1"
+
+  - name: "Users - Update User"
+    flow:
+      - put:
+          url: "/users/1"
+          json:
+            fullName: "Updated Test User"
+            email: "updated@example.com"
+            password: "newpassword123"
+            phone: "9998887777"
+
+  - name: "Users - Deactivate User"
+    flow:
+      - delete:
+          url: "/users/1"
+
+  - name: "Users - Current User"
+    flow:
+      - get:
+          url: "/users/me"
+
+  - name: "Users - User Details"
+    flow:
+      - get:
+          url: "/users/details/1"
+
+  # ------------------------------------------------------
+  # ROLE CONTROLLER TESTS
+  # ------------------------------------------------------
+
+  - name: "Roles - Get All Roles"
+    flow:
+      - get:
+          url: "/roles"
+
+  - name: "Roles - Assign Role"
+    flow:
+      - post:
+          url: "/roles/assign?userId=1&roleName=ADMIN"
+
+  # ------------------------------------------------------
+  # ORGANIZER CONTROLLER TESTS
+  # ------------------------------------------------------
+
+  - name: "Organizer - Register"
+    flow:
+      - post:
+          url: "/organizer/register"
+          json:
+            organizationName: "Load Test Org"
+            email: "org+{{ $randomNumber(1,9999) }}@mail.com"
+            phone: "9871234567"
+
+  - name: "Organizer - Fetch Events"
+    flow:
+      - get:
+          url: "/organizer/1/events"
+
+  - name: "Organizer - Fetch Event Attendees"
+    flow:
+      - get:
+          url: "/organizer/1/events/10/attendees"
+
+  - name: "Organizer - Fetch Organizer Summary"
+    flow:
+      - get:
+          url: "/organizer/1/summary"

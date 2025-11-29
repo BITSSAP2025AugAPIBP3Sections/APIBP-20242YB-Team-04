@@ -1,0 +1,109 @@
+config:
+  target: "http://localhost:8083"
+  phases:
+    - duration: 60          # 1 minute test
+      arrivalRate: 20       # 20 new VUs per second → Moderate load
+    - duration: 60
+      arrivalRate: 50       # 50 VUs → High load
+
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+
+  # -------------------------------------------------------
+  # 1️⃣ Basic Health & List Events (Most important)
+  # -------------------------------------------------------
+  - name: "List events & filters"
+    flow:
+      - get:
+          url: "/api/v1/events?page=0&size=10"
+      - get:
+          url: "/api/v1/events/filters"
+
+  # -------------------------------------------------------
+  # 2️⃣ Create + Get event
+  # -------------------------------------------------------
+  - name: "Create event & fetch it"
+    flow:
+      - post:
+          url: "/api/v1/events"
+          json:
+            title: "Artillery Load Test Event"
+            description: "Event created during load test"
+            city: "Bangalore"
+            category: "Community"
+            organizerId: "org-123"
+            startTime: "2025-12-31T12:00:00Z"
+            endTime: "2025-12-31T16:00:00Z"
+
+      # Fetch list to simulate dashboard refresh
+      - get:
+          url: "/api/v1/events?page=0&size=5"
+
+  # -------------------------------------------------------
+  # 3️⃣ Search scenarios
+  # -------------------------------------------------------
+  - name: "Search events various filters"
+    flow:
+      - get:
+          url: "/api/v1/events/search?city=Bangalore&page=0&size=5"
+      - get:
+          url: "/api/v1/events/search?category=Community&page=1&size=10"
+      - get:
+          url: "/api/v1/events/search?organizerId=org-123"
+
+  # -------------------------------------------------------
+  # 4️⃣ Heavy-read endpoints
+  # -------------------------------------------------------
+  - name: "Recent, Suggestions, Map search (hidden endpoints)"
+    flow:
+      - get:
+          url: "/api/v1/events/recent?limit=20&city=Bangalore"
+
+      - get:
+          url: "/api/v1/events/suggestions?q=clean&type=category"
+
+      - get:
+          url: "/api/v1/events/map?lat=12.9716&lon=77.5946&radius=5"
+
+  # -------------------------------------------------------
+  # 5️⃣ Get / Update / Delete operations
+  # -------------------------------------------------------
+  - name: "Full CRUD event operations"
+    flow:
+      # Create
+      - post:
+          url: "/api/v1/events"
+          capture:
+            json: "$.id"
+            as: "eventId"
+          json:
+            title: "CRUD Event"
+            description: "Used in update/delete test"
+            city: "Delhi"
+            category: "Health"
+            organizerId: "org-999"
+            startTime: "2025-12-10T10:00:00Z"
+            endTime: "2025-12-10T12:00:00Z"
+
+      # Update event
+      - put:
+          url: "/api/v1/events/{{ eventId }}"
+          json:
+            title: "Updated Event Title"
+            description: "Updated via load test"
+            city: "Delhi"
+            category: "UpdatedCat"
+            organizerId: "org-999"
+            startTime: "2025-12-10T10:00:00Z"
+            endTime: "2025-12-10T13:00:00Z"
+
+      # Fetch updated event
+      - get:
+          url: "/api/v1/events/{{ eventId }}"
+
+      # Delete event
+      - delete:
+          url: "/api/v1/events/{{ eventId }}"
