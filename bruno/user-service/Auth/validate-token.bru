@@ -1,0 +1,15 @@
+meta {
+  name: Validate Token
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/auth/validate?token={{auth_token}}
+  body: none
+  auth: none
+}
+
+params:query {
+  token: {{auth_token}}
+}
