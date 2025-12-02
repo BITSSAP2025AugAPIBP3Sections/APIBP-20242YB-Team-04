@@ -7,4 +7,6 @@ public class JwtClaims {
     private Long userId;
     private String role;
     private Long organizerId;
+    private String firstName;
+    private String lastName;
 }

@@ -56,6 +56,8 @@ public class AuthServiceImpl implements AuthService {
                 : "user";
         claims.put("role", role);
         claims.put("organizerId", user.getOrganizerId());
+        claims.put("firstName", user.getFirstName());
+        claims.put("lastName", user.getLastName());
 
         String accessToken = jwtUtil.generateToken(claims, user.getEmail());
         String refreshToken = java.util.UUID.randomUUID().toString();

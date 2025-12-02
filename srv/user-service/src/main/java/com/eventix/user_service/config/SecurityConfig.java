@@ -32,6 +32,8 @@ public class SecurityConfig {
                                 "/users/register**",
                                 "/users/validate/**",
                                 "/users/details/**",
+                                "/organizer/register",
+                                "/roles",
                                 "/version",
                                 "/health",
                                 "/openapi.yaml",
