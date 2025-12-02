@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { SiCashapp } from "react-icons/si";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
-import { setToken } from "../redux/reducers/userAuthReducer";
+import { setUser } from "../redux/reducers/userAuthReducer";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -30,10 +30,12 @@ const Login = () => {
 
   const loginSuccess = (token) => {
     const tokenDecoded = token ? jwtDecode(token.accessToken) : null;
-    const role = tokenDecoded ? tokenDecoded.roles[0] : null;
+    const role = tokenDecoded ? tokenDecoded.role : null;
+    console.log("Decoded Token:", tokenDecoded);
+    dispatch(setUser(tokenDecoded)); 
 
     toast.success("Login Successful");
-    localStorage.setItem("token", token);
+    localStorage.setItem("token", token.accessToken);
 
     // setTimeout(() => {
     //   role === "MANAGER" ? navigate("/manager-dashboard") : navigate("/account-details");
@@ -52,9 +54,9 @@ const Login = () => {
       );
 
       const token = response.data;
-      console.log(token);
+      // console.log(token);
       
-      dispatch(setToken(token)); // Save token in Redux
+      // dispatch(setUser(token)); // Save token in Redux
       loginSuccess(token);
     } catch (error) {
       if (error.response) {
