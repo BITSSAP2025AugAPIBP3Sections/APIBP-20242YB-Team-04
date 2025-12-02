@@ -1,5 +1,3 @@
-const initialUserAuthState = {
-    token: null,
-};
+const initialUserAuthState = {};
 
 export default initialUserAuthState;
