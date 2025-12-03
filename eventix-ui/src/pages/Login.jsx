@@ -10,6 +10,7 @@ import { setUser } from "../redux/reducers/userAuthReducer";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { setAuthToken } from "../api/api";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -29,18 +30,37 @@ const Login = () => {
   });
 
   const loginSuccess = (token) => {
-    const tokenDecoded = token ? jwtDecode(token.accessToken) : null;
-    const role = tokenDecoded ? tokenDecoded.role : null;
-    console.log("Decoded Token:", tokenDecoded);
-    dispatch(setUser(tokenDecoded)); 
+  const accessToken = token?.accessToken ?? null;
+  const refreshToken = token?.refreshToken ?? null;
 
-    toast.success("Login Successful");
-    localStorage.setItem("token", token.accessToken);
+  if (!accessToken) {
+    toast.error("Login succeeded but access token missing.");
+    return;
+  }
 
-    // setTimeout(() => {
-    //   role === "MANAGER" ? navigate("/manager-dashboard") : navigate("/account-details");
-    // }, 2500);
-  };
+  let tokenDecoded = null;
+  try {
+    tokenDecoded = jwtDecode(accessToken);
+  } catch (err) {
+    console.error("JWT decode failed:", err);
+  }
+
+  if (tokenDecoded) {
+    dispatch(setUser(tokenDecoded));
+  }
+
+  localStorage.setItem("accessToken", accessToken);
+  if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
+  localStorage.setItem("token", accessToken); // legacy
+
+  // use helper to set headers
+  setAuthToken(accessToken);
+
+  toast.success("Login Successful");
+  setTimeout(() => {
+    navigate("/");
+  }, 2500);
+};
   const loginFailed = (msg) => toast.error(`Login failed: ${msg}`);
 
   const onSubmit = async (data) => {
