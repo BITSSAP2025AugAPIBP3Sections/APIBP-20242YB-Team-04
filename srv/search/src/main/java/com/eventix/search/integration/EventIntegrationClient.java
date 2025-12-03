@@ -21,12 +21,14 @@ public class EventIntegrationClient {
 
     private final RestTemplate restTemplate;
     private final String baseUrl;
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper;
 
     public EventIntegrationClient(RestTemplate restTemplate,
+        ObjectMapper mapper,
                                   @Value("${remote.event.base-url:http://localhost:8083}") String baseUrl) {
         this.restTemplate = restTemplate;
         this.baseUrl = baseUrl;
+        this.mapper = mapper;
     }
 
     // ------------------------------
@@ -35,8 +37,8 @@ public class EventIntegrationClient {
     public List<EventDTO> searchEvents(String q,
                                        String city,
                                        String category,
-                                       String startDate,
-                                       String endDate,
+                                       String startTime,
+                                       String endTime,
                                        String sortBy,
                                        int page,
                                        int limit) {
@@ -48,8 +50,8 @@ public class EventIntegrationClient {
 
         if (city != null) uri.queryParam("city", city);
         if (category != null) uri.queryParam("category", category);
-        if (startDate != null) uri.queryParam("from", startDate);
-        if (endDate != null) uri.queryParam("to", endDate);
+        if (startTime != null) uri.queryParam("from", startTime);
+        if (endTime != null) uri.queryParam("to", endTime);
 
         try {
             ResponseEntity<PageResponse> resp =
@@ -137,41 +139,55 @@ public class EventIntegrationClient {
     }
 
     // ------------------------------
-    // 4) CALENDAR EVENTS
-    // ------------------------------
-    public CalenderEventDTO getEventsByCalendar(String month, String city, String category) {
+// 4) CALENDAR EVENTS (RestTemplate)
+// ------------------------------
+public CalenderEventDTO getEventsByCalendar(String month, String city, String category) {
 
-        UriComponentsBuilder uri = UriComponentsBuilder
-                .fromUriString(baseUrl + "/api/v1/events/calendar")
-                .queryParam("month", month);
+    // Build the URL with query params
+    UriComponentsBuilder uri = UriComponentsBuilder
+            .fromUriString(baseUrl + "/api/v1/events/calendar")
+            .queryParam("month", month);
 
-        if (city != null) uri.queryParam("city", city);
-        if (category != null) uri.queryParam("category", category);
-
-        try {
-            ResponseEntity<Map> resp =
-                    restTemplate.getForEntity(uri.toUriString(), Map.class);
-
-            if (resp.getBody() == null) return new CalenderEventDTO(month, List.of());
-
-            List<EventDTO> events =
-                    ((List<?>) resp.getBody().get("events")).stream()
-                            .map(o -> mapper.convertValue(o, EventDTO.class))
-                            .toList();
-
-            return new CalenderEventDTO(
-                    resp.getBody().get("month").toString(),
-                    events
-            );
-
-        } catch (ResourceAccessException ex) {
-            throw new ServiceUnavailableException("Event service is unavailable.");
-        } catch (HttpClientErrorException | HttpServerErrorException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+    if (city != null && !city.isBlank()) {
+        uri.queryParam("city", city);
     }
+
+    if (category != null && !category.isBlank()) {
+        uri.queryParam("category", category);
+    }
+
+    try {
+        ResponseEntity<Map> resp =
+                restTemplate.getForEntity(uri.toUriString(), Map.class);
+
+        Map body = resp.getBody();
+        if (body == null) {
+            return new CalenderEventDTO(month, List.of());
+        }
+
+        // Extract events safely
+        List<EventDTO> events = ((List<?>) body.get("events"))
+                .stream()
+                .map(obj -> mapper.convertValue(obj, EventDTO.class))
+                .toList();
+
+        return new CalenderEventDTO(
+                body.get("month").toString(),
+                events
+        );
+
+    } catch (ResourceAccessException ex) {
+        // Event service Down
+        throw new ServiceUnavailableException("Event service is unavailable.");
+    } catch (HttpClientErrorException | HttpServerErrorException ex) {
+        // Forward 4xx and 5xx
+        throw ex;
+    } catch (Exception ex) {
+        // Any unexpected exception
+        throw new RuntimeException(ex);
+    }
+}
+
 
     // ------------------------------
     // 5) FILTER OPTIONS

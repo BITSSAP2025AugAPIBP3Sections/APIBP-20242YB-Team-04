@@ -1,0 +1,109 @@
+config:
+  target: "http://localhost:8082"     # BOOKING SERVICE
+  phases:
+    - duration: 30
+      arrivalRate: 10      # warm-up
+    - duration: 60
+      arrivalRate: 25      # normal load
+    - duration: 30
+      arrivalRate: 40      # peak
+
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+  processor: |
+    // Generates a random UUID
+    function randomId() {
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0,
+            v = c === "x" ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+
+    module.exports = {
+      setRandomBooking: (req, context, ee, next) => {
+        context.vars.bookingId = randomId();
+        context.vars.userId = Math.floor(Math.random() * 10000).toString();
+        context.vars.eventId = randomId();
+        next();
+      }
+    };
+
+scenarios:
+  - name: "Full Booking Service Load Test"
+    flow:
+      # 🟦 Generate random data for this VU
+      - function: setRandomBooking
+
+      # 🟩 1. CREATE BOOKING (Sync)
+      - post:
+          url: "/bookings"
+          json:
+            id: "{{ bookingId }}"
+            userId: "{{ userId }}"
+            eventId: "{{ eventId }}"
+            tickets: 1
+          capture:
+            - json: "$.id"
+              as: "createdId"
+
+      # 🟩 2. CREATE BOOKING (Async)
+      - post:
+          url: "/bookings?async=true"
+          json:
+            id: "{{ randomId }}"
+            userId: "{{ userId }}"
+            eventId: "{{ eventId }}"
+            tickets: 1
+
+      # 🟦 3. GET BOOKING BY ID
+      - get:
+          url: "/bookings/{{ createdId }}"
+
+      # 🟦 4. LIST bookings
+      - get:
+          url: "/bookings"
+
+      # 🟦 5. LIST bookings by userId
+      - get:
+          url: "/bookings?userId={{ userId }}"
+
+      # 🟦 6. GET bookings by eventId
+      - get:
+          url: "/bookings/by-events?eventId={{ eventId }}"
+
+      # 🟦 7. GET trending bookings
+      - get:
+          url: "/bookings/trending?limit=5"
+
+      # 🟦 8. GET personalized bookings
+      - get:
+          url: "/bookings/personalized?userId={{ userId }}&limit=5"
+
+      # 🟩 9. Stats API (new v1 endpoints)
+      - get:
+          url: "/api/v1/stats/trending?limit=10"
+      - get:
+          url: "/api/v1/stats/personalized?userId={{ userId }}&limit=10"
+
+      # 🟧 10. Deprecated stats
+      - get:
+          url: "/api/v1/stats/deprecated"
+
+      # 🟥 11. GRAPHQL Test
+      - post:
+          url: "/graphql"
+          json:
+            query: |
+              query {
+                eventStats(eventId: "1234") {
+                  eventId
+                  totalBookings
+                }
+              }
+
+      # 🟥 12. DELETE booking
+      - delete:
+          url: "/bookings/{{ createdId }}"

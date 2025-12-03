@@ -1,0 +1,123 @@
+config:
+  target: "http://localhost:8085"   # Change if your search service runs on another port
+
+  phases:
+    - duration: 60
+      arrivalRate: 20
+    - duration: 60
+      arrivalRate: 50
+
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+
+  # -------------------------------------------------------
+  # 1️⃣ REST - Basic Search
+  # -------------------------------------------------------
+  - name: "REST - Basic search events"
+    flow:
+      - get:
+          url: "/api/v1/search/events?q=clean&city=Bangalore&page=0&limit=10"
+      - get:
+          url: "/api/v1/search/events?category=community&page=1&limit=5"
+      - get:
+          url: "/api/v1/search/events?sortBy=startDate"
+
+  # -------------------------------------------------------
+  # 2️⃣ REST - Trending events
+  # -------------------------------------------------------
+  - name: "REST - Trending events"
+    flow:
+      - get:
+          url: "/api/v1/search/trending?city=Bangalore&limit=10"
+      - get:
+          url: "/api/v1/search/trending?category=cleanup"
+
+  # -------------------------------------------------------
+  # 3️⃣ REST - Calendar events
+  # -------------------------------------------------------
+  - name: "REST - Calendar events"
+    flow:
+      - get:
+          url: "/api/v1/search/calendar?month=JANUARY&city=Bangalore"
+
+  # -------------------------------------------------------
+  # 4️⃣ REST - Filters
+  # -------------------------------------------------------
+  - name: "REST - Filter options"
+    flow:
+      - get:
+          url: "/api/v1/search/filters"
+
+  # -------------------------------------------------------
+  # 5️⃣ REST - Suggestions
+  # -------------------------------------------------------
+  - name: "REST - Suggestions"
+    flow:
+      - get:
+          url: "/api/v1/search/suggest?q=beac&type=event"
+      - get:
+          url: "/api/v1/search/suggest?q=edu&type=category"
+
+  # -------------------------------------------------------
+  # 6️⃣ REST - Map events
+  # -------------------------------------------------------
+  - name: "REST - Map events"
+    flow:
+      - get:
+          url: "/api/v1/search/map?lat=12.97&lon=77.59&radius=5"
+
+  # -------------------------------------------------------
+  # 7️⃣ REST - Recent events
+  # -------------------------------------------------------
+  - name: "REST - Recent events"
+    flow:
+      - get:
+          url: "/api/v1/search/recent?limit=20&city=Mumbai"
+
+  # -------------------------------------------------------
+  # 8️⃣ GRAPHQL - Search events (GQL)
+  # -------------------------------------------------------
+  - name: "GraphQL - searchEvents"
+    flow:
+      - post:
+          url: "/graphql"
+          json:
+            query: |
+              query {
+                searchEvents(
+                  q: "clean"
+                  city: "Bangalore"
+                  category: "community"
+                  startDate: null
+                  endDate: null
+                  sortBy: "popularity"
+                  page: 1
+                  limit: 10
+                ) {
+                  id
+                  title
+                  city
+                }
+              }
+
+  # -------------------------------------------------------
+  # 9️⃣ GRAPHQL - Personalized events (requires userId in JWT)
+  # -------------------------------------------------------
+  - name: "GraphQL - personalized events"
+    flow:
+      - post:
+          url: "/graphql"
+          headers:
+            Authorization: "Bearer MOCK_JWT_USERID_123"
+          json:
+            query: |
+              query {
+                personalizedEvents(limit: 10, basedOn: "history") {
+                  id
+                  title
+                  category
+                }
+              }

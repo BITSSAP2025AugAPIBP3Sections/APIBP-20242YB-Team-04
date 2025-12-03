@@ -22,13 +22,13 @@ public class SearchGraphQLController {
             @Argument String q,
             @Argument String city,
             @Argument String category,
-            @Argument String startDate,
-            @Argument String endDate,
+            @Argument String startTime,
+            @Argument String endTime,
             @Argument String sortBy,
             @Argument Integer page,
             @Argument Integer limit
     ) {
-        return searchService.searchEvents(q, city, category, startDate, endDate, sortBy,
+        return searchService.searchEvents(q, city, category, startTime, endTime, sortBy,
                 page != null ? page : 1, limit != null ? limit : 10).getEvents();
     }
 

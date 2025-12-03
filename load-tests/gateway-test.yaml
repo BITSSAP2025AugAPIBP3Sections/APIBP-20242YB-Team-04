@@ -1,0 +1,168 @@
+config:
+  target: "http://localhost:8080"   # Gateway port
+  phases:
+    - duration: 60
+      arrivalRate: 20
+    - duration: 60
+      arrivalRate: 50
+    - duration: 120
+      arrivalRate: 100   # stress phase
+
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+
+  # ------------------------------------------------------
+  # AUTH THROUGH GATEWAY
+  # ------------------------------------------------------
+
+  - name: "Gateway → Auth Login"
+    flow:
+      - post:
+          url: "/auth/login"
+          json:
+            email: "gatewaytest@example.com"
+            password: "password123"
+
+  - name: "Gateway → Auth Refresh"
+    flow:
+      - post:
+          url: "/auth/refresh"
+          json: "DUMMY_REFRESH_TOKEN"
+
+  - name: "Gateway → Forgot Password"
+    flow:
+      - post:
+          url: "/auth/forgot-password"
+          json: "gatewaytest@example.com"
+
+  - name: "Gateway → Reset Password"
+    flow:
+      - post:
+          url: "/auth/reset-password?token=RESET123&newPassword=newpass123"
+
+  - name: "Gateway → Verify Email"
+    flow:
+      - post:
+          url: "/auth/verify-email?token=VERIFY123"
+
+  - name: "Gateway → Validate Token"
+    flow:
+      - get:
+          url: "/auth/validate?token=DUMMY_TOKEN"
+
+  # ------------------------------------------------------
+  # USER SERVICE ROUTES THROUGH GATEWAY
+  # ------------------------------------------------------
+
+  - name: "Gateway → User Registration"
+    flow:
+      - post:
+          url: "/users/register"
+          json:
+            fullName: "Gateway Test User"
+            email: "gateway+{{ $randomInt(1,50000) }}@test.com"
+            password: "password123"
+            phone: "9876543210"
+
+  - name: "Gateway → Get All Users"
+    flow:
+      - get:
+          url: "/users?page=0&size=10"
+
+  - name: "Gateway → Get User"
+    flow:
+      - get:
+          url: "/users/1"
+
+  - name: "Gateway → Update User"
+    flow:
+      - put:
+          url: "/users/1"
+          json:
+            fullName: "Updated Gateway User"
+            email: "gatewayupdated@test.com"
+            password: "newpassword123"
+            phone: "9123456780"
+
+  - name: "Gateway → Deactivate User"
+    flow:
+      - delete:
+          url: "/users/1"
+
+  - name: "Gateway → Get Current User"
+    flow:
+      - get:
+          url: "/users/me"
+
+  # ------------------------------------------------------
+  # ROLES THROUGH GATEWAY
+  # ------------------------------------------------------
+
+  - name: "Gateway → Roles List"
+    flow:
+      - get:
+          url: "/roles"
+
+  - name: "Gateway → Assign Role"
+    flow:
+      - post:
+          url: "/roles/assign?userId=1&roleName=ADMIN"
+
+  # ------------------------------------------------------
+  # ORGANIZER THROUGH GATEWAY
+  # ------------------------------------------------------
+
+  - name: "Gateway → Organizer Register"
+    flow:
+      - post:
+          url: "/organizer/register"
+          json:
+            organizationName: "Gateway Org"
+            email: "org+{{ $randomInt(1,9999) }}@mail.com"
+            phone: "9112233445"
+
+  - name: "Gateway → Organizer Events"
+    flow:
+      - get:
+          url: "/organizer/1/events"
+
+  - name: "Gateway → Organizer Attendees"
+    flow:
+      - get:
+          url: "/organizer/1/events/10/attendees"
+
+  - name: "Gateway → Organizer Summary"
+    flow:
+      - get:
+          url: "/organizer/1/summary"
+
+  # ------------------------------------------------------
+  # EVENT SERVICE THROUGH GATEWAY
+  # ------------------------------------------------------
+
+  - name: "Gateway → Get Events"
+    flow:
+      - get:
+          url: "/api/v1/events?page=0&size=5"
+
+  - name: "Gateway → Get Event by ID"
+    flow:
+      - get:
+          url: "/api/v1/events/11111111-2222-3333-4444-555555555555"
+
+  - name: "Gateway → Search Events"
+    flow:
+      - get:
+          url: "/api/v1/events/search?city=Bangalore&category=Health&page=0&size=10"
+
+  # ------------------------------------------------------
+  # BOOKING SERVICE THROUGH GATEWAY (if exists)
+  # ------------------------------------------------------
+
+  - name: "Gateway → Booking List"
+    flow:
+      - get:
+          url: "/booking?eventId=1"

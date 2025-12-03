@@ -44,3 +44,15 @@ logging:
     org.springframework.web: DEBUG
     org.hibernate: DEBUG
     org.springframework: DEBUG
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      eventServiceCB:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 5
+        minimumNumberOfCalls: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        permittedNumberOfCallsInHalfOpenState: 2
+

@@ -18,6 +18,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Month;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.HashMap;
@@ -260,61 +261,112 @@ public class EventService {
 
     // ----------------------------- MAP EVENTS (GEOSPATIAL) -------------------------
     public List<EventResponse> getMapEvents(double lat, double lon, double radius,
-                                            String category, String date) {
-        accessLog.info("getMapEvents lat={} lon={} radius={} category={} date={}", 
-                       lat, lon, radius, category, date);
+        String category, String date) {
+accessLog.info("getMapEvents lat={} lon={} radius={} category={} date={}",
+lat, lon, radius, category, date);
 
-        Specification<Event> spec = EventSpecification.combine(
-                EventSpecification.isPublished(),
-                EventSpecification.hasCategory(category)
-        );
+Specification<Event> spec = EventSpecification.combine(
+EventSpecification.isPublished(),
+EventSpecification.hasCategory(category)
+);
 
-        List<Event> events = repository.findAll(spec);
+// Fetch from DB based on category
+List<Event> events = repository.findAll(spec);
 
-        // Filter by geospatial radius and optional date
-        List<EventResponse> filtered = events.stream()
-                .filter(e -> {
-                    // Optional date filtering
-                    if (date != null && !date.isEmpty()) {
-                        return e.getStartTime().toString().startsWith(date);
-                    }
-                    return true;
-                })
-                .map(toDto)
-                .toList();
+List<EventResponse> filtered = events.stream()
+.filter(e -> {
+// 1) Date filter (optional)
+if (date != null && !date.isBlank()) {
+if (!e.getStartTime().toString().startsWith(date)) {
+return false;
+}
+}
 
-        debugLog.debug("Map events count={}", filtered.size());
-        return filtered;
+// 2) Geo-distance filter
+double distance = haversine(
+lat,
+lon,
+e.getLatitude(),
+e.getLongitude()
+);
+
+return distance <= radius;
+})
+.map(toDto)
+.toList();
+
+debugLog.debug("Map events count={}", filtered.size());
+return filtered;
+}
+
+private double haversine(double lat1, double lon1, Double lat2, Double lon2) {
+    if (lat2 == null || lon2 == null) {
+        return Double.MAX_VALUE; // event has no coordinates → auto exclude
     }
+
+    final double R = 6371; // Radius of Earth in KM
+
+    double dLat = Math.toRadians(lat2 - lat1);
+    double dLon = Math.toRadians(lon2 - lon1);
+
+    double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+            + Math.cos(Math.toRadians(lat1))
+            * Math.cos(Math.toRadians(lat2))
+            * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c;
+}
 
     // ----------------------------- CALENDAR EVENTS ---------------------------------
     public Map<String, Object> getEventsByCalendar(String month, String city, String category) {
-        accessLog.info("getEventsByCalendar month={} city={} category={}", month, city, category);
 
+        accessLog.info("getEventsByCalendar month={} city={} category={}", month, city, category);
+    
+        // Build base specification (published + optional city/category)
         Specification<Event> spec = EventSpecification.combine(
                 EventSpecification.isPublished(),
                 EventSpecification.hasCity(city),
                 EventSpecification.hasCategory(category)
         );
-
+    
         List<Event> events = repository.findAll(spec);
-
-        // Filter by month if provided
+    
+        // -------------------------------
+        // SAFE MONTH FILTERING
+        // -------------------------------
+        Month targetMonth = null;
+    
+        if (month != null && !month.isBlank()) {
+            try {
+                targetMonth = Month.valueOf(month.trim().toUpperCase());
+            } catch (Exception ex) {
+                errorLog.error("Invalid month provided: {}", month);
+                targetMonth = null; // Skip filtering instead of throwing 500
+            }
+        }
+    
+        Month finalTargetMonth = targetMonth;
+    
         List<EventResponse> filtered = events.stream()
                 .filter(e -> {
-                    if (month != null && !month.isEmpty()) {
-                        return e.getStartTime().toString().startsWith(month);
+                    if (finalTargetMonth != null) {
+                        return e.getStartTime().getMonth() == finalTargetMonth;
                     }
                     return true;
                 })
                 .map(toDto)
                 .toList();
-
+    
+        // Prepare response
         Map<String, Object> response = new HashMap<>();
         response.put("month", month);
         response.put("events", filtered);
-
-        debugLog.debug("Calendar events count={}", filtered.size());
+    
+        debugLog.debug("Calendar events found={}", filtered.size());
+    
         return response;
     }
+    
 }
