@@ -22,4 +22,6 @@ public class EventDTO {
     private ZonedDateTime endTime;
     private String organizerId;
     private double popularityScore;
+    private Integer capacity;
+    private Integer seatsAvailable;
 }
