@@ -6,7 +6,8 @@ import Signup from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
 import EventsPage from "./pages/EventsPage";
 import AuthInitializer from "./init/AuthInitializer";
-// import EventDetails from "./pages/EventDetails";
+import EventDetail from "./pages/EventDetail";
+import MyBookings from "./pages/MyBookings";
 
 function App() {
 
@@ -20,7 +21,9 @@ function App() {
             <Routes>
               <Route path="/" element={<Dashboard/>} />
               <Route path="/events" element={<EventsPage/>} />
-              {/* <Route path="/events/:id" element={<EventDetails/>} /> create later */}
+              <Route path="/events/:id" element={<EventDetail />} />
+              <Route path="/my-bookings" element={<MyBookings />} />
+
 
               {/* <Route path="/" element={<Home />} /> */}
               <Route path="/login" element={<Login />} />

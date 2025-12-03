@@ -2,9 +2,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import { searchApi, eventsApi } from "../api/api";
+import { searchApi } from "../api/api";
 import CategoryCard from "../componenets/CategoryCard";
 import EventCard from "../componenets/EventCard";
+import { useSelector } from "react-redux";
 
 /**
  * Category icons mapping (you can add/change icons)
@@ -49,6 +50,8 @@ export default function Dashboard() {
   // active category for UI highlight (optional)
   const [activeCategory, setActiveCategory] = useState(null);
 
+  const selectedCity = useSelector((state) => state.city.city);
+
   useEffect(() => {
     // fetch categories (filters endpoint)
     const fetchFilters = async () => {
@@ -56,7 +59,9 @@ export default function Dashboard() {
       setCatError(null);
       try {
         const res = await searchApi.get("/search/filters");
-        const cats = Array.isArray(res.data?.categories) ? res.data.categories : [];
+        const cats = Array.isArray(res.data?.categories)
+          ? res.data.categories
+          : [];
         // sort alphabetically for predictability
         const sorted = [...cats].sort((a, b) => a.localeCompare(b));
         setCategories(sorted);
@@ -70,13 +75,52 @@ export default function Dashboard() {
     };
 
     // fetch suggested events
+    // const fetchSuggested = async () => {
+    //   setSuggestedLoading(true);
+    //   setSuggestedError(null);
+    //   try {
+    //     // Hits: http://localhost:8083/api/v1/events?page=0&size=10
+    //     const res = await eventsApi.get("/events", { params: { page: 0, size: 10 } });
+    //     const list = Array.isArray(res.data?.content) ? res.data.content : res.data?.content || [];
+    //     setSuggested(list);
+    //   } catch (err) {
+    //     console.error("Failed to fetch suggested events:", err);
+    //     setSuggestedError("Unable to load suggested events");
+    //     setSuggested([]);
+    //   } finally {
+    //     setSuggestedLoading(false);
+    //   }
+    // };
+
+        fetchFilters();
+    // fetchSuggested();
+    }, []);
+
+    // fetch suggested events using searchApi and city from localStorage
     const fetchSuggested = async () => {
       setSuggestedLoading(true);
       setSuggestedError(null);
       try {
-        // Hits: http://localhost:8083/api/v1/events?page=0&size=10
-        const res = await eventsApi.get("/events", { params: { page: 0, size: 10 } });
-        const list = Array.isArray(res.data?.content) ? res.data.content : res.data?.content || [];
+        const cityFromStorage = localStorage.getItem("eventix_city") || "";
+
+        const params = {
+          page: 0,
+          limit: 10,
+          sortBy: "popularity",
+        };
+
+        // only include city when available
+        if (cityFromStorage) params.city = cityFromStorage;
+
+        // Use search/events API
+        const res = await searchApi.get("/search/events", { params });
+
+        // defensive parsing for multiple backend response formats
+        let list = [];
+        if (Array.isArray(res.data?.content)) list = res.data.content;
+        else if (Array.isArray(res.data)) list = res.data;
+        else if (Array.isArray(res.data?.events)) list = res.data.events;
+
         setSuggested(list);
       } catch (err) {
         console.error("Failed to fetch suggested events:", err);
@@ -87,9 +131,11 @@ export default function Dashboard() {
       }
     };
 
-    fetchFilters();
-    fetchSuggested();
-  }, []);
+    useEffect(() => {
+      fetchSuggested(selectedCity);
+    }, [selectedCity]);
+
+
 
   const onCategoryClick = (category) => {
     setActiveCategory(category);
@@ -106,7 +152,10 @@ export default function Dashboard() {
     const el = catScrollerRef.current;
     if (!el) return;
     const scrollAmount = Math.round(el.clientWidth * 0.7);
-    const newPos = dir === "right" ? el.scrollLeft + scrollAmount : el.scrollLeft - scrollAmount;
+    const newPos =
+      dir === "right"
+        ? el.scrollLeft + scrollAmount
+        : el.scrollLeft - scrollAmount;
     el.scrollTo({ left: newPos, behavior: "smooth" });
   };
 
@@ -150,15 +199,17 @@ export default function Dashboard() {
               {categories.map((c) => {
                 const Icon = CATEGORY_ICON_MAP[c] || null;
                 return (
-                  <div
-                    key={c}
-                    className="flex-shrink-0"
-                    role="listitem"
-                  >
+                  <div key={c} className="flex-shrink-0" role="listitem">
                     <div
-                      className={`transition-transform ${activeCategory === c ? "transform scale-105" : ""}`}
+                      className={`transition-transform ${
+                        activeCategory === c ? "transform scale-105" : ""
+                      }`}
                     >
-                      <CategoryCard label={c} Icon={Icon} onClick={onCategoryClick} />
+                      <CategoryCard
+                        label={c}
+                        Icon={Icon}
+                        onClick={onCategoryClick}
+                      />
                     </div>
                   </div>
                 );
@@ -170,7 +221,9 @@ export default function Dashboard() {
         {/* Suggested events */}
         <section>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-gray-900">Suggested events</h2>
+            <h2 className="text-xl font-semibold text-gray-900">
+              Suggested events
+            </h2>
             <button
               onClick={() => navigate("/events")}
               className="text-sm text-purple-600 font-semibold hover:underline"
@@ -180,7 +233,9 @@ export default function Dashboard() {
           </div>
 
           {suggestedLoading ? (
-            <div className="text-sm text-gray-500">Loading suggested events...</div>
+            <div className="text-sm text-gray-500">
+              Loading suggested events...
+            </div>
           ) : suggestedError ? (
             <div className="text-sm text-red-500">{suggestedError}</div>
           ) : suggested.length === 0 ? (
