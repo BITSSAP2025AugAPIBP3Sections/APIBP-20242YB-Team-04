@@ -4,6 +4,9 @@ import com.eventix.booking.clients.EventClient;
 import com.eventix.booking.dto.EventResponse;
 import com.eventix.booking.model.Booking;
 import com.eventix.booking.repository.BookingRepository;
+
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -29,8 +32,8 @@ public class BookingService {
 
     // ---------- CRUD & async logic ----------
 
+    @CircuitBreaker(name = "eventServiceCB", fallbackMethod = "fallbackEvent")
     public Booking createBooking(Booking booking) {
-
        EventResponse event = eventClient.getEvent(UUID.fromString(booking.getEventId()));
        if (event == null) {
            throw new RuntimeException("Event not found");
@@ -44,6 +47,13 @@ public class BookingService {
         publishBookingNotification(saved);
 
         return saved;
+    }
+
+    public Booking fallbackEvent(Booking booking, Throwable ex) {
+        System.out.println("Circuit Breaker Fallback triggered: " + ex.getMessage());
+    
+        booking.setStatus("FAILED_EVENT_SERVICE_DOWN");
+        return booking;
     }
 
     @Async

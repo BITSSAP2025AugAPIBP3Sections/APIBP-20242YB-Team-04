@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingRequestDTO {
-    private String eventId;
+    private String id;
     private String userId;
     private int seats;
     private String paymentMethod;

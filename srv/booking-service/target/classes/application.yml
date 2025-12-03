@@ -8,24 +8,51 @@ spring:
     username: sa
     password:
 
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
 
   graphql:
     path: /graphql
     schema:
-      locations: classpath:graphql/  # Folder for .graphqls schema files
+      locations: classpath:graphql/
     graphiql:
-      enabled: true                 # Enables built-in GraphiQL UI
+      enabled: true
       endpoint:
-        graphql: /graphql           # Path GraphiQL should use to query
-      mapping: /graphiql            # Web UI path
+        graphql: /graphql
+      mapping: /graphiql
 
-# Optional async executor config
 app:
   async:
     core-pool-size: 5
     max-pool-size: 20
     queue-capacity: 100
+
+logging:
+  level:
+    org.springframework.graphql: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate: DEBUG
+    org.springframework: DEBUG
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      eventServiceCB:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 5
+        minimumNumberOfCalls: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        permittedNumberOfCallsInHalfOpenState: 2
+

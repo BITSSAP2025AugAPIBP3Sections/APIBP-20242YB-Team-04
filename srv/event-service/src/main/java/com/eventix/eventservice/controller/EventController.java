@@ -122,7 +122,6 @@ public class EventController {
         return ResponseEntity.ok(service.getFilterOptions());
     }
 
-    @Operation(hidden = true)
     @GetMapping("/suggestions")
     public ResponseEntity<List<String>> suggestions(
             @RequestParam String q,
