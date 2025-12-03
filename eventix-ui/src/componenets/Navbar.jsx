@@ -109,7 +109,8 @@ export default function Navbar() {
 
   const handleLogout = () => {
     dispatch(clearUser());
-    localStorage.removeItem("token");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     // keep city if you want, or remove:
     // localStorage.removeItem("eventix_city");
     setOpenProfile(false);
