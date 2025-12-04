@@ -24,9 +24,9 @@ This document lists the current maintainers of the Eventix project and outlines 
   Contact: vishalkrs362@gmail.com
 
 - **R Sivaram**  
-  GitHub: https://github.com/annu673  
+  GitHub: https://github.com/sivaram-ram  
   Role: Project Lead & Core Maintainer  
-  Contact: your-email@example.com
+  Contact: sivaram2001ram@gmail.com
 
 
 
