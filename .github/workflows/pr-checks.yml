@@ -1,0 +1,79 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  pr-validation:
+    name: Validate Pull Request
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Check for large files
+        run: |
+          echo "Checking for files larger than 10MB..."
+          find . -type f -size +10M -not -path "./.git/*" -not -path "*/target/*" -not -path "*/node_modules/*" | while read file; do
+            echo "⚠️  Large file detected: $file"
+          done
+      
+      - name: Check for sensitive data
+        run: |
+          echo "Checking for potential sensitive data..."
+          if grep -r "password\s*=\s*['\"]" --include="*.properties" --include="*.yml" --include="*.yaml" srv/ 2>/dev/null; then
+            echo "⚠️  Found hardcoded passwords in configuration files"
+            exit 1
+          fi
+          echo "✅ No hardcoded passwords found"
+      
+      - name: PR size check
+        run: |
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD 2>/dev/null | wc -l || echo "0")
+          echo "Files changed: $CHANGED_FILES"
+          if [ "$CHANGED_FILES" -gt 50 ]; then
+            echo "⚠️  Large PR detected ($CHANGED_FILES files). Consider breaking it into smaller PRs."
+          else
+            echo "✅ PR size looks good"
+          fi
+
+  code-quality:
+    name: Code Quality Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+      
+      - name: Check code style
+        run: |
+          echo "Running code style checks..."
+          cd srv
+          for service in user-service event-service booking-service search dashboard-service; do
+            if [ -d "$service" ]; then
+              echo "Checking $service..."
+              cd $service
+              ./mvnw checkstyle:check || echo "⚠️  Checkstyle warnings in $service"
+              cd ..
+            fi
+          done
+      
+      - name: Check for TODO/FIXME
+        run: |
+          echo "Checking for TODO and FIXME comments..."
+          TODO_COUNT=$(grep -r "TODO\|FIXME" srv/*/src/main/java/ 2>/dev/null | wc -l || echo "0")
+          if [ "$TODO_COUNT" -gt 0 ]; then
+            echo "Found $TODO_COUNT TODO/FIXME comments"
+            grep -r "TODO\|FIXME" srv/*/src/main/java/ 2>/dev/null || true
+          else
+            echo "✅ No TODO/FIXME comments found"
+          fi
