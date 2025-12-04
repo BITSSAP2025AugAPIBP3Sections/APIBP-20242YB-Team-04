@@ -13,7 +13,7 @@
     <module>user-service</module>
     <module>dashboard-service</module>
     <module>search</module>
-    <module>aggregator</module>
+    <module>gateway</module>
   </modules>
 
   <build>
@@ -27,4 +27,12 @@
       </plugins>
     </pluginManagement>
   </build>
+
+  <licenses>
+    <license>
+        <name>MIT License</name>
+        <url>https://opensource.org/licenses/MIT</url>
+        <distribution>repo</distribution>
+    </license>
+</licenses>
 </project>

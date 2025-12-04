@@ -1,0 +1,50 @@
+config:
+  target: "http://localhost:8085"   # CHANGE to your Notification/Dashboard service port
+  phases:
+    - duration: 60
+      arrivalRate: 10     # warm-up
+    - duration: 60
+      arrivalRate: 30     # moderate load
+    - duration: 120
+      arrivalRate: 60     # stress load (heavy)
+
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+
+  # ------------------------------------------------------
+  # DASHBOARD HEALTH CHECK
+  # ------------------------------------------------------
+  - name: "Dashboard Health Check"
+    flow:
+      - get:
+          url: "/api/dashboard/health"
+
+  # ------------------------------------------------------
+  # DASHBOARD STATS (HIGH LOAD)
+  # ------------------------------------------------------
+  - name: "Dashboard → Organizer Stats"
+    flow:
+      - get:
+          url: "/api/dashboard/organizer/org-123/stats"
+
+  # ------------------------------------------------------
+  # MULTIPLE ORGANIZER STATS (REALISTIC TEST)
+  # ------------------------------------------------------
+  - name: "Dashboard → Multi Organizer Stats"
+    flow:
+      - loop:
+          count: 5
+          do:
+            - get:
+                url: "/api/dashboard/organizer/org-{{ $randomInt(1,100) }}/stats"
+
+  # ------------------------------------------------------
+  # STRESS FAILURE HANDLING (Test 503 Scenarios)
+  # ------------------------------------------------------
+  - name: "Dashboard → 503 Handling Under Load"
+    flow:
+      - get:
+          url: "/api/dashboard/organizer/org-missing-id/stats"

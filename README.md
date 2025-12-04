@@ -5,6 +5,12 @@
 **Eventix** is a distributed, microservices-based event management and ticketing platform designed for community-driven volunteering and donation events.  
 It enables organizers, attendees, and administrators to efficiently create, discover, manage, and participate in local events, ensuring scalability, modularity, and fault isolation.
 
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Java](https://img.shields.io/badge/Java-17-orange)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.1.4-brightgreen)
+![GraphQL](https://img.shields.io/badge/GraphQL-Enabled-purple)
+![Docker](https://img.shields.io/badge/Docker-Ready-blue)
+
 ---
 
 ## Problem Statement
@@ -205,7 +211,7 @@ This will start:
 - Event Service → http://localhost:8083
 - Search Service → http://localhost:8084
 - Dashboard Service → http://localhost:8085
-- Aggregator (Gateway) → http://localhost:8080
+- Gateway → http://localhost:8080
 
 After ~10 seconds, visit:
 
@@ -300,3 +306,61 @@ See [MAINTAINERS.md](docs/MAINTAINERS.md) for the list of project maintainers an
 
 - **Issues**: [GitHub Issues](https://github.com/BITSSAP2025AugAPIBP3Sections/APIBP-20242YB-Team-04/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/BITSSAP2025AugAPIBP3Sections/APIBP-20242YB-Team-04/discussions)
+## License 
+
+MIT License
+
+Copyright (c) 2025 BITSSAP2025AugAPIBP3Sections
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+DEALINGS IN THE SOFTWARE.
+
+
+## Contributions 
+
+We welcome contributions to Eventix!
+To contribute:
+
+1. Fork this repository
+2. Create a feature branch: git checkout -b feature/<feature-name>
+3. Commit your changes: git commit -m "Add <short description>"
+4. Push the branch: git push origin feature/<feature-name>
+5. Open a Pull Request on GitHub
+
+### Contribution Standards
+
+1. All microservices must pass: mvn clean install
+2. API changes must include documentation updates (Swagger/GraphQL schema)
+3. New endpoints require tests (unit + integration recommended)
+4. Follow established naming for microservices and endpoints
+5. Keep modules independent and domain-focused
+
+## Security 
+
+If you discover a security vulnerability, do not open a public issue.
+Instead, please report it privately to:
+📧 security@eventix.io
+(or use your preferred contact method)
+We take security issues seriously and will respond promptly.
+
+## Maintainers
+
+### Eventix is maintained by:
+
+> BITSSAP2025AugAPIBP3Sections Contributors
+> Community contributors via Pull Requests

@@ -3,16 +3,28 @@ import Navbar from "./componenets/Navbar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Signup from "./pages/SignUp";
+import Dashboard from "./pages/Dashboard";
+import EventsPage from "./pages/EventsPage";
+import AuthInitializer from "./init/AuthInitializer";
+import EventDetail from "./pages/EventDetail";
+import MyBookings from "./pages/MyBookings";
 
 function App() {
 
   return (
     <>
       <BrowserRouter>
+      <AuthInitializer />
         <div className="min-h-screen flex flex-col">
           <Navbar />
           <main className="flex-grow">
             <Routes>
+              <Route path="/" element={<Dashboard/>} />
+              <Route path="/events" element={<EventsPage/>} />
+              <Route path="/events/:id" element={<EventDetail />} />
+              <Route path="/my-bookings" element={<MyBookings />} />
+
+
               {/* <Route path="/" element={<Home />} /> */}
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Signup />} />

@@ -31,12 +31,12 @@ public class SearchController {
             @RequestParam(required = false) String q,
             @RequestParam(required = false) String city,
             @RequestParam(required = false) String category,
-            @RequestParam(required = false) String startDate,
-            @RequestParam(required = false) String endDate,
+            @RequestParam(required = false) String startTime,
+            @RequestParam(required = false) String endTime,
             @RequestParam(defaultValue = "popularity") String sortBy,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int limit) {
-        return searchService.searchEvents(q, city, category, startDate, endDate, sortBy, page, limit);
+        return searchService.searchEvents(q, city, category, startTime, endTime, sortBy, page, limit);
     }
 
     @Operation(summary = "Get trending events")

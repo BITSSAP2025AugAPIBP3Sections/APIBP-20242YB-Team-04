@@ -43,7 +43,7 @@ public class BookingIntegrationClient {
         try {
             ResponseEntity<Map<String, Integer>> resp =
                     restTemplate.exchange(
-                            baseUrl + "/api/v1/bookings/trending/stats",
+                            baseUrl + "/bookings/stats/trending",
                             HttpMethod.GET,
                             null,
                             new ParameterizedTypeReference<Map<String, Integer>>() {}
@@ -68,7 +68,7 @@ public class BookingIntegrationClient {
     public List<EventDTO> getTrendingEvents(String city, String category, int limit) {
 
         UriComponentsBuilder uri = UriComponentsBuilder
-                .fromUriString(baseUrl + "/api/v1/bookings/trending")
+                .fromUriString(baseUrl + "/bookings/trending")
                 .queryParam("limit", limit);
 
         if (city != null) uri.queryParam("city", city);
