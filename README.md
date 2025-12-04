@@ -1,5 +1,10 @@
 # 🎟️ Eventix – Event Ticketing & Volunteering Platform (Microservices-Based)
 
+[![CI Pipeline](https://github.com/BITSSAP2025AugAPIBP3Sections/APIBP-20242YB-Team-04/actions/workflows/ci.yml/badge.svg)](https://github.com/BITSSAP2025AugAPIBP3Sections/APIBP-20242YB-Team-04/actions/workflows/ci.yml)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Java](https://img.shields.io/badge/Java-17-orange)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.1.4-brightgreen)
+
 ## Overview
 
 **Eventix** is a distributed, microservices-based event management and ticketing platform designed for community-driven volunteering and donation events.  
