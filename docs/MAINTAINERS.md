@@ -6,7 +6,7 @@ This document lists the current maintainers of the Eventix project and outlines 
 - **Annu Kumari**  
   GitHub: https://github.com/annu673  
   Role: Project Lead & Core Maintainer  
-  Contact: your-email@example.com
+  Contact: annu14496@gmail.com
 
 - **Saloni Lokhande**  
   GitHub: https://github.com/annu673  
