@@ -14,9 +14,9 @@ This document lists the current maintainers of the Eventix project and outlines 
   Contact: your-email@example.com
 
 - **Abhishek Kumar**  
-  GitHub: https://github.com/annu673  
+  GitHub: https://github.com/abhi-323 
   Role: Project Lead & Core Maintainer  
-  Contact: your-email@example.com
+  Contact: ak00873@gmail.com
 
 - **Vishal Kumar**  
   GitHub: https://github.com/annu673  
