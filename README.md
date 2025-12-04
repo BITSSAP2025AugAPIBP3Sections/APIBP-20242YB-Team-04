@@ -88,10 +88,47 @@ All services are **containerized** using Docker and communicate via **REST/gRPC*
 
 ---
 
+## Notification Flow
+
+Booking service emits a notification event after successful persistence; RabbitMQ buffers and decouples; notification service consumes asynchronously and delivers email with retry/requeue semantics for resilience.
+
+### Architecture Flow
+
+1. **Booking Creation**
+
+   * Client calls **POST /bookings**.
+   * BookingService saves the booking (status = CONFIRMED).
+   * A lightweight notification event (DTO) is published to RabbitMQ.
+
+2. **Message Publishing**
+
+   * Event sent to a **topic exchange** with a routing key (e.g., `booking.created`).
+   * Routed to a **durable queue** (`booking.notifications.q`).
+
+3. **Queue Behavior**
+
+   * Durable (survives restarts).
+   * **At-least-once** delivery → consumers must handle duplicates.
+   * Optional **DLQ** for failed messages.
+
+4. **Notification Service Consumption**
+
+   * `@RabbitListener` consumes messages.
+   * Calls EmailService to send email.
+   * Success → auto-ack.
+   * Failure → message requeue or DLQ (based on config).
+
+5. **Why This Architecture**
+
+   * Booking service is **decoupled** from email sending.
+   * Allows independent scaling.
+   * DTO contract ensures safe evolution.
+
+---
+
 ## API Overview
 
-Each microservice exposes its own set of REST or graphQL endpoints. Below is example of key operations and navigation to 
-:
+Each microservice exposes its own set of REST or GraphQL endpoints. Below are examples of key operations for each service:
 
 ### 1. Auth & User Service
 | Endpoint | Method | Description |
@@ -147,8 +184,8 @@ Triggered by events from other services (via message broker):
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/<your-repo>/event-management-microservices.git
-cd event-management-microservices
+git clone https://github.com/BITSSAP2025AugAPIBP3Sections/APIBP-20242YB-Team-04.git
+cd APIBP-20242YB-Team-04
 ```
 ### 2. Build the Project
 ```bash
@@ -182,54 +219,24 @@ After ~10 seconds, visit:
 
 to access the unified Swagger interface for all microservices.
 
-## Notification Flow
+---
 
-Booking service emits a notification event after successful persistence; RabbitMQ buffers and decouples; notification service consumes asynchronously and delivers email with retry/requeue semantics for resilience.
+## Docker Deployment
 
-1. **Booking Creation**
+### Running Dashboard Service from Docker Hub
 
-   * Client calls **POST /bookings**.
-   * BookingService saves the booking (status = CONFIRMED).
-   * A lightweight notification event (DTO) is published to RabbitMQ.
+**Prerequisites:**
 
-2. **Message Publishing**
+- Docker Desktop installed
+- Your local RabbitMQ, booking-service, and event-service must be reachable on the host
 
-   * Event sent to a **topic exchange** with a routing key (e.g., `booking.created`).
-   * Routed to a **durable queue** (`booking.notifications.q`).
-
-3. **Queue Behavior**
-
-   * Durable (survives restarts).
-   * **At-least-once** delivery → consumers must handle duplicates.
-   * Optional **DLQ** for failed messages.
-
-4. **Notification Service Consumption**
-
-   * `@RabbitListener` consumes messages.
-   * Calls EmailService to send email.
-   * Success → auto-ack.
-   * Failure → message requeue or DLQ (based on config).
-
-5. **Why This Architecture**
-
-   * Booking service is **decoupled** from email sending.
-   * Allows independent scaling.
-   * DTO contract ensures safe evolution.
-
-## Steps to Pull and Run dashboard-service from Docker Hub
-
-1. Prerequisites
-
-Docker Desktop installed
-
-Your local RabbitMQ, booking-service, and event-service must be reachable on the host (Windows).
-
-2. Pull the Docker Image
-```
+#### Step 1: Pull the Docker Image
+```bash
 docker pull sivaramram/dashboard-service:latest
 ```
-3. Run the Container
-```
+
+#### Step 2: Run the Container
+```bash
 docker run -d --name dashboard-service \
   -p 8085:8085 \
   -e SPRING_PROFILES_ACTIVE=prod \
@@ -239,12 +246,66 @@ docker run -d --name dashboard-service \
   -e EVENT_SERVICE_URL=http://host.docker.internal:8081 \
   sivaramram/dashboard-service:latest
 ```
-3. Stop/cleanup:
-```
+
+#### Step 3: Stop and Clean Up
+```bash
+# Stop the container
 docker stop dashboard-service
+
+# Remove the container
 docker rm dashboard-service
 ```
 
+---
+
+## 📚 Documentation
+
+- [Architecture Overview](docs/architecture/ARCHITECTURE.md)
+- [Contributing Guidelines](docs/CONTRIBUTING.md)
+- [Code of Conduct](docs/CODE_OF_CONDUCT.md)
+- [Project Roadmap](docs/ROADMAP.md)
+- [RabbitMQ Setup](docs/RABBITMQ_SETUP.md)
+- [Maintainers](docs/MAINTAINERS.md)
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please read our [Contributing Guidelines](docs/CONTRIBUTING.md) and [Code of Conduct](docs/CODE_OF_CONDUCT.md) before submitting pull requests.
+
+### How to Contribute
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 👥 Team
+
+See [MAINTAINERS.md](docs/MAINTAINERS.md) for the list of project maintainers and contributors.
+
+---
+
+##  Acknowledgments
+
+- Built as part of the Open Source Software Development course at BITS Pilani
+- Special thanks to all contributors who have helped shape this project
+- Community event organizers who provided valuable feedback
+
+---
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/BITSSAP2025AugAPIBP3Sections/APIBP-20242YB-Team-04/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/BITSSAP2025AugAPIBP3Sections/APIBP-20242YB-Team-04/discussions)
 ## License 
 
 MIT License
