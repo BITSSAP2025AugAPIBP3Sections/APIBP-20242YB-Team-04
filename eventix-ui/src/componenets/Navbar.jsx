@@ -39,7 +39,9 @@ export default function Navbar() {
       setLoadingCities(true);
       setCityError(null);
       try {
-        const res = await axios.get("http://localhost:8084/api/v1/search/filters");
+        const res = await axios.get(
+          "http://localhost:8084/api/v1/search/filters"
+        );
         const cityList = Array.isArray(res.data?.cities) ? res.data.cities : [];
 
         // Sort alphabetically before storing
@@ -84,35 +86,6 @@ export default function Navbar() {
 
   const [openProfile, setOpenProfile] = useState(false);
   const profileRef = useRef(null);
-
-  // Close dropdowns/popovers on outside click or Escape
-  useEffect(() => {
-    const handleDocClick = (e) => {
-      if (cityDropdownRef.current && !cityDropdownRef.current.contains(e.target)) {
-        setOpenCity(false);
-      }
-
-      if (profileRef.current && !profileRef.current.contains(e.target)) {
-        setOpenProfile(false);
-      }
-    };
-
-    const handleEsc = (e) => {
-      if (e.key === "Escape" || e.key === "Esc") {
-        setOpenCity(false);
-        setOpenProfile(false);
-        setSearchOpen(false);
-        setSuggestions([]);
-      }
-    };
-
-    document.addEventListener("click", handleDocClick);
-    document.addEventListener("keydown", handleEsc);
-    return () => {
-      document.removeEventListener("click", handleDocClick);
-      document.removeEventListener("keydown", handleEsc);
-    };
-  }, []);
 
   const handleLogout = () => {
     dispatch(clearUser());
@@ -326,48 +299,91 @@ export default function Navbar() {
     return () => document.removeEventListener("click", onDocClick);
   }, []);
 
-  // ----------------- end search -----------------
+  // Close dropdowns/popovers on outside click or Escape
+  useEffect(() => {
+    const handleDocClick = (e) => {
+      if (
+        cityDropdownRef.current &&
+        !cityDropdownRef.current.contains(e.target)
+      ) {
+        setOpenCity(false);
+      }
+
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setOpenProfile(false);
+      }
+    };
+
+    const handleEsc = (e) => {
+      if (e.key === "Escape" || e.key === "Esc") {
+        setOpenCity(false);
+        setOpenProfile(false);
+        setSearchOpen(false);
+        setSuggestions([]);
+      }
+    };
+
+    document.addEventListener("click", handleDocClick);
+    document.addEventListener("keydown", handleEsc);
+    return () => {
+      document.removeEventListener("click", handleDocClick);
+      document.removeEventListener("keydown", handleEsc);
+    };
+  }, []);
 
   return (
-    <nav className="w-full bg-white border-b border-gray-200">
+    <nav className="w-full border-b border-white/10 bg-black/40 backdrop-blur-md relative z-50">
       <div className="max-w-8xl mx-auto px-6 py-3 flex items-center justify-between">
         {/* LEFT SECTION */}
         <div className="flex items-center gap-6">
-          <h1 className="text-2xl font-bold text-purple-600">Eventix</h1>
+          <h1
+            className="text-2xl font-bold text-white cursor-pointer"
+            onClick={() => navigate("/")}
+          >
+            Eventix
+          </h1>
 
-          <div className="h-6 w-[1px] bg-gray-300" />
+          <div className="h-6 w-[1px] bg-white/20" />
 
           {/* City selector */}
           <div className="relative" ref={cityDropdownRef}>
             <button
               type="button"
               onClick={() => setOpenCity((s) => !s)}
-              className="flex items-center gap-2 text-gray-900 font-semibold px-3 py-1 rounded hover:bg-gray-50 focus:outline-none"
+              className="flex items-center gap-2 text-gray-100 font-semibold px-3 py-1 rounded hover:bg-white/10 focus:outline-none"
               aria-expanded={openCity}
               aria-haspopup="listbox"
             >
-              <FiMapPin className="text-purple-600" size={16} />
+              <FiMapPin className="text-purple-300" size={16} />
               <div className="text-left">
                 <div className="text-sm">{selectedCity}</div>
-                <p className="text-xs text-gray-500 -mt-1">Region</p>
+                <p className="text-xs text-gray-400 -mt-1">Region</p>
               </div>
             </button>
 
             {openCity && (
-              <div className="absolute z-40 mt-2 w-56 bg-white border border-gray-200 rounded shadow-lg">
-                <div className="p-3 text-xs text-gray-500">Select city</div>
+              <div className="absolute z-40 mt-2 w-56 bg-[#050313] border border-white/15 rounded shadow-[0_18px_35px_rgba(0,0,0,0.8)]">
+                <div className="p-3 text-xs text-gray-400 uppercase tracking-[0.16em]">
+                  Select city
+                </div>
 
                 <div className="max-h-60 overflow-auto">
                   {loadingCities && (
-                    <div className="px-3 py-2 text-sm text-gray-600">Loading cities...</div>
+                    <div className="px-3 py-2 text-sm text-gray-300">
+                      Loading cities...
+                    </div>
                   )}
 
                   {!loadingCities && cityError && (
-                    <div className="px-3 py-2 text-sm text-red-600">{cityError}</div>
+                    <div className="px-3 py-2 text-sm text-red-300">
+                      {cityError}
+                    </div>
                   )}
 
                   {!loadingCities && !cityError && cities.length === 0 && (
-                    <div className="px-3 py-2 text-sm text-gray-600">No cities available</div>
+                    <div className="px-3 py-2 text-sm text-gray-300">
+                      No cities available
+                    </div>
                   )}
 
                   {!loadingCities &&
@@ -376,10 +392,10 @@ export default function Navbar() {
                       <button
                         key={c}
                         onClick={() => chooseCity(c)}
-                        className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 ${
+                        className={`w-full text-left px-3 py-2 text-sm rounded-none ${
                           c === selectedCity
-                            ? "bg-purple-50 text-purple-700 font-semibold"
-                            : "text-gray-700"
+                            ? "bg-purple-500/20 text-purple-100 font-semibold"
+                            : "text-gray-100 hover:bg-white/5"
                         }`}
                       >
                         {c}
@@ -401,10 +417,10 @@ export default function Navbar() {
                 e.preventDefault();
                 doSearchFull(query);
               }}
-              className="hidden sm:flex items-center gap-2"
+              className="hidden md:flex items-center gap-2"
             >
-              <div className="relative flex items-center bg-gray-100 rounded-md px-3 py-1 w-64 md:w-96">
-                <FiSearch className="text-gray-500 mr-2" size={18} />
+              <div className="relative flex items-center bg-black/40 border border-white/15 rounded-md px-3 py-1 w-64 md:w-96">
+                <FiSearch className="text-gray-300 mr-2" size={18} />
                 <input
                   ref={inputRef}
                   value={query}
@@ -413,7 +429,7 @@ export default function Navbar() {
                   type="search"
                   placeholder="Search events, e.g. sports, workshop..."
                   aria-label="Search events"
-                  className="bg-transparent outline-none text-sm w-full"
+                  className="bg-transparent outline-none text-sm text-white w-full placeholder:text-gray-500"
                 />
                 {query && (
                   <button
@@ -422,17 +438,17 @@ export default function Navbar() {
                       setQuery("");
                       setSuggestions([]);
                     }}
-                    className="ml-2 p-1 rounded hover:bg-gray-200"
+                    className="ml-2 p-1 rounded hover:bg-white/10"
                     aria-label="Clear search"
                   >
-                    <FiX size={14} />
+                    <FiX size={14} className="text-gray-300" />
                   </button>
                 )}
               </div>
 
               <button
                 type="submit"
-                className="px-3 py-1 bg-purple-600 text-white rounded-md text-sm font-medium hover:bg-purple-700"
+                className="px-3 py-1 bg-purple-500 text-white rounded-md text-sm font-medium hover:bg-purple-400 shadow-sm shadow-purple-500/40"
               >
                 Search
               </button>
@@ -443,10 +459,10 @@ export default function Navbar() {
               {!searchOpen ? (
                 <button
                   onClick={() => setSearchOpen(true)}
-                  className="p-2 rounded-md hover:bg-gray-100"
+                  className="p-2 rounded-md hover:bg-white/10"
                   aria-label="Open search"
                 >
-                  <FiSearch size={18} className="text-purple-600" />
+                  <FiSearch size={18} className="text-purple-200" />
                 </button>
               ) : (
                 <form
@@ -456,8 +472,8 @@ export default function Navbar() {
                   }}
                   className="flex items-center gap-2"
                 >
-                  <div className="relative flex items-center bg-gray-100 rounded-md px-3 py-1 w-64">
-                    <FiSearch className="text-gray-500 mr-2" size={18} />
+                  <div className="relative flex items-center bg-black/40 border border-white/15 rounded-md px-3 py-1 w-64">
+                    <FiSearch className="text-gray-300 mr-2" size={18} />
                     <input
                       ref={inputRef}
                       value={query}
@@ -466,7 +482,7 @@ export default function Navbar() {
                       type="search"
                       placeholder="Search events..."
                       aria-label="Search events"
-                      className="bg-transparent outline-none text-sm w-full"
+                      className="bg-transparent outline-none text-sm w-full text-white placeholder:text-gray-500"
                     />
                     <button
                       type="button"
@@ -475,10 +491,10 @@ export default function Navbar() {
                         setSearchOpen(false);
                         setSuggestions([]);
                       }}
-                      className="ml-2 p-1 rounded hover:bg-gray-200"
+                      className="ml-2 p-1 rounded hover:bg-white/10"
                       aria-label="Close search"
                     >
-                      <FiX size={16} />
+                      <FiX size={16} className="text-gray-300" />
                     </button>
                   </div>
                 </form>
@@ -486,25 +502,39 @@ export default function Navbar() {
             </div>
 
             {/* Suggestions dropdown */}
-            {(suggestions.length > 0 || suggestionsLoading || suggestionsError) && (
-              <div className="absolute z-50 mt-2 w-[24rem] sm:w-[36rem] bg-white border border-gray-200 rounded-md shadow-lg overflow-hidden">
+            {(suggestions.length > 0 ||
+              suggestionsLoading ||
+              suggestionsError) && (
+              <div className="absolute z-50 mt-2 w-[24rem] sm:w-[36rem] bg-[#050313] border border-white/15 rounded-md shadow-[0_18px_45px_rgba(0,0,0,0.9)] overflow-hidden">
                 <div className="max-h-64 overflow-auto">
                   {suggestionsLoading && (
-                    <div className="p-3 text-sm text-gray-500">Searching...</div>
+                    <div className="p-3 text-sm text-gray-300">
+                      Searching...
+                    </div>
                   )}
 
                   {suggestionsError && (
-                    <div className="p-3 text-sm text-red-500">{suggestionsError}</div>
+                    <div className="p-3 text-sm text-red-300">
+                      {suggestionsError}
+                    </div>
                   )}
 
-                  {!suggestionsLoading && suggestions.length === 0 && !suggestionsError && (
-                    <div className="p-3 text-sm text-gray-500">No suggestions</div>
-                  )}
+                  {!suggestionsLoading &&
+                    suggestions.length === 0 &&
+                    !suggestionsError && (
+                      <div className="p-3 text-sm text-gray-300">
+                        No suggestions
+                      </div>
+                    )}
 
                   {suggestions.map((s, idx) => {
                     const highlighted = idx === highlightIndex;
                     const title = s.title || s.name || "";
-                    const sub = `${s.city || ""}${s.startTime ? ` • ${new Date(s.startTime).toLocaleString()}` : ""}`;
+                    const sub = `${s.city || ""}${
+                      s.startTime
+                        ? ` • ${new Date(s.startTime).toLocaleString()}`
+                        : ""
+                    }`;
 
                     return (
                       <button
@@ -512,15 +542,21 @@ export default function Navbar() {
                         onMouseEnter={() => setHighlightIndex(idx)}
                         onMouseLeave={() => setHighlightIndex(-1)}
                         onClick={() => goToEvent(s)}
-                        className={`w-full text-left px-4 py-3 hover:bg-gray-50 flex items-start gap-3 ${
-                          highlighted ? "bg-gray-100" : ""
+                        className={`w-full text-left px-4 py-3 flex items-start gap-3 ${
+                          highlighted
+                            ? "bg-white/10"
+                            : "hover:bg-white/5"
                         }`}
                         role="option"
                         aria-selected={highlighted}
                       >
                         <div className="flex-1">
-                          <div className="text-sm font-medium text-gray-900 line-clamp-1">{title}</div>
-                          <div className="text-xs text-gray-500 mt-1">{sub}</div>
+                          <div className="text-sm font-medium text-gray-50 line-clamp-1">
+                            {title}
+                          </div>
+                          <div className="text-xs text-gray-400 mt-1">
+                            {sub}
+                          </div>
                         </div>
                         <div className="text-xs text-gray-400">View</div>
                       </button>
@@ -528,14 +564,17 @@ export default function Navbar() {
                   })}
                 </div>
 
-                <div className="border-t border-gray-100 px-3 py-2 flex items-center justify-between">
-                  <div className="text-xs text-gray-500">
-                    Press Enter to view full results for <span className="font-medium">{query}</span>
+                <div className="border-t border-white/10 px-3 py-2 flex items-center justify-between">
+                  <div className="text-xs text-gray-400">
+                    Press Enter to view full results for{" "}
+                    <span className="font-medium text-gray-200">
+                      {query || "..."}
+                    </span>
                   </div>
                   <div>
                     <button
                       onClick={() => doSearchFull(query)}
-                      className="px-3 py-1 bg-purple-600 text-white rounded text-sm"
+                      className="px-3 py-1 bg-purple-500 text-white rounded text-sm hover:bg-purple-400"
                     >
                       See all
                     </button>
@@ -546,26 +585,38 @@ export default function Navbar() {
           </div>
 
           {/* CENTER MENU */}
-        <div className="hidden md:flex items-center gap-6 ml-10">
-          <button
-            className={`px-3 py-1 text-sm font-semibold transition bg-purple-100 text-purple-700 rounded-full`}
-            onClick={() => navigate("/")}
-          >
-            Home
-          </button>
-          <button
-            className={`px-3 py-1 text-sm font-semibold transition bg-purple-100 text-purple-700 rounded-full`}
-            onClick={() => navigate("/my-bookings")}
-          >
-            My Bookings
-          </button>
-        </div>
+          <div className="hidden md:flex items-center gap-6 ml-10">
+            <button
+              className="px-3 py-1 text-sm font-semibold transition rounded-full bg-white/5 text-gray-100 hover:bg-white/10"
+              onClick={() => navigate("/")}
+            >
+              Home
+            </button>
+            <button
+              className="px-3 py-1 text-sm font-semibold transition rounded-full bg-white/5 text-gray-100 hover:bg-white/10"
+              onClick={() => navigate("/my-bookings")}
+            >
+              My Bookings
+            </button>
+            <button
+              className="px-3 py-1 text-sm font-semibold transition rounded-full bg.white/5 text-gray-100 hover:bg-white/10"
+              onClick={() => navigate("/about")}
+            >
+              About
+            </button>
+            <button
+              className="px-3 py-1 text-sm font-semibold transition rounded-full bg.white/5 text-gray-100 hover:bg-white/10"
+              onClick={() => navigate("/contact")}
+            >
+              Contact
+            </button>
+          </div>
 
           {/* Login Button OR Profile */}
           {!user ? (
             <button
               onClick={() => navigate("/login")}
-              className="px-4 py-1.5 text-sm font-semibold text-purple-600 border border-purple-500 rounded-full hover:bg-purple-50 transition"
+              className="px-4 py-1.5 text-sm font-semibold text-purple-100 border border-purple-400 rounded-full hover:bg-purple-500/20 transition"
             >
               Login
             </button>
@@ -579,53 +630,59 @@ export default function Navbar() {
                 className="flex items-center gap-2 focus:outline-none"
               >
                 {initials ? (
-                  <div className="h-9 w-9 rounded-full bg-purple-600 text-white flex items-center justify-center font-semibold">
+                  <div className="h-9 w-9 rounded-full bg-purple-500 text-white flex items-center justify-center font-semibold shadow-sm shadow-purple-500/40">
                     {initials}
                   </div>
                 ) : (
-                  <div className="h-9 w-9 rounded-full bg-gray-200 flex items-center justify-center">
-                    <FiUser className="text-gray-700" size={18} />
+                  <div className="h-9 w-9 rounded-full bg-white/10 flex items-center justify-center">
+                    <FiUser className="text-gray-100" size={18} />
                   </div>
                 )}
               </button>
 
               {/* Profile Popover */}
               {openProfile && (
-                <div className="absolute right-0 mt-2 w-52 bg-white border border-gray-200 rounded shadow-lg z-50">
+                <div className="absolute right-0 mt-2 w-52 bg-[#050313] border border-white/15 rounded shadow-[0_18px_35px_rgba(0,0,0,0.9)] z-50">
                   <div className="p-4">
                     <div className="flex items-center gap-3">
                       {initials ? (
-                        <div className="h-10 w-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-semibold text-sm">
+                        <div className="h-10 w-10 rounded-full bg-purple-500 text-white flex items-center justify-center font-semibold text-sm">
                           {initials}
                         </div>
                       ) : (
-                        <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                          <FiUser className="text-gray-600" />
+                        <div className="h-10 w-10 rounded-full bg-white/10 flex items-center justify-center">
+                          <FiUser className="text-gray-100" />
                         </div>
                       )}
 
                       <div>
-                        <div className="text-sm font-semibold text-gray-900">
-                          {user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : "Guest"}
+                        <div className="text-sm font-semibold text-white">
+                          {user
+                            ? `${user.firstName || ""} ${
+                                user.lastName || ""
+                              }`.trim()
+                            : "Guest"}
                         </div>
-                        <div className="text-xs text-gray-500 capitalize">{user?.role || ""}</div>
+                        <div className="text-xs text-gray-400 capitalize">
+                          {user?.role || ""}
+                        </div>
                       </div>
                     </div>
 
-                    <div className="mt-3 border-t border-gray-100 pt-3">
+                    <div className="mt-3 border-t border-white/10 pt-3">
                       <button
                         onClick={() => {
                           setOpenProfile(false);
                           navigate("/account-details");
                         }}
-                        className="w-full text-left px-2 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded"
+                        className="w-full text-left px-2 py-2 text-sm text-gray-100 hover:bg-white/5 rounded"
                       >
                         Account
                       </button>
 
                       <button
                         onClick={handleLogout}
-                        className="w-full mt-2 text-left px-2 py-2 text-sm text-red-600 hover:bg-red-50 rounded"
+                        className="w-full mt-2 text-left px-2 py-2 text-sm text-red-300 hover:bg-red-500/10 rounded"
                       >
                         Logout
                       </button>

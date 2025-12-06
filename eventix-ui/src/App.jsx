@@ -8,6 +8,8 @@ import EventsPage from "./pages/EventsPage";
 import AuthInitializer from "./init/AuthInitializer";
 import EventDetail from "./pages/EventDetail";
 import MyBookings from "./pages/MyBookings";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
 
 function App() {
 
@@ -23,6 +25,8 @@ function App() {
               <Route path="/events" element={<EventsPage/>} />
               <Route path="/events/:id" element={<EventDetail />} />
               <Route path="/my-bookings" element={<MyBookings />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
 
 
               {/* <Route path="/" element={<Home />} /> */}

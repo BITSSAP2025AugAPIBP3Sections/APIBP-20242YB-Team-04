@@ -7,7 +7,6 @@ import { useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FiLink } from "react-icons/fi";
-import { CheckCircle } from "react-feather"; // optional, install react-feather or replace with any icon
 
 /** small UUID v4 */
 function uuidv4() {
@@ -46,7 +45,9 @@ export default function EventDetail() {
   // booking state
   const [bookingOpen, setBookingOpen] = useState(false);
   const [bookingLoading, setBookingLoading] = useState(false);
-  const [name, setName] = useState(user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : "");
+  const [name, setName] = useState(
+    user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : ""
+  );
   const [email, setEmail] = useState(user?.sub || "");
   const [seatsToBook, setSeatsToBook] = useState(1);
 
@@ -89,14 +90,22 @@ export default function EventDetail() {
       }
       setCheckingBookings(true);
       try {
-        const accessToken = localStorage.getItem("accessToken") || localStorage.getItem("token");
+        const accessToken =
+          localStorage.getItem("accessToken") || localStorage.getItem("token");
         const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
-        const url = `http://localhost:8082/bookings?userId=${encodeURIComponent(userId)}`;
+        const url = `http://localhost:8082/bookings?userId=${encodeURIComponent(
+          userId
+        )}`;
         const res = await axios.get(url, { headers, timeout: 8000 });
         const list = Array.isArray(res.data) ? res.data : [];
         if (!mounted) return;
         setUserBookings(list);
-        const hasBooking = list.some((b) => String(b.eventId) === String(id) && b.status && b.status !== "FAILED_EVENT_SERVICE_DOWN");
+        const hasBooking = list.some(
+          (b) =>
+            String(b.eventId) === String(id) &&
+            b.status &&
+            b.status !== "FAILED_EVENT_SERVICE_DOWN"
+        );
         setIsBooked(Boolean(hasBooking));
       } catch (err) {
         console.error("Failed to fetch user bookings:", err);
@@ -162,13 +171,22 @@ export default function EventDetail() {
 
     try {
       const bookingId = uuidv4();
-      const payload = buildBookingPayload({ bookingId, event, user, seats: seatsToBook });
+      const payload = buildBookingPayload({
+        bookingId,
+        event,
+        user,
+        seats: seatsToBook,
+      });
 
       const bookingUrl = "http://localhost:8082/bookings";
-      const accessToken = localStorage.getItem("accessToken") || localStorage.getItem("token");
+      const accessToken =
+        localStorage.getItem("accessToken") || localStorage.getItem("token");
       const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
 
-      const res = await axios.post(bookingUrl, payload, { headers, timeout: 10000 });
+      const res = await axios.post(bookingUrl, payload, {
+        headers,
+        timeout: 10000,
+      });
 
       const bookingResp = res.data || {};
       const respStatus = bookingResp.status || "";
@@ -178,18 +196,34 @@ export default function EventDetail() {
       } else {
         toast.success("Booking request submitted.");
         // optimistic update
-        setEvent((prev) => (prev ? { ...prev, seatsAvailable: prev.seatsAvailable - seatsToBook } : prev));
+        setEvent((prev) =>
+          prev
+            ? { ...prev, seatsAvailable: prev.seatsAvailable - seatsToBook }
+            : prev
+        );
         setBookingOpen(false);
         // refetch bookings so UI updates to show "Booked"
-        // call the same booking fetch used above:
         try {
-          const url = `http://localhost:8082/bookings?userId=${encodeURIComponent(userId)}`;
-          const accessToken2 = localStorage.getItem("accessToken") || localStorage.getItem("token");
-          const headers2 = accessToken2 ? { Authorization: `Bearer ${accessToken2}` } : {};
-          const result = await axios.get(url, { headers: headers2, timeout: 8000 });
+          const url = `http://localhost:8082/bookings?userId=${encodeURIComponent(
+            userId
+          )}`;
+          const accessToken2 =
+            localStorage.getItem("accessToken") || localStorage.getItem("token");
+          const headers2 = accessToken2
+            ? { Authorization: `Bearer ${accessToken2}` }
+            : {};
+          const result = await axios.get(url, {
+            headers: headers2,
+            timeout: 8000,
+          });
           const list = Array.isArray(result.data) ? result.data : [];
           setUserBookings(list);
-          const hasBooking = list.some((b) => String(b.eventId) === String(id) && b.status && b.status !== "FAILED_EVENT_SERVICE_DOWN");
+          const hasBooking = list.some(
+            (b) =>
+              String(b.eventId) === String(id) &&
+              b.status &&
+              b.status !== "FAILED_EVENT_SERVICE_DOWN"
+          );
           setIsBooked(Boolean(hasBooking));
         } catch (err) {
           console.warn("Refetch bookings failed after booking:", err);
@@ -203,7 +237,10 @@ export default function EventDetail() {
         navigate("/login");
         return;
       }
-      const msg = err.response?.data?.message || err.response?.data?.status || "Booking failed. Try again.";
+      const msg =
+        err.response?.data?.message ||
+        err.response?.data?.status ||
+        "Booking failed. Try again.";
       toast.error(msg);
     } finally {
       setBookingLoading(false);
@@ -222,26 +259,33 @@ export default function EventDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-gray-600">Loading event...</div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-sm text-gray-200">Loading event...</div>
       </div>
     );
   }
 
   if (error || !event) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-        <div className="max-w-xl text-center">
-          <p className="text-red-600 mb-4">{error || "Event not found"}</p>
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="max-w-xl rounded-2xl border border-white/10 bg-white/5 p-6 text-center text-sm text-gray-100 backdrop-blur">
+          <p className="mb-4 text-red-300">{error || "Event not found"}</p>
           <div className="flex justify-center gap-3">
-            <button onClick={() => navigate(-1)} className="px-4 py-2 bg-purple-600 text-white rounded">
+            <button
+              onClick={() => navigate(-1)}
+              className="rounded-full bg-purple-500 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-400"
+            >
               Go back
             </button>
-            <button onClick={() => navigate("/")} className="px-4 py-2 border rounded">
+            <button
+              onClick={() => navigate("/")}
+              className="rounded-full border border-white/30 px-4 py-2 text-sm font-semibold text-gray-100 hover:bg-white/10"
+            >
               Home
             </button>
           </div>
         </div>
+        <ToastContainer position="top-center" autoClose={2500} />
       </div>
     );
   }
@@ -250,7 +294,10 @@ export default function EventDetail() {
   const BookButton = () => {
     if (checkingBookings) {
       return (
-        <button className="px-4 py-2 rounded-md bg-gray-200 text-gray-600" disabled>
+        <button
+          className="rounded-full bg-white/10 px-4 py-2 text-sm text-gray-200"
+          disabled
+        >
           Checking...
         </button>
       );
@@ -258,8 +305,23 @@ export default function EventDetail() {
 
     if (isBooked) {
       return (
-        <button className="px-4 py-2 rounded-md bg-green-600 text-white font-semibold flex items-center gap-2" disabled>
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        <button
+          className="flex items-center gap-2 rounded-full bg-green-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-green-500/40"
+          disabled
+        >
+          <svg
+            className="h-4 w-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+          >
+            <path
+              d="M20 6L9 17l-5-5"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
           Booked
         </button>
       );
@@ -269,8 +331,10 @@ export default function EventDetail() {
       <button
         onClick={openBooking}
         disabled={event.seatsAvailable <= 0}
-        className={`px-4 py-2 rounded-md text-white font-semibold ${
-          event.seatsAvailable > 0 ? "bg-purple-600 hover:bg-purple-700" : "bg-gray-300 cursor-not-allowed"
+        className={`rounded-full px-5 py-2 text-sm font-semibold text-white shadow-md ${
+          event.seatsAvailable > 0
+            ? "bg-purple-500 hover:bg-purple-400 shadow-purple-500/40"
+            : "bg-gray-600 cursor-not-allowed"
         }`}
       >
         {event.seatsAvailable > 0 ? "Book" : "Sold out"}
@@ -279,26 +343,30 @@ export default function EventDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4">
+    <div className="min-h-screen py-10 px-4">
       <div className="container mx-auto max-w-4xl">
-        <div className="bg-white rounded-xl shadow p-6">
+        <div className="rounded-3xl border border-white/10 bg-white/5 p-6 md:p-8 shadow-[0_18px_45px_rgba(0,0,0,0.6)] backdrop-blur">
           {/* Header */}
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-gray-900">{event.title}</h1>
-              <p className="text-sm text-gray-500 mt-1">
+              <h1 className="text-2xl font-bold text-white">{event.title}</h1>
+              <p className="mt-1 text-sm text-gray-300">
                 {event.category} • {event.city} • {event.venue}
               </p>
-              <p className="text-sm text-gray-500 mt-1">Organized by: {event.organizerId}</p>
+              <p className="mt-1 text-xs text-gray-400">
+                Organized by: {event.organizerId}
+              </p>
             </div>
 
-            <div className="text-right flex flex-col items-end gap-2">
-              <div className="text-sm text-gray-500">Status</div>
-              <div className="text-sm font-semibold text-green-600">{event.status}</div>
+            <div className="flex flex-col items-end gap-2 text-right">
+              <div className="text-xs text-gray-400">Status</div>
+              <div className="text-xs font-semibold text-green-300">
+                {event.status}
+              </div>
               <button
                 onClick={copyLink}
                 title="Copy event link"
-                className="mt-2 p-2 rounded-full border border-gray-200 hover:bg-gray-50"
+                className="mt-1 rounded-full border border-white/20 p-2 text-gray-200 hover:bg-white/10"
               >
                 <FiLink />
               </button>
@@ -306,27 +374,55 @@ export default function EventDetail() {
           </div>
 
           {/* Meta */}
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="mt-6 grid grid-cols-1 gap-4 text-sm text-gray-200 md:grid-cols-3">
             <div>
-              <div className="text-xs text-gray-500">When</div>
-              <div className="text-sm font-medium">{formatDateTime(event.startTime)}</div>
-              <div className="text-sm">{formatDateTime(event.endTime)}</div>
+              <div className="text-xs uppercase tracking-[0.16em] text-gray-400">
+                When
+              </div>
+              <div className="mt-1 font-medium">
+                {formatDateTime(event.startTime)}
+              </div>
+              <div className="text-xs text-gray-300">
+                Ends: {formatDateTime(event.endTime)}
+              </div>
             </div>
 
             <div>
-              <div className="text-xs text-gray-500">Capacity</div>
-              <div className="text-sm font-medium">{event.capacity} seats</div>
-              <div className="text-sm text-gray-700 mt-1">{event.seatsAvailable} seats available</div>
+              <div className="text-xs uppercase tracking-[0.16em] text-gray-400">
+                Capacity
+              </div>
+              <div className="mt-1 font-medium">
+                {event.capacity}{" "}
+                <span className="text-xs font-normal text-gray-300">
+                  seats
+                </span>
+              </div>
+              <div className="mt-1 text-xs text-gray-300">
+                Seats available:{" "}
+                <span
+                  className={
+                    event.seatsAvailable > 0
+                      ? "font-semibold text-green-300"
+                      : "font-semibold text-red-300"
+                  }
+                >
+                  {event.seatsAvailable}
+                </span>
+              </div>
             </div>
 
             <div>
-              <div className="text-xs text-gray-500">Venue</div>
-              <div className="text-sm font-medium">{event.venue}</div>
+              <div className="text-xs uppercase tracking-[0.16em] text-gray-400">
+                Venue
+              </div>
+              <div className="mt-1 font-medium text-gray-100">
+                {event.venue}
+              </div>
               <a
                 href={`https://www.google.com/maps/search/?api=1&query=${event.latitude},${event.longitude}`}
                 target="_blank"
                 rel="noreferrer"
-                className="text-sm text-purple-600 hover:underline mt-1 inline-block"
+                className="mt-1 inline-block text-xs font-medium text-purple-300 hover:text-purple-200 hover:underline"
               >
                 Open in maps
               </a>
@@ -335,31 +431,48 @@ export default function EventDetail() {
 
           {/* Description */}
           <div className="mt-6">
-            <h3 className="text-sm font-semibold text-gray-900">About</h3>
-            <p className="text-sm text-gray-700 mt-2">{event.description}</p>
+            <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-gray-300">
+              About
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-gray-100">
+              {event.description}
+            </p>
           </div>
 
           {/* Actions */}
-          <div className="mt-6 flex items-center gap-3">
+          <div className="mt-6 flex flex-wrap items-center gap-3">
             <BookButton />
-            <button onClick={() => navigate(-1)} className="px-3 py-2 rounded-md border border-gray-200">
+            <button
+              onClick={() => navigate(-1)}
+              className="rounded-full border border-white/25 px-4 py-2 text-sm text-gray-100 hover:bg-white/10"
+            >
               Back
             </button>
           </div>
 
-          {/* Optionally show user's booking info for this event */}
+          {/* User booking info */}
           {isBooked && userBookings.length > 0 && (
-            <div className="mt-4 bg-green-50 border border-green-100 p-3 rounded">
-              <div className="text-sm font-medium text-green-800">You have a booking for this event</div>
-              <div className="text-xs text-gray-700 mt-1">
+            <div className="mt-5 rounded-2xl border border-green-400/30 bg-green-500/10 p-4 text-xs text-green-50">
+              <div className="text-sm font-semibold text-green-100">
+                You have a booking for this event
+              </div>
+              <div className="mt-2 space-y-2">
                 {userBookings
                   .filter((b) => String(b.eventId) === String(id))
                   .map((b) => (
-                    <div key={b.id} className="mt-1">
-                      <div>Booking ID: {b.id}</div>
-                      <div>Status: <span className="font-semibold">{b.status}</span></div>
+                    <div key={b.id}>
+                      <div>
+                        Booking ID:{" "}
+                        <span className="font-semibold">{b.id}</span>
+                      </div>
+                      <div>
+                        Status:{" "}
+                        <span className="font-semibold">{b.status}</span>
+                      </div>
                       <div>Seats: {b.totalBookings}</div>
-                      <div className="text-xs text-gray-500">Booked: {new Date(b.timestamp).toLocaleString()}</div>
+                      <div className="text-[11px] text-green-100/80">
+                        Booked: {new Date(b.timestamp).toLocaleString()}
+                      </div>
                     </div>
                   ))}
               </div>
@@ -370,60 +483,78 @@ export default function EventDetail() {
 
       {/* Booking Modal */}
       {bookingOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="bg-white rounded-xl shadow-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold">Book seats</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#090816] p-6 text-sm text-gray-100 shadow-[0_24px_55px_rgba(0,0,0,0.9)] backdrop-blur">
+            <h3 className="text-lg font-semibold text-white">Book seats</h3>
 
-            <form className="mt-4 space-y-3" onSubmit={submitBooking}>
+            <form className="mt-4 space-y-4" onSubmit={submitBooking}>
               <div>
-                <label className="block text-sm text-gray-700">Name</label>
+                <label className="block text-xs font-medium text-gray-300">
+                  Name
+                </label>
                 <input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  className="w-full mt-1 px-3 py-2 border rounded"
+                  className="mt-1 w-full rounded-xl border border-white/20 bg-black/30 px-3 py-2 text-sm text-white outline-none placeholder:text-gray-500 focus:border-purple-400 focus:ring-1 focus:ring-purple-400"
+                  placeholder="Your name"
                 />
               </div>
 
               <div>
-                <label className="block text-sm text-gray-700">Email</label>
+                <label className="block text-xs font-medium text-gray-300">
+                  Email
+                </label>
                 <input
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   type="email"
-                  className="w-full mt-1 px-3 py-2 border rounded"
+                  className="mt-1 w-full rounded-xl border border-white/20 bg-black/30 px-3 py-2 text-sm text-white outline-none placeholder:text-gray-500 focus:border-purple-400 focus:ring-1 focus:ring-purple-400"
+                  placeholder="you@example.com"
                 />
               </div>
 
               <div>
-                <label className="block text-sm text-gray-700">Seats</label>
+                <label className="block text-xs font-medium text-gray-300">
+                  Seats
+                </label>
                 <input
                   value={seatsToBook}
                   onChange={(e) => {
                     const v = Number(e.target.value) || 1;
-                    setSeatsToBook(Math.max(1, Math.min(v, event.seatsAvailable)));
+                    setSeatsToBook(
+                      Math.max(1, Math.min(v, event.seatsAvailable))
+                    );
                   }}
                   min={1}
                   max={event.seatsAvailable}
                   type="number"
-                  className="w-32 mt-1 px-3 py-2 border rounded"
+                  className="mt-1 w-28 rounded-xl border border-white/20 bg-black/30 px-3 py-2 text-sm text-white outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400"
                 />
-                <div className="text-xs text-gray-500 mt-1">{event.seatsAvailable} seats available</div>
+                <div className="mt-1 text-[11px] text-gray-400">
+                  {event.seatsAvailable} seats available
+                </div>
               </div>
 
-              <div className="flex items-center justify-between mt-4">
+              <div className="mt-3 flex items-center justify-between">
                 <button
                   type="submit"
                   disabled={bookingLoading}
-                  className={`px-4 py-2 rounded-md text-white font-semibold ${
-                    bookingLoading ? "bg-gray-400 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-700"
+                  className={`rounded-full px-4 py-2 text-sm font-semibold text-white ${
+                    bookingLoading
+                      ? "bg-gray-600 cursor-not-allowed"
+                      : "bg-purple-500 hover:bg-purple-400 shadow-md shadow-purple-500/40"
                   }`}
                 >
                   {bookingLoading ? "Booking..." : "Confirm booking"}
                 </button>
 
-                <button type="button" onClick={() => setBookingOpen(false)} className="px-3 py-2 rounded-md border border-gray-200">
+                <button
+                  type="button"
+                  onClick={() => setBookingOpen(false)}
+                  className="rounded-full border border-white/25 px-4 py-2 text-sm text-gray-100 hover:bg-white/10"
+                >
                   Cancel
                 </button>
               </div>
